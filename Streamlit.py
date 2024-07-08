@@ -613,8 +613,8 @@ plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
 plt.tight_layout(pad=0)
 plt.margins(0, 0)
 
-x_list = [1150,840,730,450,515,800,1090]
-y_list = [450,185,185,465,770,885,770]
+x_list = [1150,830,730,450,515,800,1090]
+y_list = [460,185,185,460,770,885,770]
 orient_list = ['left', 'left', 'right', 'right', 'right','center', 'left']
 
 for i in range(7):
@@ -639,13 +639,13 @@ if compare == 'Yes':
     mins2 = int(df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'Minutes'])
     detailed_pos2 = df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'Detailed Position']
 
-    plt.text(50,70,f"{name1}",ha = 'left', fontsize=35, color = 'green', fontweight = 'bold')
-    plt.text(50,120,f"{club} - {season1} {league1}",ha = 'left', fontsize=30, color = 'green', fontname='Avenir')
-    plt.text(50,160,f"{mins} Minutes - {detailed_pos}",ha = 'left', fontsize=30, color = 'green', fontname='Avenir')
+    plt.text(40,70,f"{name1}",ha = 'left', fontsize=35, color = 'green', fontweight = 'bold')
+    plt.text(40,120,f"{club} - {season1} {league1}",ha = 'left', fontsize=30, color = 'green', fontname='Avenir')
+    plt.text(40,160,f"{mins} Minutes - {detailed_pos}",ha = 'left', fontsize=30, color = 'green', fontname='Avenir')
     
-    plt.text(1550,70,f"{name2}",ha = 'right', fontsize=35, color = 'red', fontweight = 'bold')
-    plt.text(1550,120,f"{club2} - {season2} {league2}",ha = 'right', fontsize=30, color = 'red', fontname='Avenir')
-    plt.text(1550,160,f"{mins2} Minutes - {detailed_pos2}",ha = 'right', fontsize=30, color = 'red', fontname='Avenir')
+    plt.text(1560,70,f"{name2}",ha = 'right', fontsize=35, color = 'red', fontweight = 'bold')
+    plt.text(1560,120,f"{club2} - {season2} {league2}",ha = 'right', fontsize=30, color = 'red', fontname='Avenir')
+    plt.text(1560,160,f"{mins2} Minutes - {detailed_pos2}",ha = 'right', fontsize=30, color = 'red', fontname='Avenir')
     plt.text(30,880,f"Data compared to {position_group1} in player's league",ha = 'left', fontsize=17, color = 'white', fontname='Avenir')
 
 #streamlit run streamlit.py
