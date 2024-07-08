@@ -70,7 +70,7 @@ df = df[df['Position Group'] == position_group1]
 #     #df = pd.concat([df,new_data], ignore_index = True)
 
 compare = "No"
-league1 = st.selectbox("Select League", options=['NWSL', 'Mexico', 'Brazil','England', 'Spain', 'Germany', 'Sweden', 'France', 'Colombia', 'Portugal', 'Japan','Australia', 'Norway', 'Denmark', 'Belgium', 'Swiss', 'Czech','Ukraine','Poland', 'Scotland', 'Iceland', 'GoldCup', 'USL' ])
+league1 = st.selectbox("Select League", options=['NWSL', 'Mexico', 'Brazil','England', 'Spain', 'Germany', 'Sweden', 'France', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'USL' ])
 name1 = st.selectbox("Select Player", options=df[(df['Position Group'] == position_group1) & (df['Competition'] == league1)]['Player'].unique())
 season1 = st.selectbox("Select Season", options=sorted(df[(df['Competition'] == league1) & (df['Position Group'] == position_group1) & (df['Player'] == name1)]['Season'].unique(), reverse=True))
 
@@ -83,7 +83,7 @@ else: mode1 = st.selectbox("Select Radar Type", options=["Basic", 'Attacking', '
 compare = st.selectbox("Compare with another player?", options=["No", 'Yes'])
 
 if compare == 'Yes':
-    league2 = st.selectbox("Select other League", options=['NWSL', 'Mexico', 'Brazil','England', 'Spain', 'Germany', 'Sweden', 'France', 'Colombia', 'Portugal', 'Japan','Australia', 'Norway', 'Denmark', 'Belgium', 'Swiss', 'Czech','Ukraine','Poland', 'Scotland', 'Iceland', 'GoldCup', 'USL' ])
+    league2 = st.selectbox("Select other League", options=['NWSL', 'Mexico', 'Brazil','England', 'Spain', 'Germany', 'Sweden', 'France', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'USL' ])
     name2 = st.selectbox("Select other Player", options=df[(df['Position Group'] == position_group1) & (df['Competition'] == league2)]['Player'].unique())
     season2 = st.selectbox("Select other season", options=sorted(df[(df['Competition'] == league2) & (df['Position Group'] == position_group1) & (df['Player'] == name2)]['Season'].unique(), reverse=True))
 
