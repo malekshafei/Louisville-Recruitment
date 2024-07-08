@@ -613,7 +613,7 @@ plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
 plt.tight_layout(pad=0)
 plt.margins(0, 0)
 
-x_list = [1150,850,750,450,515,800,1090]
+x_list = [1150,840,730,450,515,800,1090]
 y_list = [450,185,185,465,770,885,770]
 orient_list = ['left', 'left', 'right', 'right', 'right','center', 'left']
 
@@ -646,7 +646,7 @@ if compare == 'Yes':
     plt.text(1550,70,f"{name2}",ha = 'right', fontsize=35, color = 'red', fontweight = 'bold')
     plt.text(1550,120,f"{club2} - {season2} {league2}",ha = 'right', fontsize=30, color = 'red', fontname='Avenir')
     plt.text(1550,160,f"{mins2} Minutes - {detailed_pos2}",ha = 'right', fontsize=30, color = 'red', fontname='Avenir')
-    plt.text(30,880,f"Data compared to {position_group1} in player's league",ha = 'left', fontsize=21.5, color = 'white', fontname='Avenir')
+    plt.text(30,880,f"Data compared to {position_group1} in player's league",ha = 'left', fontsize=17, color = 'white', fontname='Avenir')
 
 #streamlit run streamlit.py
 
