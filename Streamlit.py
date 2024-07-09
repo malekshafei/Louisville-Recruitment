@@ -335,7 +335,7 @@ if position_group1 == 'CMs' and mode1 == 'Buildup & Chance Creation':
 
     data1 = [TacklesWon, TacklePct, Interceptions, Pressures, CounterPressures, AttThirdPressures,AerialWins]
     metrics = ['Progressive Passes', 'Passes into Final Third', 'Key Passes', 'Passes into Box','Short Pass %', 'Assists', '1v1 Dribbles Completed']
-    metric_names = ['Progressive Passes', 'Passes into Final Third', 'Key Passes', 'Passes into Box','Short Pass %', 'Assists', '1v1 Dribbles Completed']
+    metric_names = ['Progressive Passes', 'Passes into Final Third', 'Key Passes', 'Passes into Box','Short Pass %', 'Assists', '1v1 Dribbles\nCompleted']
 
     if compare == 'Yes':
         TacklesWon2 = (df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0],'pctProgressive Passes']) 
@@ -362,7 +362,7 @@ if position_group1 == 'CMs' and mode1 == 'Box Threat':
 
     data1 = [TacklesWon, TacklePct, Interceptions, Pressures, CounterPressures, AttThirdPressures,AerialWins]
     metrics = ['Final Third Touches', 'Box Touches', 'Goals', 'Shots', 'xG', 'xG/Shot', 'Big Chances']
-    metric_names = ['Final Third Touches', 'Box Touches', 'Goals', 'Shots', 'xG', 'xG/Shot', 'Big Chances']
+    metric_names = ['Final Third\nTouches', 'Box Touches', 'Goals', 'Shots', 'xG', 'xG/Shot', 'Big Chances']
 
     if compare == 'Yes':
 
@@ -614,7 +614,7 @@ plt.tight_layout(pad=0)
 plt.margins(0, 0)
 
 x_list = [1150,830,730,450,515,800,1090]
-y_list = [460,185,185,460,770,885,770]
+y_list = [460,180,180,460,770,885,770]
 orient_list = ['left', 'left', 'right', 'right', 'right','center', 'left']
 
 for i in range(7):
