@@ -614,7 +614,7 @@ plt.tight_layout(pad=0)
 plt.margins(0, 0)
 
 x_list = [1150,830,730,450,515,800,1090]
-y_list = [460,180,180,460,770,885,770]
+y_list = [460,170,170,460,770,885,770]
 orient_list = ['left', 'left', 'right', 'right', 'right','center', 'left']
 
 for i in range(7):
