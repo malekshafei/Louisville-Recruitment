@@ -819,6 +819,8 @@ if radar == False:
         # Set opponent
         if row['Opponent'] == 'North Carolina Courage':
             opp = 'North Carolina'
+        if row['Opponent'] == 'Pittsburgh Riverhounds':
+            opp = 'North Carolina'
         else:
             opp = row['Opponent']
 
