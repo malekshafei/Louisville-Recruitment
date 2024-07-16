@@ -306,8 +306,8 @@ if radar == True:
             DefEngage2 = (df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0],'Defensive Output'])
             Pressing2 = (df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0],'Pressing'])
 
-            DefendingHigh = df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0],'Defending High']
-            Heading = (df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0],'Heading'])
+            DefendingHigh2 = df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0],'Defending High']
+            Heading2 = (df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0],'Heading'])
 
             data2 = [BoxThreat2, Creating2, Technical2, DefAccuracy2, DefEngage2, Pressing2, Heading2]
             if league2 in ws_leagues: data2 = [BoxThreat2, Creating2, Technical2, DefAccuracy2, DefEngage2, 0, Heading2]
