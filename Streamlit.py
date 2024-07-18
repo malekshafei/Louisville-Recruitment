@@ -72,14 +72,14 @@ df = df[df['Position Group'] == position_group1]
 
 radar = True
 compare = "No"
-league1 = st.selectbox("Select League", options=['NWSL', 'Mexico', 'Brazil','England', 'Spain', 'Germany', 'Sweden', 'France', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'USL', 'USL League One' ])
+league1 = st.selectbox("Select League", options=['NWSL', 'Mexico', 'Brazil','England', 'Spain', 'Germany', 'Sweden', 'France', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'USL', 'MLS Next Pro', 'USL League One' ])
 name1 = st.selectbox("Select Player", options=df[(df['Position Group'] == position_group1) & (df['Competition'] == league1)]['Player'].unique())
 season1 = st.selectbox("Select Season", options=sorted(df[(df['Competition'] == league1) & (df['Position Group'] == position_group1) & (df['Player'] == name1)]['Season'].unique(), reverse=True))
 
-if position_group1 == 'CMs': mode1 = st.selectbox("Select Mode", options=["Basic", 'Defending', 'Buildup & Chance Creation', 'Box Threat', 'Match by Match Overview'])
+if position_group1 == 'CMs': mode1 = st.selectbox("Select Radar Type", options=["Basic", 'Defending', 'Buildup & Chance Creation', 'Box Threat', 'Match by Match Overview'])
 
-elif position_group1 == 'CBs': mode1 = st.selectbox("Select Mode", options=["Basic", 'In Possession', 'Defending','Match by Match Overview'])
-elif position_group1 in ['AMs', 'Ws', 'STs']: mode1 = st.selectbox("Select Mode", options=["Basic", 'Threat Creation', 'Shooting', 'Out of Possession','Match by Match Overview'])
+elif position_group1 == 'CBs': mode1 = st.selectbox("Select Radar Type", options=["Basic", 'In Possession', 'Defending','Match by Match Overview'])
+elif position_group1 in ['AMs', 'Ws', 'STs']: mode1 = st.selectbox("Select Radar Type", options=["Basic", 'Threat Creation', 'Shooting', 'Out of Possession','Match by Match Overview'])
 
 else: mode1 = st.selectbox("Select Radar Type", options=["Basic", 'Attacking', 'Defending', 'Match by Match Overview'])
 
@@ -89,7 +89,7 @@ if radar == True:
     compare = st.selectbox("Compare with another player?", options=["No", 'Yes'])
 
     if compare == 'Yes':
-        league2 = st.selectbox("Select other League", options=['NWSL', 'Mexico', 'Brazil','England', 'Spain', 'Germany', 'Sweden', 'France', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'USL', 'USL League One' ])
+        league2 = st.selectbox("Select other League", options=['NWSL', 'Mexico', 'Brazil','England', 'Spain', 'Germany', 'Sweden', 'France', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'USL', 'MLS Next Pro','USL League One' ])
         name2 = st.selectbox("Select other Player", options=df[(df['Position Group'] == position_group1) & (df['Competition'] == league2)]['Player'].unique())
         season2 = st.selectbox("Select other season", options=sorted(df[(df['Competition'] == league2) & (df['Position Group'] == position_group1) & (df['Player'] == name2)]['Season'].unique(), reverse=True))
 
@@ -663,12 +663,18 @@ if radar == True:
         detailed_pos2 = df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'Detailed Position']
 
         plt.text(40,65,f"{name1}",ha = 'left', fontsize=35, color = 'green', fontweight = 'bold')
-        plt.text(40,110,f"{club} - {season1} {league1}",ha = 'left', fontsize=30, color = 'green', fontname='Avenir')
-        plt.text(40,150,f"{mins} Minutes - {detailed_pos}",ha = 'left', fontsize=30, color = 'green', fontname='Avenir')
-        
+        #plt.text(40,110,f"{club} - {season1} {league1}",ha = 'left', fontsize=30, color = 'green', fontname='Avenir')
+        #plt.text(40,150,f"{mins} Minutes - {detailed_pos}",ha = 'left', fontsize=30, color = 'green', fontname='Avenir')
+        plt.text(40,110,f"{club}",ha = 'left', fontsize=30, color = 'green', fontname='Avenir')
+        plt.text(40,150,f"{season1} {league1}",ha = 'left', fontsize=30, color = 'green', fontname='Avenir')
+        plt.text(40,190,f"{mins} Minutes - {detailed_pos}",ha = 'left', fontsize=30, color = 'green', fontname='Avenir')
+       
         plt.text(1560,65,f"{name2}",ha = 'right', fontsize=35, color = 'red', fontweight = 'bold')
-        plt.text(1560,110,f"{club2} - {season2} {league2}",ha = 'right', fontsize=30, color = 'red', fontname='Avenir')
-        plt.text(1560,150,f"{mins2} Minutes - {detailed_pos2}",ha = 'right', fontsize=30, color = 'red', fontname='Avenir')
+        #plt.text(1560,110,f"{club2} - {season2} {league2}",ha = 'right', fontsize=30, color = 'red', fontname='Avenir')
+        #plt.text(1560,150,f"{mins2} Minutes - {detailed_pos2}",ha = 'right', fontsize=30, color = 'red', fontname='Avenir')
+        plt.text(1560,110,f"{club2}",ha = 'right', fontsize=30, color = 'red', fontname='Avenir')
+        plt.text(1560,150,f"{season2} {league2}",ha = 'right', fontsize=30, color = 'red', fontname='Avenir')
+        plt.text(1560,190,f"{mins2} Minutes - {detailed_pos2}",ha = 'right', fontsize=30, color = 'red', fontname='Avenir')
         plt.text(30,880,f"Data compared to {position_group1} in player's league",ha = 'left', fontsize=15, color = 'white', fontname='Avenir')
 
 
@@ -705,9 +711,8 @@ if radar == True:
 
 
 if radar == False:
-    if league1 == 'NWSL' and season1 == '2024': df = pd.read_excel("NWSLPlayerMatchDataPercentiles.xlsx")
-    if league1 == 'USL' and season1 == '2024': df = pd.read_excel("USLPlayerMatchDataPercentiles.xlsx")
-    if league1 == 'Mexico' and season1 == '23/24': df = pd.read_excel("MexicoPlayerMatchDataPercentiles.xlsx")
+    df = pd.read_excel("InternationalWomensMatchLevelData")
+    df = df[(df['Competition'] == league1) and (df['Season'] == season1)]
 
     df.sort_values(by=['match_date'], ascending=[True], inplace=True)
 
