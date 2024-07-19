@@ -6,7 +6,19 @@ from PIL import Image, ImageOps
 import io
 import warnings
 warnings.filterwarnings('ignore')
+from datetime import datetime, timedelta
 
+if 'last_change_time' not in st.session_state:
+    st.session_state.last_change_time = datetime.min
+if 'run_code' not in st.session_state:
+    st.session_state.run_code = False
+
+def check_time_diff():
+    current_time = datetime.now()
+    if (current_time - st.session_state.last_change_time) >= timedelta(seconds=5):
+        st.session_state.run_code = True
+    else:
+        st.session_state.run_code = False
 
 file_name = 'InternationalWomensData.xlsx'
 df = pd.read_excel(file_name)
@@ -1138,7 +1150,7 @@ if  mode == 'Multi Player Dot Graph':
             #x = df.loc[j, metric]
             x = row[metric]
             print(player, metric, x)
-            ax.scatter(x, i-1, s = 950, color=colors[j], label=player if i == 0 else "", zorder = 3)
+            ax.scatter(x, i+1, s = 950, color=colors[j], label=player if i == 0 else "", zorder = 3)
 
 
 
