@@ -8,17 +8,28 @@ import warnings
 warnings.filterwarnings('ignore')
 from datetime import datetime, timedelta
 
-if 'last_change_time' not in st.session_state:
-    st.session_state.last_change_time = datetime.min
-if 'run_code' not in st.session_state:
-    st.session_state.run_code = False
+# if 'last_change_time' not in st.session_state:
+#     st.session_state.last_change_time = datetime.min
+# if 'last_league' not in st.session_state:
+#     st.session_state.last_league = ''
+# if 'last_name' not in st.session_state:
+#     st.session_state.last_name = ''
+# # if 'last_season' not in st.session_state:
+# #     st.session_state.last_season = ''
 
-def check_time_diff():
-    current_time = datetime.now()
-    if (current_time - st.session_state.last_change_time) >= timedelta(seconds=5):
-        st.session_state.run_code = True
-    else:
-        st.session_state.run_code = False
+
+# if 'position_group1' not in st.session_state:
+#     st.session_state.position_group1 = 'CBs'
+# if 'league1' not in st.session_state:
+#     st.session_state.league1 = 'NWSL'
+# if 'name1' not in st.session_state:
+#     st.session_state.name1 = 'Abby Erceg'
+# if 'season1' not in st.session_state:
+#     st.session_state.season1 = '2024'
+
+
+
+
 
 file_name = 'InternationalWomensData.xlsx'
 df = pd.read_excel(file_name)
@@ -56,6 +67,7 @@ html, body, [class*="css"] {{
 """
 
 st.markdown(custom_css, unsafe_allow_html=True)
+pos_list = ['CBs', 'WBs', 'CMs', 'AMs', 'Ws', 'STs']
 
 #st.title(f"Racing Recruitment")
 
@@ -64,7 +76,7 @@ st.markdown(custom_css, unsafe_allow_html=True)
 
 
 
-mode = st.selectbox("Select Mode", options=['Player Overview', 'Multi Player Dot Graph', 'Team Style'])
+mode = st.selectbox("Select Mode", options=['Player Overview', 'Multi Player Dot Graph', 'Player Match by Match Performance', 'Team Style'])
 
 if mode == 'Player Overview':
 
@@ -73,7 +85,7 @@ if mode == 'Player Overview':
     # df = pd.read_excel(file_name)
     df = df[df['Detailed Position'] != 'GK']
 
-    pos_list = ['CBs', 'WBs', 'CMs', 'AMs', 'Ws', 'STs']
+    
     #df['Position Group'] = df['pos_group']
 
 
@@ -102,16 +114,21 @@ if mode == 'Player Overview':
 
     # Place the second selectbox in the second column
     with col2:
+        #player_options = df[df['Competition'] == st.session_state.league1]['Player'].unique()
         name1 = st.selectbox(
             'Select Player',
-            df[(df['Position Group'] == position_group1) & (df['Competition'] == league1)]['Player'].unique()
+            df[(df['Position Group'] == position_group1) & (df['Competition'] == league1)]['Player'].unique(),
+            #player_options
+            
         )
 
     # Place the third selectbox in the third column
     with col3:
+        #season_options = sorted(df[(df['Competition'] == st.session_state.league1) & (df['Player'] == st.session_state.name1)]['Season'].unique(), reverse=True)
         season1 = st.selectbox(
             'Select Season',
-            sorted(df[(df['Competition'] == league1) & (df['Position Group'] == position_group1) & (df['Player'] == name1)]['Season'].unique(), reverse=True)
+            sorted(df[(df['Competition'] == league1) & (df['Position Group'] == position_group1) & (df['Player'] == name1)]['Season'].unique(), reverse=True),
+            #season_options
         )
 
     col1, col2 = st.columns(2)
@@ -127,6 +144,7 @@ if mode == 'Player Overview':
     
     if mode1 == 'Match by Match Overview': radar = False
 
+ 
     
 
     if radar == True:
@@ -142,6 +160,8 @@ if mode == 'Player Overview':
 
         ws_leagues = ['France', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'USL League One' ]
 
+    
+        
         # Radar Chart Code
         if position_group1 == 'CBs' and mode1 == 'Basic':
                 
@@ -174,7 +194,7 @@ if mode == 'Player Overview':
 
 
 
-        elif position_group1 == 'CBs' and mode1 == 'Defending':
+        if position_group1 == 'CBs' and mode1 == 'Defending':
                 
             TacklePct = df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0], 'pctTackle %']
             Tackles = df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0], 'pctTackles Won']
@@ -204,7 +224,7 @@ if mode == 'Player Overview':
                 if league2 in ws_leagues: data2 = [TacklePct2, Tackles2, Interceptions2, Blocks2, Headers2, AerialPct2, 0]
 
 
-        elif position_group1 == 'CBs' and mode1 == 'In Possession':
+        if position_group1 == 'CBs' and mode1 == 'In Possession':
                 
             TacklePct = df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0], 'pctProgressive Passes']
             Tackles = df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0], 'pctLong Passes Completed']
@@ -234,7 +254,7 @@ if mode == 'Player Overview':
 
 
 
-        elif position_group1 == 'WBs' and mode1 == 'Basic':
+        if position_group1 == 'WBs' and mode1 == 'Basic':
                 
             Creating = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'Chance Creation']) 
             Carrying = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'Carrying'])
@@ -265,7 +285,7 @@ if mode == 'Player Overview':
                 data2 = [ReceivingForward2, Technical2, Creating2, DefAccuracy2, DefEngage2, DefendingHigh2,Heading2]
                 if league2 in ws_leagues: data2 = [ReceivingForward2, Technical2, Creating2, DefAccuracy2, DefEngage2, 0,Heading2]
 
-        elif position_group1 == 'WBs' and mode1 == 'Defending':
+        if position_group1 == 'WBs' and mode1 == 'Defending':
                 
             TacklesWon = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'pctTackles Won']) 
             TacklePct = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'pctTackle %'])
@@ -292,7 +312,7 @@ if mode == 'Player Overview':
                 data2 = [TacklesWon2, TacklePct2, DefThirdTackles2, DefThirdTacklePct2, Intercepts2, Pressures2,AttThirdPressures2]
                 if league2 in ws_leagues: data1 = [TacklesWon2, TacklePct2, 0, 0, Intercepts2, 0,0]
 
-        elif position_group1 == 'WBs' and mode1 == 'Attacking':
+        if position_group1 == 'WBs' and mode1 == 'Attacking':
                 
             KeyPasses = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'pctKey Passes']) 
             Crosses = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'pctCrosses Completed into Box'])
@@ -300,23 +320,23 @@ if mode == 'Player Overview':
             xA = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'pctxA'])
             Assists = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'pctAssists'])
             FinalThirdTouches = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'pctFinal Third Receptions'])
-            TakeOns = df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'1v1 Dribbles Completed']
+            TakeOns = df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'pctTake Ons']
             
             data1 = [KeyPasses, Crosses, PassesIntoBox, xA, Assists, FinalThirdTouches,TakeOns]
             if league1 in ws_leagues: data1 = [KeyPasses, Crosses, PassesIntoBox, xA, Assists, 0,TakeOns]
             metrics = ['pctKey Passes', 'pctCrosses Completed into Box', 'pctPasses into Box', 'pctxA', 'pctAssists', 'pctFinal Third Receptions', 'pctTake Ons']
             metric_names = ['Key Passes', 'Completed Crosses', 'Passes into Box', 'xA', 'Assists', 'Final Third Touches', 'Take Ons Completed']
 
-            if compare == 'True':
+            if compare == 'Yes':
                 KeyPasses2 = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'pctKey Passes']) 
                 Crosses2 = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'pctCrosses Completed into Box'])
                 PassesIntoBox2 = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'pctPasses into Box'])
                 xA2 = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'pctxA'])
                 Assists2 = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'pctAssists'])
                 FinalThirdTouches2 = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'pctFinal Third Receptions'])
-                TakeOns2 = df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'1v1 Dribbles Completed']
+                TakeOns2 = df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'pctTake Ons']
                 
-                data2 = [KeyPasses, Crosses, PassesIntoBox, xA, Assists, FinalThirdTouches,TakeOns]
+                data2 = [KeyPasses2, Crosses2, PassesIntoBox2, xA2, Assists2, FinalThirdTouches2,TakeOns2]
                 if league2 in ws_leagues: data2 = [KeyPasses, Crosses, PassesIntoBox, xA, Assists, 0,TakeOns]
 
         
@@ -326,7 +346,7 @@ if mode == 'Player Overview':
 
 
 
-        elif position_group1 == 'CMs' and mode1 == 'Basic':
+        if position_group1 == 'CMs' and mode1 == 'Basic':
                 
             Creating = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'Chance Creation']) 
             Carrying = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'Carrying'])
@@ -359,7 +379,7 @@ if mode == 'Player Overview':
                 data2 = [BoxThreat2, Creating2, Technical2, DefAccuracy2, DefEngage2, Pressing2, Heading2]
                 if league2 in ws_leagues: data2 = [BoxThreat2, Creating2, Technical2, DefAccuracy2, DefEngage2, 0, Heading2]
 
-        elif position_group1 == 'CMs' and mode1 == 'Defending':
+        if position_group1 == 'CMs' and mode1 == 'Defending':
                 
             TacklesWon = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'pctTackles Won']) 
             TacklePct = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'pctTackle %'])
@@ -386,7 +406,7 @@ if mode == 'Player Overview':
                 data2 = [TacklesWon2, TacklePct2, Interceptions2, Pressures2, CounterPressures2, AttThirdPressures2,AerialWins2]
                 if league2 in ws_leagues: data2 = [TacklesWon2, TacklePct2, Interceptions2, 0, 0, 0,AerialWins2]
 
-        elif position_group1 == 'CMs' and mode1 == 'Buildup & Chance Creation':
+        if position_group1 == 'CMs' and mode1 == 'Buildup & Chance Creation':
                 
             TacklesWon = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'pctProgressive Passes']) 
             TacklePct = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'pctPasses into Final Third'])
@@ -764,7 +784,7 @@ if mode == 'Team Style':
 
     radar = True
     compare = "No"
-    league1 = st.selectbox("Select League", options=['NWSL', 'Mexico', 'Brazil','England', 'Spain', 'Germany', 'Sweden', 'USL'])
+    league1 = st.selectbox("Select League", options=['NWSL', 'Mexico', 'Brazil','England', 'Spain', 'Germany', 'Sweden', 'USL', 'MLS Next Pro'])
     name1 = st.selectbox("Select Team", options=df[(df['Competition'] == league1)]['Team'].unique())
     season1 = st.selectbox("Select Season", options=sorted(df[(df['Competition'] == league1) & (df['Team'] == name1)]['Season'].unique(), reverse=True))
 
@@ -969,25 +989,33 @@ if  mode == 'Multi Player Dot Graph':
 
     position_group1 = st.selectbox("Select Position Group", options=pos_list)
     df = df[df['Position Group'] == position_group1]
-    league1 = 'NA'
-    player1 = 'NA'
-    season1 = 'NA'
+    # league1 = 'NA'
+    # player1 = 'NA'
+    # season1 = 'NA'
 
-    league2 = 'NA'
-    player2 = 'NA'
-    season2 = 'NA'
+    # league2 = 'NA'
+    # player2 = 'NA'
+    # season2 = 'NA'
 
-    league3 = 'NA'
-    player3 = 'NA'
-    season3 = 'NA'
+    # league3 = 'NA'
+    # player3 = 'NA'
+    # season3 = 'NA'
 
-    league4 = 'NA'
-    player4 = 'NA'
-    season4 = 'NA'
+    # league4 = 'NA'
+    # player4 = 'NA'
+    # season4 = 'NA'
 
-    league5 = 'NA'
-    player5 = 'NA'
-    season5 = 'NA'
+    # league5 = 'NA'
+    # player5 = 'NA'
+    # season5 = 'NA'
+
+    if 'league2' not in st.session_state:
+        st.session_state.league2 = ''
+    if 'name2' not in st.session_state:
+        st.session_state.name2 = ''
+    if 'season2' not in st.session_state:
+        st.session_state.season2 = ''
+
     
     
 
@@ -1205,10 +1233,55 @@ if  mode == 'Multi Player Dot Graph':
     radar = True
     position_group1 = 'NA'
         
+if mode == 'Player Match by Match Performance':
+    mode1 = 'NA'
+    position_group1 = 'CBs'
+    df = pd.read_parquet("InternationalWomensMatchLevelData.parquet")
 
-if radar == False:
-    df = pd.read_excel("InternationalWomensMatchLevelData")
-    df = df[(df['Competition'] == league1) and (df['Season'] == season1)]
+    pos_map_2 = {
+    4: 'CBs',
+    3: 'WBs',
+    6: 'CMs',
+    10: 'AMs',
+    7: 'Ws',
+    9: 'STs'
+    }
+    
+    df['Position Group'] = df['pos_group'].map(pos_map_2)
+    position_group1 = st.selectbox("Select Position Group", options=pos_list)
+    df = df[df['Position Group'] == position_group1]
+
+    radar = True
+    compare = "No"
+   
+   
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        league1 = st.selectbox(
+            'Select League',
+            ['NWSL', 'Mexico', 'Brazil','England', 'Spain', 'Germany', 'Sweden', 'France', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'USL', 'MLS Next Pro', 'USL League One' ]
+        )
+
+    # Place the second selectbox in the second column
+    with col2:
+        #player_options = df[df['Competition'] == st.session_state.league1]['Player'].unique()
+        name1 = st.selectbox(
+            'Select Player',
+            df[(df['Position Group'] == position_group1) & (df['Competition'] == league1)]['Player'].unique(),
+            #player_options
+            
+        )
+
+    # Place the third selectbox in the third column
+    with col3:
+        #season_options = sorted(df[(df['Competition'] == st.session_state.league1) & (df['Player'] == st.session_state.name1)]['Season'].unique(), reverse=True)
+        season1 = st.selectbox(
+            'Select Season',
+            sorted(df[(df['Competition'] == league1) & (df['Position Group'] == position_group1) & (df['Player'] == name1)]['Season'].unique(), reverse=True),
+            #season_options
+        )
+   
+    df = df[(df['Competition'] == league1) & (df['Season'] == season1)]
 
     df.sort_values(by=['match_date'], ascending=[True], inplace=True)
 
