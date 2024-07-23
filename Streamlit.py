@@ -1445,7 +1445,7 @@ if mode == 'Player Match by Match Performance':
         # Set match date
         match_date = datetime.strptime(row['match_date'], '%Y-%m-%d').strftime('%m/%d')
 
-        axes[i, 0].text(0.2, 0.5, f"  {match_date}", ha='center', va='center', fontsize=10,fontweight= 'bold', color = 'white')
+        axes[i, 0].text(0.2, 0.5, f"  {match_date}", ha='center', va='center', fontsize=14,fontweight= 'bold', color = 'white')
         axes[i, 0].axis('off')  
 
         # Set opponent
@@ -1456,15 +1456,15 @@ if mode == 'Player Match by Match Performance':
         else:
             opp = row['Opponent']
 
-        axes[i, 1].text(0, 0.5, opp, ha='left', va='center', fontsize=10,fontweight= 'bold', color = 'white')
+        axes[i, 1].text(0, 0.5, opp, ha='left', va='center', fontsize=14,fontweight= 'bold', color = 'white')
         axes[i, 1].axis('off')
 
         # Set position
-        axes[i, 2].text(0, 0.5, row['Short Position'], ha='left', va='center', fontsize=10,fontweight= 'bold', color = 'white')
+        axes[i, 2].text(0, 0.5, row['Short Position'], ha='left', va='center', fontsize=14,fontweight= 'bold', color = 'white')
         axes[i, 2].axis('off')
 
         # Set minutes
-        axes[i, 3].text(0, 0.5, f"{row['Minutes']}", ha='left', va='center', fontsize=10,fontweight= 'bold', color = 'white')
+        axes[i, 3].text(0, 0.5, f"{row['Minutes']}", ha='left', va='center', fontsize=14,fontweight= 'bold', color = 'white')
         axes[i, 3].axis('off')
 
         # Plot metrics
