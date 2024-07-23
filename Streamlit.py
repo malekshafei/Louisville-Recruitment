@@ -1456,15 +1456,15 @@ if mode == 'Player Match by Match Performance':
         else:
             opp = row['Opponent']
 
-        axes[i, 1].text(0, 0.5, opp, ha='left', va='center', fontsize=14,fontweight= 'bold', color = 'white')
+        axes[i, 1].text(0, 0.5, opp, ha='left', va='center', fontsize=11.5,fontweight= 'bold', color = 'white')
         axes[i, 1].axis('off')
 
         # Set position
-        axes[i, 2].text(0, 0.5, row['Short Position'], ha='left', va='center', fontsize=14,fontweight= 'bold', color = 'white')
+        axes[i, 2].text(0, 0.5, row['Short Position'], ha='left', va='center', fontsize=11.5,fontweight= 'bold', color = 'white')
         axes[i, 2].axis('off')
 
         # Set minutes
-        axes[i, 3].text(0, 0.5, f"{row['Minutes']}", ha='left', va='center', fontsize=14,fontweight= 'bold', color = 'white')
+        axes[i, 3].text(0, 0.5, f"{row['Minutes']}", ha='left', va='center', fontsize=11.5,fontweight= 'bold', color = 'white')
         axes[i, 3].axis('off')
 
         # Plot metrics
