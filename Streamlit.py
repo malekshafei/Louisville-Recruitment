@@ -31,8 +31,9 @@ from datetime import datetime, timedelta
 
 
 
-file_name = 'InternationalWomensData.xlsx'
-df = pd.read_excel(file_name)
+file_name = 'InternationalWomensData.parquet'
+df = pd.read_parquet(file_name)
+print('reading file')
 st.set_page_config( 
     page_title="Racing Recruitment",
     page_icon=":checkered_flag:",
@@ -160,6 +161,29 @@ if mode == 'Player Overview':
 
         ws_leagues = ['France', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'USL League One' ]
 
+    # st.session_state['position_group1'] = position_group1
+    # st.session_state['league1'] = league1
+    # st.session_state['name1'] = name1
+    # st.session_state['season1'] = season1
+    # st.session_state['mode1'] = mode1
+    # st.session_state['compare'] = compare
+    # if compare == 'Yes':
+    #     st.session_state['league2'] = league2
+    #     st.session_state['name2'] = name2
+    #     st.session_state['season2'] = season2
+
+    # if st.button('Run Code'):
+    #     # Retrieve selections from session state
+    #     position_group1 = st.session_state['position_group1']
+    #     league1 = st.session_state['league1']
+    #     name1 = st.session_state['name1']
+    #     season1 = st.session_state['season1']
+    #     mode1 = st.session_state['mode1']
+    #     compare = st.session_state['compare']
+    #     if compare == 'Yes':
+    #         league2 = st.session_state['league2']
+    #         name2 = st.session_state['name2']
+    #         season2 = st.session_state['season2']
     
         
         # Radar Chart Code
@@ -776,6 +800,8 @@ if mode == 'Player Overview':
             
         st.image(buf, use_column_width=True)
 
+
+    
 if mode == 'Team Style':
     file_name = 'InternationalWomensTeamLevelData.xlsx'
     df = pd.read_excel(file_name)
@@ -988,7 +1014,14 @@ if  mode == 'Multi Player Dot Graph':
 
 
     position_group1 = st.selectbox("Select Position Group", options=pos_list)
-    df = df[df['Position Group'] == position_group1]
+    # df = df[df['Position Group'] == position_group1]
+    # st.session_state['league2'] = ''
+    # st.session_state['name2'] = ''
+    # st.session_state['season2'] = ''
+
+    # st.session_state['league3'] = ''
+    # st.session_state['name3'] = ''
+    # st.session_state['season3'] = ''
     # league1 = 'NA'
     # player1 = 'NA'
     # season1 = 'NA'
@@ -1186,7 +1219,7 @@ if  mode == 'Multi Player Dot Graph':
 
     ax.set_xticks(np.arange(0, 101, 10))
     ax.set_xticklabels(np.arange(0, 101, 10), size = 22, color = 'white')#,fontname='Avenir',
-    ax.set_xlabel('Rankings vs 7/11s in their League', size = 20,  color = 'white')#,fontname='Avenir',
+    ax.set_xlabel(f'Rankings vs {position_group1} in their League', size = 20,  color = 'white')#,fontname='Avenir',
     ax.set_title('Player Comparison\n ', size = 30, color = 'white')#fontname='Avenir'
 
     # for label in ax.get_yticklabels():
@@ -1208,10 +1241,10 @@ if  mode == 'Multi Player Dot Graph':
     # by_label = dict(zip(labels, handles))
     # ax.legend(by_label.values(), by_label.keys(), loc='upper center', bbox_to_anchor=(0.5, -0.15), fontsize='large', ncol=5)
     handles, labels = ax.get_legend_handles_labels()
-    legend_labels = [f'{label}\n{df.loc[df["Player"] == label, "Competition"].iloc[0]} - {df.loc[df["Player"] == label, "Season"].iloc[0]}' for label in labels]
+    legend_labels = [f'{label}\n{df.loc[df["Player"] == label, "Competition"].iloc[0]} - {df.loc[df["Player"] == label, "Season"].iloc[0]}\n {int(df.loc[df["Player"] == label, "Minutes"].iloc[0])} Minutes' for label in labels]
     by_label = dict(zip(labels, handles))
     legend = ax.legend(by_label.values(), legend_labels, facecolor = '#400179', loc='upper center', bbox_to_anchor=(0.5, -0.2), fontsize=16, ncol=len(players))
-    
+     
     for text in legend.get_texts():
         text.set_color('white')
     #plt.subplots_adjust(left=0.3, right=0.95, top=0.9, bottom=0.1)
@@ -1515,7 +1548,7 @@ if position_group1 == 'CMs' and mode1 == 'Basic':
 
 if (position_group1 == 'AMs' or position_group1 == 'Ws') and mode1 == 'Basic':
     st.write("Metric Definitions:")
-    st.write("Finishing: Goal Conversion %, xG Over/Underpeformance")
+    st.write("Finishing: Goal Conversion %, xG Over/Underperformance")
     st.write("Poaching: How often the player gets into goalscoring positons (xG, xG/Shot, Touches in Box)")
     st.write("Dribbling Threat: 1v1 Dribbles, Progressive Carries")
     st.write("Chance Creation: Assists, xA, Key Passes, Passes & Crosses Completed into Box")
@@ -1525,7 +1558,7 @@ if (position_group1 == 'AMs' or position_group1 == 'Ws') and mode1 == 'Basic':
 
 if position_group1 == 'STs' and mode1 == 'Basic':
     st.write("Metric Definitions:")
-    st.write("Finishing: Goal Conversion %, xG Over/Underpeformance")
+    st.write("Finishing: Goal Conversion %, xG Over/Underperformance")
     st.write("Poaching: How often the player gets into goalscoring positons (xG, xG/Shot, Touches in Box)")
     st.write("Dribbling Threat: 1v1 Dribbles, Progressive Carries")
     st.write("Chance Creation: Assists, xA, Key Passes, Passes & Crosses Completed into Box")
