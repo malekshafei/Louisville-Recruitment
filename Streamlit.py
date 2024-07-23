@@ -718,11 +718,11 @@ if mode == 'Player Overview':
 
         if compare == 'No':
             plt.text(800,70,f"{name1}",ha = 'center', fontsize=45, color = 'white', fontweight = 'bold')
-            plt.text(800,120,f"{club} - {season1} {league1} - {mins} Minutes - {detailed_pos}",ha = 'center', fontsize=30, color = 'white', fontname='Avenir')
-            plt.text(30,880,f"Data compared to {league1} {position_group1} in {season1}",ha = 'left', fontsize=16, color = 'white', fontname='Avenir')
+            plt.text(800,120,f"{club} - {season1} {league1} - {mins} Minutes - {detailed_pos}",ha = 'center', fontsize=30, color = 'white')#, fontname='Avenir')
+            plt.text(30,880,f"Data compared to {league1} {position_group1} in {season1}",ha = 'left', fontsize=16, color = 'white')#, fontname='Avenir')
 
-            if league1 in ws_leagues and mode1 == 'Basic' and position_group1 in ['CBs','WBs']: plt.text(1570,880,f"Defending High data unavailable for {league1}",ha = 'right', fontsize=16, color = 'white', fontname='Avenir')
-            if league1 in ws_leagues and mode1 == 'Basic' and position_group1 == 'CMs': plt.text(1570,880,f"Pressing data unavailable for {league1}",ha = 'right', fontsize=16, color = 'white', fontname='Avenir')
+            if league1 in ws_leagues and mode1 == 'Basic' and position_group1 in ['CBs','WBs']: plt.text(1570,880,f"Defending High data unavailable for {league1}",ha = 'right', fontsize=16, color = 'white')#, fontname='Avenir')
+            if league1 in ws_leagues and mode1 == 'Basic' and position_group1 == 'CMs': plt.text(1570,880,f"Pressing data unavailable for {league1}",ha = 'right', fontsize=16, color = 'white')#, fontname='Avenir')
 
         if compare == 'Yes':
             club2 = df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'Team']
@@ -732,27 +732,27 @@ if mode == 'Player Overview':
             plt.text(40,65,f"{name1}",ha = 'left', fontsize=35, color = 'green', fontweight = 'bold')
             #plt.text(40,110,f"{club} - {season1} {league1}",ha = 'left', fontsize=30, color = 'green', fontname='Avenir')
             #plt.text(40,150,f"{mins} Minutes - {detailed_pos}",ha = 'left', fontsize=30, color = 'green', fontname='Avenir')
-            plt.text(40,110,f"{club}",ha = 'left', fontsize=30, color = 'green', fontname='Avenir')
-            plt.text(40,150,f"{season1} {league1}",ha = 'left', fontsize=30, color = 'green', fontname='Avenir')
+            plt.text(40,110,f"{club}",ha = 'left', fontsize=30, color = 'green')#, fontname='Avenir')
+            plt.text(40,150,f"{season1} {league1}",ha = 'left', fontsize=30, color = 'green')#, fontname='Avenir')
             plt.text(40,190,f"{mins} Minutes - {detailed_pos}",ha = 'left', fontsize=30, color = 'green', fontname='Avenir')
         
             plt.text(1560,65,f"{name2}",ha = 'right', fontsize=35, color = 'red', fontweight = 'bold')
             #plt.text(1560,110,f"{club2} - {season2} {league2}",ha = 'right', fontsize=30, color = 'red', fontname='Avenir')
             #plt.text(1560,150,f"{mins2} Minutes - {detailed_pos2}",ha = 'right', fontsize=30, color = 'red', fontname='Avenir')
-            plt.text(1560,110,f"{club2}",ha = 'right', fontsize=30, color = 'red', fontname='Avenir')
-            plt.text(1560,150,f"{season2} {league2}",ha = 'right', fontsize=30, color = 'red', fontname='Avenir')
-            plt.text(1560,190,f"{mins2} Minutes - {detailed_pos2}",ha = 'right', fontsize=30, color = 'red', fontname='Avenir')
-            plt.text(30,880,f"Data compared to {position_group1} in player's league",ha = 'left', fontsize=15, color = 'white', fontname='Avenir')
+            plt.text(1560,110,f"{club2}",ha = 'right', fontsize=30, color = 'red')#, fontname='Avenir')
+            plt.text(1560,150,f"{season2} {league2}",ha = 'right', fontsize=30, color = 'red')#, fontname='Avenir')
+            plt.text(1560,190,f"{mins2} Minutes - {detailed_pos2}",ha = 'right', fontsize=30, color = 'red')#, fontname='Avenir')
+            plt.text(30,880,f"Data compared to {position_group1} in player's league",ha = 'left', fontsize=15, color = 'white')#, fontname='Avenir')
 
 
-            if league1 in ws_leagues and league2 in ws_leagues and mode1 == 'Basic' and position_group1 in ['CBs','WBs']: plt.text(1570,880,f"Defending High data unavailable",ha = 'right', fontsize=16, color = 'white', fontname='Avenir')
-            elif league1 in ws_leagues and mode1 == 'Basic' and position_group1 in ['CBs','WBs']: plt.text(1570,880,f"Defending High data unavailable for {league1}",ha = 'right', fontsize=16, color = 'white', fontname='Avenir')
-            elif league2 in ws_leagues and mode1 == 'Basic' and position_group1 in ['CBs','WBs']: plt.text(1570,880,f"Defending High data unavailable for {league2}",ha = 'right', fontsize=16, color = 'white', fontname='Avenir')
+            if league1 in ws_leagues and league2 in ws_leagues and mode1 == 'Basic' and position_group1 in ['CBs','WBs']: plt.text(1570,880,f"Defending High data unavailable",ha = 'right', fontsize=16, color = 'white')#, fontname='Avenir')
+            elif league1 in ws_leagues and mode1 == 'Basic' and position_group1 in ['CBs','WBs']: plt.text(1570,880,f"Defending High data unavailable for {league1}",ha = 'right', fontsize=16, color = 'white')#, fontname='Avenir')
+            elif league2 in ws_leagues and mode1 == 'Basic' and position_group1 in ['CBs','WBs']: plt.text(1570,880,f"Defending High data unavailable for {league2}",ha = 'right', fontsize=16, color = 'white')#, fontname='Avenir')
             
-            if league1 in ws_leagues and league2 in ws_leagues and mode1 == 'Basic' and position_group1 == 'CMs': plt.text(1570,880,f"Pressing data unavailable",ha = 'right', fontsize=16, color = 'white', fontname='Avenir')
-            elif league1 in ws_leagues and mode1 == 'Basic' and position_group1 == 'CMs': plt.text(1570,880,f"Pressing data unavailable for {league1}",ha = 'right', fontsize=16, color = 'white', fontname='Avenir')
+            if league1 in ws_leagues and league2 in ws_leagues and mode1 == 'Basic' and position_group1 == 'CMs': plt.text(1570,880,f"Pressing data unavailable",ha = 'right', fontsize=16, color = 'white')#, fontname='Avenir')
+            elif league1 in ws_leagues and mode1 == 'Basic' and position_group1 == 'CMs': plt.text(1570,880,f"Pressing data unavailable for {league1}",ha = 'right', fontsize=16, color = 'white')#, fontname='Avenir')
 
-            elif league2 in ws_leagues and mode1 == 'Basic' and position_group1 == 'CMs': plt.text(1570,880,f"Pressing data unavailable for {league2}",ha = 'right', fontsize=16, color = 'white', fontname='Avenir')
+            elif league2 in ws_leagues and mode1 == 'Basic' and position_group1 == 'CMs': plt.text(1570,880,f"Pressing data unavailable for {league2}",ha = 'right', fontsize=16, color = 'white')#, fontname='Avenir')
 
 
         #streamlit run streamlit.py
@@ -926,7 +926,7 @@ if mode == 'Team Style':
     orient_list = ['left', 'left', 'right', 'right', 'right','center', 'left']
 
     for i in range(7):
-        plt.text(x_list[i], y_list[i], metric_names[i], ha = orient_list[i], fontsize=30, color = 'white',fontname='Avenir')
+        plt.text(x_list[i], y_list[i], metric_names[i], ha = orient_list[i], fontsize=30, color = 'white')#,fontname='Avenir')
 
 
 
@@ -938,21 +938,21 @@ if mode == 'Team Style':
 
     if compare == 'No':
         plt.text(800,70,f"{name1}",ha = 'center', fontsize=45, color = 'white', fontweight = 'bold')
-        plt.text(800,120,f"{season1} {league1}",ha = 'center', fontsize=30, color = 'white', fontname='Avenir')
-        plt.text(30,880,f"Data compared to {league1} teams in {season1}",ha = 'left', fontsize=16, color = 'white', fontname='Avenir')
+        plt.text(800,120,f"{season1} {league1}",ha = 'center', fontsize=30, color = 'white')#, fontname='Avenir')
+        plt.text(30,880,f"Data compared to {league1} teams in {season1}",ha = 'left', fontsize=16, color = 'white')#, fontname='Avenir')
 
     if compare == 'Yes':
 
         plt.text(40,65,f"{name1}",ha = 'left', fontsize=35, color = 'green', fontweight = 'bold')
         #plt.text(40,110,f"{club} - {season1} {league1}",ha = 'left', fontsize=30, color = 'green', fontname='Avenir')
         #plt.text(40,150,f"{mins} Minutes - {detailed_pos}",ha = 'left', fontsize=30, color = 'green', fontname='Avenir')
-        plt.text(40,110,f"{season1} {league1}",ha = 'left', fontsize=30, color = 'green', fontname='Avenir')
+        plt.text(40,110,f"{season1} {league1}",ha = 'left', fontsize=30, color = 'green')#, fontname='Avenir')
     
         plt.text(1560,65,f"{name2}",ha = 'right', fontsize=35, color = 'red', fontweight = 'bold')
         #plt.text(1560,110,f"{club2} - {season2} {league2}",ha = 'right', fontsize=30, color = 'red', fontname='Avenir')
         #plt.text(1560,150,f"{mins2} Minutes - {detailed_pos2}",ha = 'right', fontsize=30, color = 'red', fontname='Avenir')
-        plt.text(1560,110,f"{season2} {league2}",ha = 'right', fontsize=30, color = 'red', fontname='Avenir')
-        plt.text(30,880,f"Data compared to teams in their league",ha = 'left', fontsize=15, color = 'white', fontname='Avenir')
+        plt.text(1560,110,f"{season2} {league2}",ha = 'right', fontsize=30, color = 'red')#, fontname='Avenir')
+        plt.text(30,880,f"Data compared to teams in their league",ha = 'left', fontsize=15, color = 'white')#, fontname='Avenir')
 
 
     #streamlit run streamlit.py
@@ -1185,9 +1185,9 @@ if  mode == 'Multi Player Dot Graph':
     # Customizing the plot
 
     ax.set_xticks(np.arange(0, 101, 10))
-    ax.set_xticklabels(np.arange(0, 101, 10), size = 22, fontname='Avenir', color = 'white')
-    ax.set_xlabel('Rankings vs 7/11s in their League', size = 20, fontname='Avenir', color = 'white')
-    ax.set_title('Player Comparison\n ', size = 30, fontname='Avenir', color = 'white')
+    ax.set_xticklabels(np.arange(0, 101, 10), size = 22, color = 'white')#,fontname='Avenir',
+    ax.set_xlabel('Rankings vs 7/11s in their League', size = 20,  color = 'white')#,fontname='Avenir',
+    ax.set_title('Player Comparison\n ', size = 30, color = 'white')#fontname='Avenir'
 
     # for label in ax.get_yticklabels():
     #     label.set_x(-0.05)  # Adjust the value as needed to create more space
@@ -1198,7 +1198,7 @@ if  mode == 'Multi Player Dot Graph':
         label.set_bbox(dict(facecolor='#400179', edgecolor='None', alpha=0.65, pad=5))
 
     ax.set_yticks(np.arange(1, len(metrics) + 1))
-    ax.set_yticklabels(metrics, size = 23, ha='right', fontname='Avenir', color = 'white')
+    ax.set_yticklabels(metrics, size = 23, ha='right', color = 'white')#, fontname='Avenir')
 
 
 
