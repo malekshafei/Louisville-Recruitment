@@ -31,8 +31,8 @@ from datetime import datetime, timedelta
 
 
 
-file_name = 'InternationalWomensData.xlsx'
-df = pd.read_excel(file_name)
+file_name = 'InternationalWomensData.parquet'
+df = pd.read_parquet(file_name)
 print('reading file')
 st.set_page_config( 
     page_title="Racing Recruitment",
