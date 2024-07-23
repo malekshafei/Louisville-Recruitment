@@ -1245,16 +1245,27 @@ if  mode == 'Multi Player Dot Graph':
     by_label = dict(zip(labels, handles))
     legend = ax.legend(by_label.values(), legend_labels, facecolor = '#400179', loc='upper center', bbox_to_anchor=(0.5, -0.2), fontsize=16, ncol=len(players))
      
+    # for text in legend.get_texts():
+    #     text.set_color('white')
+    from matplotlib import font_manager as fm
+
     for text in legend.get_texts():
         text.set_color('white')
         lines = text.get_text().split('\n')
-        text.set_text('')
+        text.set_text('')  # Clear the current text
+
+    # Create Text objects with different font sizes
         for i, line in enumerate(lines):
-            text_part = plt.Text(0, 0, line)
             if i == 0:
-                text.set_color('black')
-                text_part.set_fontsize(20)  # Set larger font size for the first line
-            text._text += text_part.get_text() + '\n'
+                font_properties = fm.FontProperties(size=20)  # Larger font for the first line
+            else:
+                font_properties = fm.FontProperties(size=16)  # Normal font for other lines
+            text_line = plt.Text(0, 0, line, fontproperties=font_properties)
+            text_line.set_fontproperties(font_properties)
+
+            # Append each line with appropriate font size to the text
+            text._text += text_line.get_text() + '\n'
+
 
 
 
