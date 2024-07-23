@@ -135,12 +135,12 @@ if mode == 'Player Overview':
     col1, col2 = st.columns(2)
     with col1:
 
-        if position_group1 == 'CMs': mode1 = st.selectbox("Select Radar Type", options=["Basic", 'Defending', 'Buildup & Chance Creation', 'Box Threat', 'Match by Match Overview'])
+        if position_group1 == 'CMs': mode1 = st.selectbox("Select Radar Type", options=["Basic", 'Defending', 'Buildup & Chance Creation', 'Box Threat'])
 
-        elif position_group1 == 'CBs': mode1 = st.selectbox("Select Radar Type", options=["Basic", 'In Possession', 'Defending','Match by Match Overview'])
-        elif position_group1 in ['AMs', 'Ws', 'STs']: mode1 = st.selectbox("Select Radar Type", options=["Basic", 'Threat Creation', 'Shooting', 'Out of Possession','Match by Match Overview'])
+        elif position_group1 == 'CBs': mode1 = st.selectbox("Select Radar Type", options=["Basic", 'In Possession', 'Defending'])
+        elif position_group1 in ['AMs', 'Ws', 'STs']: mode1 = st.selectbox("Select Radar Type", options=["Basic", 'Threat Creation', 'Shooting', 'Out of Possession'])
 
-        else: mode1 = st.selectbox("Select Radar Type", options=["Basic", 'Attacking', 'Defending', 'Match by Match Overview'])
+        else: mode1 = st.selectbox("Select Radar Type", options=["Basic", 'Attacking', 'Defending'])
 
     
     if mode1 == 'Match by Match Overview': radar = False
