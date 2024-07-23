@@ -1548,7 +1548,7 @@ if position_group1 == 'CMs' and mode1 == 'Basic':
 
 if (position_group1 == 'AMs' or position_group1 == 'Ws') and mode1 == 'Basic':
     st.write("Metric Definitions:")
-    st.write("Finishing: Goal Conversion %, xG Over/Underpeformance")
+    st.write("Finishing: Goal Conversion %, xG Over/Underperformance")
     st.write("Poaching: How often the player gets into goalscoring positons (xG, xG/Shot, Touches in Box)")
     st.write("Dribbling Threat: 1v1 Dribbles, Progressive Carries")
     st.write("Chance Creation: Assists, xA, Key Passes, Passes & Crosses Completed into Box")
@@ -1558,7 +1558,7 @@ if (position_group1 == 'AMs' or position_group1 == 'Ws') and mode1 == 'Basic':
 
 if position_group1 == 'STs' and mode1 == 'Basic':
     st.write("Metric Definitions:")
-    st.write("Finishing: Goal Conversion %, xG Over/Underpeformance")
+    st.write("Finishing: Goal Conversion %, xG Over/Underperformance")
     st.write("Poaching: How often the player gets into goalscoring positons (xG, xG/Shot, Touches in Box)")
     st.write("Dribbling Threat: 1v1 Dribbles, Progressive Carries")
     st.write("Chance Creation: Assists, xA, Key Passes, Passes & Crosses Completed into Box")
