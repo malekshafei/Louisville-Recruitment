@@ -160,6 +160,29 @@ if mode == 'Player Overview':
 
         ws_leagues = ['France', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'USL League One' ]
 
+    st.session_state['position_group1'] = position_group1
+    st.session_state['league1'] = league1
+    st.session_state['name1'] = name1
+    st.session_state['season1'] = season1
+    st.session_state['mode1'] = mode1
+    st.session_state['compare'] = compare
+    if compare == 'Yes':
+        st.session_state['league2'] = league2
+        st.session_state['name2'] = name2
+        st.session_state['season2'] = season2
+
+    if st.button('Run Code'):
+        # Retrieve selections from session state
+        position_group1 = st.session_state['position_group1']
+        league1 = st.session_state['league1']
+        name1 = st.session_state['name1']
+        season1 = st.session_state['season1']
+        mode1 = st.session_state['mode1']
+        compare = st.session_state['compare']
+        if compare == 'Yes':
+            league2 = st.session_state['league2']
+            name2 = st.session_state['name2']
+            season2 = st.session_state['season2']
     
         
         # Radar Chart Code
@@ -776,6 +799,8 @@ if mode == 'Player Overview':
             
         st.image(buf, use_column_width=True)
 
+
+    
 if mode == 'Team Style':
     file_name = 'InternationalWomensTeamLevelData.xlsx'
     df = pd.read_excel(file_name)
@@ -988,7 +1013,14 @@ if  mode == 'Multi Player Dot Graph':
 
 
     position_group1 = st.selectbox("Select Position Group", options=pos_list)
-    df = df[df['Position Group'] == position_group1]
+    # df = df[df['Position Group'] == position_group1]
+    # st.session_state['league2'] = ''
+    # st.session_state['name2'] = ''
+    # st.session_state['season2'] = ''
+
+    # st.session_state['league3'] = ''
+    # st.session_state['name3'] = ''
+    # st.session_state['season3'] = ''
     # league1 = 'NA'
     # player1 = 'NA'
     # season1 = 'NA'
