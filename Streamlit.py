@@ -1254,7 +1254,7 @@ if  mode == 'Multi Player Dot Graph':
             if i == 0:
                 text.set_color('black')
                 text_part.set_fontsize(20)  # Set larger font size for the first line
-            #text._text += text_part.get_text() + '\n'
+            text._text += text_part.get_text() + '\n'
 
 
 
