@@ -1241,12 +1241,25 @@ if  mode == 'Multi Player Dot Graph':
     # by_label = dict(zip(labels, handles))
     # ax.legend(by_label.values(), by_label.keys(), loc='upper center', bbox_to_anchor=(0.5, -0.15), fontsize='large', ncol=5)
     handles, labels = ax.get_legend_handles_labels()
-    legend_labels = [f'{label}\n{df.loc[df["Player"] == label, "Competition"].iloc[0]} - {df.loc[df["Player"] == label, "Season"].iloc[0]}\n {int(df.loc[df["Player"] == label, "Minutes"].iloc[0])} Minutes' for label in labels]
+    legend_labels = [f'{label}\n{df.loc[df["Player"] == label, "Competition"].iloc[0]} - {df.loc[df["Player"] == label, "Season"].iloc[0]}\n{int(df.loc[df["Player"] == label, "Minutes"].iloc[0])} Minutes' for label in labels]
     by_label = dict(zip(labels, handles))
     legend = ax.legend(by_label.values(), legend_labels, facecolor = '#400179', loc='upper center', bbox_to_anchor=(0.5, -0.2), fontsize=16, ncol=len(players))
      
     for text in legend.get_texts():
         text.set_color('white')
+        lines = text.get_text().split('\n')
+        text.set_text('')
+        for i, line in enumerate(lines):
+            text_part = plt.Text(0, 0, line)
+            if i == 0:
+                text_part.set_fontsize(20)  # Set larger font size for the first line
+            text._text += text_part.get_text() + '\n'
+
+
+
+        
+    
+
     #plt.subplots_adjust(left=0.3, right=0.95, top=0.9, bottom=0.1)
     #plt.axis('off')
     plt.tight_layout()
