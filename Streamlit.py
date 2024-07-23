@@ -706,7 +706,7 @@ if mode == 'Player Overview':
         orient_list = ['left', 'left', 'right', 'right', 'right','center', 'left']
 
         for i in range(7):
-            plt.text(x_list[i], y_list[i], metric_names[i], ha = orient_list[i], fontsize=30, color = 'white',fontname='Avenir')
+            plt.text(x_list[i], y_list[i], metric_names[i], ha = orient_list[i], fontsize=30, color = 'white')#,fontname='Avenir')
 
 
 
