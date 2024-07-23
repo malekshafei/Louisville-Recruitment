@@ -33,6 +33,7 @@ from datetime import datetime, timedelta
 
 file_name = 'InternationalWomensData.xlsx'
 df = pd.read_excel(file_name)
+print('reading file')
 st.set_page_config( 
     page_title="Racing Recruitment",
     page_icon=":checkered_flag:",
