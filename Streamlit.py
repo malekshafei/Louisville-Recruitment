@@ -334,7 +334,7 @@ if mode == 'Player Overview':
                 AttThirdPressures2 = df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0],'pctAttacking Third Pressures']
                 
                 data2 = [TacklesWon2, TacklePct2, DefThirdTackles2, DefThirdTacklePct2, Intercepts2, Pressures2,AttThirdPressures2]
-                if league2 in ws_leagues: data1 = [TacklesWon2, TacklePct2, 0, 0, Intercepts2, 0,0]
+                if league2 in ws_leagues: data2 = [TacklesWon2, TacklePct2, 0, 0, Intercepts2, 0,0]
 
         if position_group1 == 'WBs' and mode1 == 'Attacking':
                 
@@ -596,7 +596,7 @@ if mode == 'Player Overview':
 
 
                 data2 = [TacklesWon2, TacklePct2, Interceptions2, Pressures2, CounterPressures2, AttThirdPressures2,AerialWins2]
-                if league2 in ws_leagues: data1 = [TacklesWon2, TacklePct2, Interceptions2, 0, 0, 0,0]
+                if league2 in ws_leagues: data2 = [TacklesWon2, TacklePct2, Interceptions2, 0, 0, 0,0]
 
 
 
@@ -1167,6 +1167,7 @@ if  mode == 'Multi Player Dot Graph':
                 
     #print(df)
     # Plotting
+    df['unique_label'] = df.apply(lambda row: f"{row['Player']}\n{row['Competition']} - {row['Season']}", axis=1)
 
     if position_group1 == 'CBs': metrics = ['Ball Retention', 'Progressive Passing', 'Heading', 'Defensive Output', 'Tackle Accuracy']
     if position_group1 == 'WBs': metrics = ['Ball Retention', 'Chance Creation', 'Receiving Forward', 'Defensive Output', 'Tackle Accuracy']
@@ -1178,7 +1179,8 @@ if  mode == 'Multi Player Dot Graph':
     #metrics = metrics[::-1]
 
     #players = [player1, player2, player3, player4, player5 ]
-    players = df['Player']
+    #players = df['Player']
+    players = df['unique_label']
     colors = ['purple', 'red', 'green', 'orange', 'black']
     #fig, ax = plt.subplots(figsize=(10, 6))
     fig, ax = plt.subplots(figsize=(16, 9))
@@ -1204,6 +1206,7 @@ if  mode == 'Multi Player Dot Graph':
 
         for j in range(len(players)):
             row = df.iloc[j]
+            unique_label = row['unique_label']
             player = row['Player']
             league = row['Competition']
             season = row['Season']
@@ -1211,7 +1214,7 @@ if  mode == 'Multi Player Dot Graph':
             #x = df.loc[j, metric]
             x = row[metric]
             print(player, metric, x)
-            ax.scatter(x, i+1, s = 950, color=colors[j], label=player if i == 0 else "", zorder = 3)
+            ax.scatter(x, i+1, s = 950, color=colors[j], label=unique_label if i == 0 else "", zorder = 3)
 
 
 
@@ -1240,8 +1243,15 @@ if  mode == 'Multi Player Dot Graph':
     # handles, labels = ax.get_legend_handles_labels()
     # by_label = dict(zip(labels, handles))
     # ax.legend(by_label.values(), by_label.keys(), loc='upper center', bbox_to_anchor=(0.5, -0.15), fontsize='large', ncol=5)
+    # handles, labels = ax.get_legend_handles_labels()
+    # legend_labels = [f'{label}\n{df.loc[df["Player"] == label, "Competition"].iloc[0]} - {df.loc[df["Player"] == label, "Season"].iloc[0]}\n{int(df.loc[df["Player"] == label, "Minutes"].iloc[0])} Minutes' for label in labels]
+    # by_label = dict(zip(labels, handles))
+    # legend = ax.legend(by_label.values(), legend_labels, facecolor = '#400179', loc='upper center', bbox_to_anchor=(0.5, -0.2), fontsize=16, ncol=len(players))
+     
     handles, labels = ax.get_legend_handles_labels()
-    legend_labels = [f'{label}\n{df.loc[df["Player"] == label, "Competition"].iloc[0]} - {df.loc[df["Player"] == label, "Season"].iloc[0]}\n{int(df.loc[df["Player"] == label, "Minutes"].iloc[0])} Minutes' for label in labels]
+    #legend_labels = [f'{label}\n{df.loc[df["Player"] == label, "Competition"].iloc[0]} - {df.loc[df["Player"] == label, "Season"].iloc[0]}\n{int(df.loc[df["Player"] == label, "Minutes"].iloc[0])} Minutes' for label in labels]
+    legend_labels = [f'{label}\n{int(df.loc[df["unique_label"] == label, "Minutes"].iloc[0])} Minutes' for label in labels]
+
     by_label = dict(zip(labels, handles))
     legend = ax.legend(by_label.values(), legend_labels, facecolor = '#400179', loc='upper center', bbox_to_anchor=(0.5, -0.2), fontsize=16, ncol=len(players))
      
