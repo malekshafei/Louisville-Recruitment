@@ -1014,7 +1014,7 @@ if  mode == 'Multi Player Dot Graph':
 
 
     position_group1 = st.selectbox("Select Position Group", options=pos_list)
-    # df = df[df['Position Group'] == position_group1]
+    df = df[df['Position Group'] == position_group1]
     # st.session_state['league2'] = ''
     # st.session_state['name2'] = ''
     # st.session_state['season2'] = ''
@@ -1213,7 +1213,7 @@ if  mode == 'Multi Player Dot Graph':
 
             #x = df.loc[j, metric]
             x = row[metric]
-            print(player, metric, x)
+            print(player, season, metric, x)
             ax.scatter(x, i+1, s = 950, color=colors[j], label=unique_label if i == 0 else "", zorder = 3)
 
 
