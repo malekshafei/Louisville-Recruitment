@@ -1463,8 +1463,16 @@ if mode == 'Player Match by Match Performance':
         # Set opponent
         if row['Opponent'] == 'North Carolina Courage':
             opp = 'North Carolina'
-        if row['Opponent'] == 'Pittsburgh Riverhounds':
-            opp = 'North Carolina'
+        if row['Opponent'] == 'Racing Louisville FC':
+            opp = 'Racing'
+        elif row['Opponent'] == 'Pittsburgh Riverhounds':
+            opp = 'Pittsburgh'
+        elif row['Opponent'] == 'Sacramento Republic':
+            opp = 'Sacramento'
+        elif row['Opponent'] == 'Birmingham Legion':
+            opp = 'Birmingham'
+        elif row['Opponent'] == 'Charleston Battery':
+            opp = 'Charleston'
         else:
             opp = row['Opponent']
 
