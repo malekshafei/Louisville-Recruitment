@@ -1398,7 +1398,7 @@ if mode == 'Player Match by Match Performance':
     df['Short Position'] = df['Position'].map(pos_mapping)
 
     selected_player = name1
-    df = df[(df['Player']==selected_player) & (df['Position Group'] == position_group1)]
+    df = df[(df['Player']==selected_player) & (df['Position Group'] == position_group1) & (df['Minutes'] >= 30)]
     # fig, axes = plt.subplots(nrows=1, ncols=5, figsize=(18, 10))  # Adjust size as needed
     # metrics = ['Poaching', 'Finishing', 'Chance Creation', 'Dribbling', 'Defensive Output']
     # colors = ['orange', 'green', 'blue', 'cyan', 'red']
