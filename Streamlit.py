@@ -97,7 +97,13 @@ if mode == 'Player Overview':
 
 
     position_group1 = st.selectbox("Select Position Group", options=pos_list)
-    df = df[df['Position Group'] == position_group1]
+    #df = df[df['Position Group'] == position_group1]
+    if position_group1 in ['AMs', 'Ws']: 
+        df = df[(df['Position Group'] == 'AMs') | (df['Position Group'] == 'Ws')]
+        
+        #df = df.drop_duplicates(subset=['Player', 'Season'])
+
+    else: df = df[df['Position Group'] == position_group1]
 
 
     # for pos in pos_list:
@@ -122,7 +128,8 @@ if mode == 'Player Overview':
         #player_options = df[df['Competition'] == st.session_state.league1]['Player'].unique()
         name1 = st.selectbox(
             'Select Player',
-            df[(df['Position Group'] == position_group1) & (df['Competition'] == league1)]['Player'].unique(),
+            #df[(df['Position Group'] == position_group1) & (df['Competition'] == league1)]['Player'].unique(),
+            df[(df['Competition'] == league1)]['Player'].unique(),
             #player_options
             
         )
@@ -132,7 +139,8 @@ if mode == 'Player Overview':
         #season_options = sorted(df[(df['Competition'] == st.session_state.league1) & (df['Player'] == st.session_state.name1)]['Season'].unique(), reverse=True)
         season1 = st.selectbox(
             'Select Season',
-            sorted(df[(df['Competition'] == league1) & (df['Position Group'] == position_group1) & (df['Player'] == name1)]['Season'].unique(), reverse=True),
+            #sorted(df[(df['Competition'] == league1) & (df['Position Group'] == position_group1) & (df['Player'] == name1)]['Season'].unique(), reverse=True),
+            sorted(df[(df['Competition'] == league1)  & (df['Player'] == name1)]['Season'].unique(), reverse=True),
             #season_options
         )
 
@@ -160,8 +168,12 @@ if mode == 'Player Overview':
         if compare == 'Yes':
             col1, col2, col3 = st.columns(3)
             with col1: league2 = st.selectbox("Select other League", options=['NWSL', 'Olympics', 'NCAA Women', 'Mexico', 'Brazil','England', 'Spain', 'Germany', 'Sweden', 'France', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'USL', 'MLS Next Pro','USL League One' ])
-            with col2: name2 = st.selectbox("Select other Player", options=df[(df['Position Group'] == position_group1) & (df['Competition'] == league2)]['Player'].unique())
-            with col3: season2 = st.selectbox("Select other season", options=sorted(df[(df['Competition'] == league2) & (df['Position Group'] == position_group1) & (df['Player'] == name2)]['Season'].unique(), reverse=True))
+            with col2: 
+                #name2 = st.selectbox("Select other Player", options=df[(df['Position Group'] == position_group1) & (df['Competition'] == league2)]['Player'].unique())
+                name2 = st.selectbox("Select other Player", options=df[(df['Competition'] == league2)]['Player'].unique())
+            with col3: 
+                #season2 = st.selectbox("Select other season", options=sorted(df[(df['Competition'] == league2) & (df['Position Group'] == position_group1) & (df['Player'] == name2)]['Season'].unique(), reverse=True))
+                season2 = st.selectbox("Select other season", options=sorted(df[(df['Competition'] == league2)  & (df['Player'] == name2)]['Season'].unique(), reverse=True))
 
         ws_leagues = ['NCAA Women', 'France', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'USL League One' ]
 
@@ -1019,8 +1031,9 @@ if  mode == 'Multi Player Dot Graph':
 
     position_group1 = st.selectbox("Select Position Group", options=pos_list)
     if position_group1 in ['AMs', 'Ws']: 
-        df = df[(df['Position Group'] == 'AMs') | (df[df['Position Group'] == 'AMs'])]
-        df = df.drop_duplicates(subset=['Name', 'Season'])
+        df = df[(df['Position Group'] == 'AMs') | (df['Position Group'] == 'Ws')]
+        df = df.sort_values(by = ['Season','Minutes'], ascending=[False,False])
+        df = df.drop_duplicates(subset=['Player', 'Season'])
     else: df = df[df['Position Group'] == position_group1]
 
     # st.session_state['league2'] = ''
@@ -1075,14 +1088,16 @@ if  mode == 'Multi Player Dot Graph':
     with col2:
         name1 = st.selectbox(
             'Select Player #1',
-            df[(df['Position Group'] == position_group1) & (df['Competition'] == league1)]['Player'].unique()
+            #df[(df['Position Group'] == position_group1) & (df['Competition'] == league1)]['Player'].unique()
+            df[(df['Competition'] == league1)]['Player'].unique()
         )
 
     # Place the third selectbox in the third column
     with col3:
         season1 = st.selectbox(
             'Select Season #1',
-            sorted(df[(df['Competition'] == league1) & (df['Position Group'] == position_group1) & (df['Player'] == name1)]['Season'].unique(), reverse=True)
+            #sorted(df[(df['Competition'] == league1) & (df['Position Group'] == position_group1) & (df['Player'] == name1)]['Season'].unique(), reverse=True)
+            sorted(df[(df['Competition'] == league1) & (df['Player'] == name1)]['Season'].unique(), reverse=True)
         )
 
 
@@ -1097,14 +1112,16 @@ if  mode == 'Multi Player Dot Graph':
     with col2:
         name2 = st.selectbox(
             'Select Player #2',
-            df[(df['Position Group'] == position_group1) & (df['Competition'] == league2)]['Player'].unique()
+            #df[(df['Position Group'] == position_group1) & (df['Competition'] == league2)]['Player'].unique()
+            df[(df['Competition'] == league2)]['Player'].unique()
         )
 
     # Place the third selectbox in the third column
     with col3:
         season2 = st.selectbox(
             'Select Season #2',
-            sorted(df[(df['Competition'] == league2) & (df['Position Group'] == position_group1) & (df['Player'] == name2)]['Season'].unique(), reverse=True)
+            #sorted(df[(df['Competition'] == league2) & (df['Position Group'] == position_group1) & (df['Player'] == name2)]['Season'].unique(), reverse=True)
+            sorted(df[(df['Competition'] == league2) & (df['Player'] == name2)]['Season'].unique(), reverse=True)
         )
 
     col1, col2, col3 = st.columns(3)
@@ -1118,14 +1135,16 @@ if  mode == 'Multi Player Dot Graph':
     with col2:
         name3 = st.selectbox(
             'Select Player #3',
-            df[(df['Position Group'] == position_group1) & (df['Competition'] == league3)]['Player'].unique()
+            #df[(df['Position Group'] == position_group1) & (df['Competition'] == league3)]['Player'].unique()
+            df[(df['Competition'] == league3)]['Player'].unique()
         )
 
     # Place the third selectbox in the third column
     with col3:
         season3 = st.selectbox(
             'Select Season #3',
-            sorted(df[(df['Competition'] == league3) & (df['Position Group'] == position_group1) & (df['Player'] == name3)]['Season'].unique(), reverse=True)
+            #sorted(df[(df['Competition'] == league3) & (df['Position Group'] == position_group1) & (df['Player'] == name3)]['Season'].unique(), reverse=True)
+            sorted(df[(df['Competition'] == league3) & (df['Player'] == name3)]['Season'].unique(), reverse=True)
         )
     
     
@@ -1140,14 +1159,16 @@ if  mode == 'Multi Player Dot Graph':
     with col2:
         name4 = st.selectbox(
             'Select Player #4',
-            df[(df['Position Group'] == position_group1) & (df['Competition'] == league4)]['Player'].unique()
+            #df[(df['Position Group'] == position_group1) & (df['Competition'] == league4)]['Player'].unique()
+            df[(df['Competition'] == league4)]['Player'].unique()
         )
 
     # Place the third selectbox in the third column
     with col3:
         season4 = st.selectbox(
             'Select Season #4',
-            sorted(df[(df['Competition'] == league4) & (df['Position Group'] == position_group1) & (df['Player'] == name4)]['Season'].unique(), reverse=True)
+            #sorted(df[(df['Competition'] == league4) & (df['Position Group'] == position_group1) & (df['Player'] == name4)]['Season'].unique(), reverse=True)
+            sorted(df[(df['Competition'] == league4) & (df['Player'] == name4)]['Season'].unique(), reverse=True)
         )
 
     # data = {
@@ -1221,7 +1242,7 @@ if  mode == 'Multi Player Dot Graph':
 
             #x = df.loc[j, metric]
             x = row[metric]
-            print(player, season, metric, x)
+            #print(player, season, metric, x)
             ax.scatter(x, i+1, s = 950, color=colors[j], label=unique_label if i == 0 else "", zorder = 3)
 
 
