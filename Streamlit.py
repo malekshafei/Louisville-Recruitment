@@ -43,6 +43,8 @@ st.set_page_config(
 )
 df.fillna(0, inplace=True)
 
+
+
 regular_font_path = '/Users/malekshafei/Downloads/Montserrat/static/Montserrat-Regular.ttf'
 bold_font_path = '/Users/malekshafei/Downloads/Montserrat/static/Montserrat-Bold.ttf'
 
@@ -1173,7 +1175,7 @@ if  mode == 'Multi Player Dot Graph':
 
     if position_group1 == 'CBs': metrics = ['Ball Retention', 'Progressive Passing', 'Heading', 'Defensive Output', 'Tackle Accuracy']
     if position_group1 == 'WBs': metrics = ['Ball Retention', 'Chance Creation', 'Receiving Forward', 'Defensive Output', 'Tackle Accuracy']
-    if position_group1 == 'CMs': metrics = ['Heading','Chance Creation', 'Receiving Forward','Pressing','Defensive Output', 'Tackle Accuracy']
+    if position_group1 == 'CMs': metrics = ['Heading','Defensive Output', 'Tackle Accuracy','Pressing','Chance Creation','Progression' ]
     if position_group1 in ['Ws', 'AMs']: metrics = ['Defensive Output', 'Finishing', 'Poaching', 'Dribbling', 'Chance Creation']
     if position_group1 == 'STs': metrics = ['Chance Creation', 'Heading','Defensive Output', 'Finishing', 'Poaching']
 
@@ -1419,9 +1421,10 @@ if mode == 'Player Match by Match Performance':
 
     if position_group1 == 'CBs': metrics = ['Tackle Accuracy', 'Defensive Output', 'Heading','Ball Retention', 'Progressive Passing']
     elif position_group1 == 'WBs': metrics = ['Receiving Forward', 'Chance Creation', 'Ball Retention', 'Tackle Accuracy', 'Defensive Output']
-    elif position_group1 == 'CMs': metrics = ['Box Threat', 'Chance Creation', 'Tackle Accuracy', 'Defensive Output','Pressing']
+    elif position_group1 == 'CMs':metrics = ['Defensive Output', 'Tackle Accuracy','Pressing','Chance Creation','Progression' ]#metrics = ['Box Threat', 'Chance Creation', 'Tackle Accuracy', 'Defensive Output','Pressing']
     else: metrics = ['Poaching', 'Finishing', 'Chance Creation', 'Dribbling', 'Defensive Output']
 
+    # print(metrics)
 
     cmap = cm.get_cmap('RdYlGn')
     norm = mcolors.Normalize(0, 100)  # Normalize from 0 to 100
@@ -1490,7 +1493,7 @@ if mode == 'Player Match by Match Performance':
         # Plot metrics
         for j, metric in enumerate(metrics):
             axes[i, j+4].barh(row['match_date'], row[metric], color=cmap(norm(row[metric])), edgecolor='none', height = 0.05, linewidth=0)
-
+            #print(row[metric])
             axes[i, j+4].set_xlim(0, 100)
             axes[i, j+4].invert_yaxis()
             #axes[i, j+4].set_yticks([])
