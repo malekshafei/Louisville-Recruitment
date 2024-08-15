@@ -100,6 +100,8 @@ if mode == 'Player Overview':
     #df = df[df['Position Group'] == position_group1]
     if position_group1 in ['AMs', 'Ws']: 
         df = df[(df['Position Group'] == 'AMs') | (df['Position Group'] == 'Ws')]
+        df = df.sort_values(by = ['Season','Minutes'], ascending=[False,False])
+        df = df.drop_duplicates(subset=['Player', 'Season'])
         
         #df = df.drop_duplicates(subset=['Player', 'Season'])
 
