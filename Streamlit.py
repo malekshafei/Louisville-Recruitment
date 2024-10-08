@@ -1608,7 +1608,7 @@ def normalize(series):
         return pd.Series(1, index=series.index)  # All values are the same
     return (series - min_val) / (max_val - min_val)
 
-def cosine_similarity(a, b):
+def cosine_simmilarity(a, b):
     a = np.array(a).reshape(1, -1)
     b = np.array(b).reshape(1, -1)
     return np.dot(a, b.T) / (np.linalg.norm(a) * np.linalg.norm(b))
@@ -1667,7 +1667,7 @@ if mode == 'Player Overview':
             values1_norm = normalize(pd.Series(values1))
             values2_norm = normalize(pd.Series(values2))
             
-            return cosine_similarity(values1_norm, values2_norm)[0][0]
+            return cosine_simmilarity(values1_norm, values2_norm)[0][0]
         
         def get_most_similar_players(player_name, n=10):
             player = AllPlayers[AllPlayers['Player'] == player_name].iloc[0]
@@ -1699,10 +1699,15 @@ if mode == 'Player Overview':
             st.write(f"{i}. {row['Player']} (Similarity: {similarity_percentage}%)  \n"
                     f"({row['Team']} - {row['Age']} - {row['Detailed Position']} - {int(row['Minutes'])} mins)")
             
-        player = AllPlayers[AllPlayers['Player'] == name1].iloc[0]
+        player = AllPlayers[AllPlayers['Player'] == name1].iloc[0] 
 
         # Display the features used for comparison
         #st.write(f"Features used for comparison: {', '.join(player['columns_to_compare'])}")
+
+import sys
+st.write(f"Python version: {sys.version}")
+st.write(f"Pandas version: {pd.__version__}")
+st.write(f"Numpy version: {np.__version__}")
 
 
         
