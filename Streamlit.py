@@ -1602,10 +1602,11 @@ def get_columns_to_compare(row):
     return columns
 
 def normalize(series):
+    series = pd.to_numeric(series, errors='coerce')  # Convert to numeric, forcing non-numeric values to NaN
     min_val = series.min()
     max_val = series.max()
-    if min_val == max_val:
-        return pd.Series(1, index=series.index)  # All values are the same
+    if pd.isna(min_val) or pd.isna(max_val) or min_val == max_val:
+        return pd.Series(1, index=series.index)  # All values are the same or all NaN
     return (series - min_val) / (max_val - min_val)
 
 def cosine_sim(a, b):
@@ -1659,21 +1660,41 @@ if mode == 'Player Overview':
         AllPlayers['columns_to_compare'] = AllPlayers.apply(get_columns_to_compare, axis=1)
 
         def calculate_similarity(player1, player2):
-            columns = set(player1['columns_to_compare']) & set(player2['columns_to_compare'])
-            st.write(f"Comparing columns: {columns}")
+            columns = list(set(player1['columns_to_compare']) & set(player2['columns_to_compare']))
             if not columns:
                 return 0
-            values1 = player1[columns].values
-            values2 = player2[columns].values
-            values1_norm = normalize(pd.Series(values1))
-            values2_norm = normalize(pd.Series(values2))
+            
+            values1 = player1[columns].astype(float)
+            values2 = player2[columns].astype(float)
+            
+            # Remove columns where either player has NaN
+            valid_columns = values1.notna() & values2.notna()
+            values1 = values1[valid_columns]
+            values2 = values2[valid_columns]
+            
+            if values1.empty or values2.empty:
+                return 0  # No valid columns for comparison
+            
+            values1_norm = normalize(values1)
+            values2_norm = normalize(values2)
             
             return cosine_sim(values1_norm, values2_norm)[0][0]
 
         
         
         def get_most_similar_players(player_name, n=10):
-            player = AllPlayers[AllPlayers['Player'] == player_name].iloc[0]
+            player_rows = AllPlayers[AllPlayers['Player'] == player_name]
+            if player_rows.empty:
+                st.error(f"Player {player_name} not found in the dataset.")
+                return pd.DataFrame()
+            
+            player = player_rows.iloc[0]
+            
+            # Check for NAs in the player's data
+            na_columns = player[player['columns_to_compare']].isna().sum()
+            if na_columns > 0:
+                st.warning(f"Player {player_name} has {na_columns} NA values in their data.")
+            
             similarities = AllPlayers.apply(lambda x: calculate_similarity(player, x), axis=1)
             similar_indices = similarities.sort_values(ascending=False).index[1:n+1]  # Exclude the player itself
             similar_players = AllPlayers.loc[similar_indices]
