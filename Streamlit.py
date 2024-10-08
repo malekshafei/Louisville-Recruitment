@@ -43,7 +43,7 @@ st.set_page_config(
 )
 df.fillna(0, inplace=True)
 
-
+mins = 0
 
 regular_font_path = '/Users/malekshafei/Downloads/Montserrat/static/Montserrat-Regular.ttf'
 bold_font_path = '/Users/malekshafei/Downloads/Montserrat/static/Montserrat-Bold.ttf'
@@ -1608,7 +1608,7 @@ def normalize(series):
         return pd.Series(1, index=series.index)  # All values are the same
     return (series - min_val) / (max_val - min_val)
 
-def cosine_simmilarity(a, b):
+def cosine_sim(a, b):
     a = np.array(a).reshape(1, -1)
     b = np.array(b).reshape(1, -1)
     return np.dot(a, b.T) / (np.linalg.norm(a) * np.linalg.norm(b))
@@ -1617,7 +1617,7 @@ def cosine_simmilarity(a, b):
 
 
 if mode == 'Player Overview':
-
+    med_mins = 0
     col1, col2 = st.columns(2)
     with col1:
         BestPlayers = df[(df['Position Group'] == position_group1) & (df['Competition'] == league1)]
@@ -1643,7 +1643,7 @@ if mode == 'Player Overview':
     with col2:
         #print('hiii')
         # Assuming you have position_group2 and league2 defined similarly to col1
-        AllPlayers = df[(df['Position Group'] == position_group1) & (df['Competition'] == league1)]
+        AllPlayers = df[(df['Position Group'] == position_group1) & (df['Competition'] == league1) & (df['Minutes'] > med_mins)]
         #print(len(AllPlayers))
 
         # Filter for the most recent season
@@ -1667,7 +1667,7 @@ if mode == 'Player Overview':
             values1_norm = normalize(pd.Series(values1))
             values2_norm = normalize(pd.Series(values2))
             
-            return cosine_simmilarity(values1_norm, values2_norm)[0][0]
+            return cosine_sim(values1_norm, values2_norm)[0][0]
         
         def get_most_similar_players(player_name, n=10):
             player = AllPlayers[AllPlayers['Player'] == player_name].iloc[0]
@@ -1704,10 +1704,10 @@ if mode == 'Player Overview':
         # Display the features used for comparison
         #st.write(f"Features used for comparison: {', '.join(player['columns_to_compare'])}")
 
-import sys
-st.write(f"Python version: {sys.version}")
-st.write(f"Pandas version: {pd.__version__}")
-st.write(f"Numpy version: {np.__version__}")
+# import sys
+# st.write(f"Python version: {sys.version}")
+# st.write(f"Pandas version: {pd.__version__}")
+# st.write(f"Numpy version: {np.__version__}")
 
 
         
