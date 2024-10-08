@@ -107,6 +107,8 @@ if mode == 'Player Overview':
 
     else: df = df[df['Position Group'] == position_group1]
 
+    df = df.drop_duplicates(subset=['Player', 'Season', 'Position Group', 'Competition'])
+
 
     # for pos in pos_list:
     #     new_data = pd.read_excel(file_name, sheet_name=pos)
@@ -751,11 +753,16 @@ if mode == 'Player Overview':
             plt.text(x_list[i], y_list[i], metric_names[i], ha = orient_list[i], fontsize=30, color = 'white')#,fontname='Avenir')
 
 
-
+        df = df.reset_index()
+        #print(name1)
         club = df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0], 'Team']
+        #print(club)
         mins = int(df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0], 'Minutes'])
-        detailed_pos = df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0], 'Detailed Position']
 
+       
+            
+        detailed_pos = df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0], 'Detailed Position']
+        
 
 
         if compare == 'No':
@@ -1644,9 +1651,9 @@ if mode == 'Player Overview':
     with col2:
         #print('hiii')
         # Assuming you have position_group2 and league2 defined similarly to col1
-        player_row = df[(df['Position Group'] == position_group1) & (df['Competition'] == league1) & (df['Player'] == name1)]
+        player_row = df[(df['Season'] == season1) & (df['Position Group'] == position_group1) & (df['Competition'] == league1) & (df['Player'] == name1)]
         AllPlayers = df[(df['Position Group'] == position_group1) & (df['Competition'] == league1) & (df['Minutes'] > med_mins)]
-        AllPlayers = pd.concat([AllPlayers, player_row]).drop_duplicates(subset=['Player', 'Season'])
+        
 
         #print(len(AllPlayers))
 
@@ -1654,6 +1661,7 @@ if mode == 'Player Overview':
         AllPlayers['Season'] = AllPlayers['Season'].astype(str)
         max_season_order = AllPlayers['Season Order'].max()
         AllPlayers = AllPlayers[(AllPlayers['Season Order'] == max_season_order) & (AllPlayers['Season'].str.len() < 8)]
+        AllPlayers = pd.concat([AllPlayers, player_row]).drop_duplicates(subset=['Player', 'Season'])
         max_season = AllPlayers['Season'].values[0]
         # print(len(AllPlayers))
         # print(max_season)
