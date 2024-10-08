@@ -1683,23 +1683,30 @@ if mode == 'Player Overview':
                 'Minutes': similar_players['Minutes']
             })
         
-        similar_players = get_most_similar_players(name1)
+        try:
+            similar_players = get_most_similar_players(name1)
 
-        #player_rows = AllPlayers[(AllPlayers['Player'] == name1) & (AllPlayers['Season'] == season1)]
-        
-        # Select a player (you can make this interactive with st.selectbox)
-        # selected_player = st.selectbox("Select a player:", AllPlayers['Player'])
-        #selected_player_index = player_rows.index[0]
-
-        # Get and display similar players
-        similar_players = get_most_similar_players(name1)
-        
-        for i, (_, row) in enumerate(similar_players.iterrows(), 1):
-            similarity_percentage = round(row['Similarity'] * 100, 2)
-            st.write(f"{i}. {row['Player']} (Similarity: {similarity_percentage}%)  \n"
-                    f"({row['Team']} - {row['Age']} - {row['Detailed Position']} - {int(row['Minutes'])} mins)")
+            #player_rows = AllPlayers[(AllPlayers['Player'] == name1) & (AllPlayers['Season'] == season1)]
             
-        player = AllPlayers[AllPlayers['Player'] == name1].iloc[0] 
+            # Select a player (you can make this interactive with st.selectbox)
+            # selected_player = st.selectbox("Select a player:", AllPlayers['Player'])
+            #selected_player_index = player_rows.index[0]
+
+            # Get and display similar players
+            similar_players = get_most_similar_players(name1)
+            
+            for i, (_, row) in enumerate(similar_players.iterrows(), 1):
+                similarity_percentage = round(row['Similarity'] * 100, 2)
+                st.write(f"{i}. {row['Player']} (Similarity: {similarity_percentage}%)  \n"
+                        f"({row['Team']} - {row['Age']} - {row['Detailed Position']} - {int(row['Minutes'])} mins)")
+                
+            player = AllPlayers[AllPlayers['Player'] == name1].iloc[0] 
+        except Exception as e:
+            st.error(f"An error occurred: {str(e)}")
+            st.error(f"Error type: {type(e).__name__}")
+            st.error(f"Error details: {e.args}")
+            import traceback
+            st.error(f"Traceback: {traceback.format_exc()}")
 
         # Display the features used for comparison
         #st.write(f"Features used for comparison: {', '.join(player['columns_to_compare'])}")
