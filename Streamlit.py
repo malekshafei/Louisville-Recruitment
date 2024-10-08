@@ -1684,7 +1684,6 @@ if mode == 'Player Overview':
             })
         
         try:
-            similar_players = get_most_similar_players(name1)
 
             #player_rows = AllPlayers[(AllPlayers['Player'] == name1) & (AllPlayers['Season'] == season1)]
             
