@@ -88,7 +88,7 @@ if mode == 'Player Overview':
 
     # file_name = 'InternationalWomensData.xlsx'
     # df = pd.read_excel(file_name)
-    df = df[df['Detailed Position'] != 'GK']
+    df = df[df['Detailed Position'] != 'GK'].sort_values(by = ['Season Order', 'Minutes'], ascending=[False, False])
 
     
     #df['Position Group'] = df['pos_group']
@@ -122,7 +122,7 @@ if mode == 'Player Overview':
     with col1:
         league1 = st.selectbox(
             'Select League',
-            ['NWSL', 'Olympics','NCAA Women','Mexico', 'Brazil','England', 'Spain', 'Germany', 'Sweden', 'France', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'USL', 'MLS Next Pro', 'USL League One' ]
+            ['NWSL', 'Olympics','NCAA Women','Mexico', 'Brazil','England', 'Spain', 'Germany', 'Sweden', 'France', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'CONCACAF W Champions League','USL', 'MLS Next Pro', 'USL League One' ]
         )
 
     # Place the second selectbox in the second column
@@ -169,7 +169,7 @@ if mode == 'Player Overview':
 
         if compare == 'Yes':
             col1, col2, col3 = st.columns(3)
-            with col1: league2 = st.selectbox("Select other League", options=['NWSL', 'Olympics', 'NCAA Women', 'Mexico', 'Brazil','England', 'Spain', 'Germany', 'Sweden', 'France', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'USL', 'MLS Next Pro','USL League One' ])
+            with col1: league2 = st.selectbox("Select other League", options=['NWSL', 'Olympics', 'NCAA Women', 'Mexico', 'Brazil','England', 'Spain', 'Germany', 'Sweden', 'France', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'CONCACAF W Champions League','USL', 'MLS Next Pro','USL League One' ])
             with col2: 
                 #name2 = st.selectbox("Select other Player", options=df[(df['Position Group'] == position_group1) & (df['Competition'] == league2)]['Player'].unique())
                 name2 = st.selectbox("Select other Player", options=df[(df['Competition'] == league2)]['Player'].unique())
@@ -177,7 +177,7 @@ if mode == 'Player Overview':
                 #season2 = st.selectbox("Select other season", options=sorted(df[(df['Competition'] == league2) & (df['Position Group'] == position_group1) & (df['Player'] == name2)]['Season'].unique(), reverse=True))
                 season2 = st.selectbox("Select other season", options=sorted(df[(df['Competition'] == league2)  & (df['Player'] == name2)]['Season'].unique(), reverse=True))
 
-        ws_leagues = ['NCAA Women', 'France', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'USL League One' ]
+        ws_leagues = ['NCAA Women', 'CONCACAF W Champions League','France', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'USL League One' ]
 
     # st.session_state['position_group1'] = position_group1
     # st.session_state['league1'] = league1
@@ -1083,7 +1083,7 @@ if  mode == 'Multi Player Dot Graph':
     with col1:
         league1 = st.selectbox(
             'Select League #1',
-            ['NWSL',  'Olympics', 'NCAA Women','Mexico', 'Brazil','England', 'Spain', 'Germany', 'Sweden', 'France', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'USL', 'MLS Next Pro', 'USL League One' ]
+            ['NWSL',  'Olympics', 'NCAA Women','Mexico', 'Brazil','England', 'Spain', 'Germany', 'Sweden', 'France', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'CONCACAF W Champions League','USL', 'MLS Next Pro', 'USL League One' ]
         )
 
     # Place the second selectbox in the second column
@@ -1107,7 +1107,7 @@ if  mode == 'Multi Player Dot Graph':
     with col1:
         league2 = st.selectbox(
             'Select League #2',
-            ['NWSL',  'Olympics','NCAA Women','Mexico', 'Brazil','England', 'Spain', 'Germany', 'Sweden', 'France', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'USL', 'MLS Next Pro', 'USL League One' ]
+            ['NWSL',  'Olympics','NCAA Women','Mexico', 'Brazil','England', 'Spain', 'Germany', 'Sweden', 'France', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'CONCACAF W Champions League','USL', 'MLS Next Pro', 'USL League One' ]
         )
 
     # Place the second selectbox in the second column
@@ -1130,7 +1130,7 @@ if  mode == 'Multi Player Dot Graph':
     with col1:
         league3 = st.selectbox(
             'Select League #3',
-            ['NWSL',  'Olympics','NCAA Women','Mexico', 'Brazil','England', 'Spain', 'Germany', 'Sweden', 'France', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'USL', 'MLS Next Pro', 'USL League One' ]
+            ['NWSL',  'Olympics','NCAA Women','Mexico', 'Brazil','England', 'Spain', 'Germany', 'Sweden', 'France', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'CONCACAF W Champions League','USL', 'MLS Next Pro', 'USL League One' ]
         )
 
     # Place the second selectbox in the second column
@@ -1154,7 +1154,7 @@ if  mode == 'Multi Player Dot Graph':
     with col1:
         league4 = st.selectbox(
             'Select League #4',
-            ['NWSL', 'Olympics', 'NCAA Women','Mexico', 'Brazil','England', 'Spain', 'Germany', 'Sweden', 'France', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'USL', 'MLS Next Pro', 'USL League One' ]
+            ['NWSL', 'Olympics', 'NCAA Women','Mexico', 'Brazil','England', 'Spain', 'Germany', 'Sweden', 'France', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'CONCACAF W Champions League','USL', 'MLS Next Pro', 'USL League One' ]
         )
 
     # Place the second selectbox in the second column
@@ -1579,6 +1579,146 @@ if mode == 'Player Match by Match Performance':
 
         
     st.image(buf, use_column_width=True)
+
+def get_columns_to_compare(row):
+    if row['pos_group'] == 4:
+        columns = ['Tackle Accuracy', 'Defensive Output', 'Heading', 'Progressive Passing', 'Ball Retention']
+        if pd.notna(row['Defending High']):
+            columns.append('Defending High')
+    elif row['pos_group'] == 3:
+        columns = ['Tackle Accuracy', 'Defensive Output', 'Ball Retention', 'Crossing', 'Chance Creation', 'Progression', 'Receiving Forward', 'Heading', 'Carrying']
+        if pd.notna(row['Defending High']):
+            columns.extend(['Defending High', 'Pressing'])
+    elif row['pos_group'] == 6:
+        columns = ['Tackle Accuracy', 'Defensive Output', 'Ball Retention', 'Chance Creation', 'Progression', 'Receiving Forward', 'Heading', 'Carrying']
+        if pd.notna(row['Defending High']):
+            columns.extend(['Defending High', 'Pressing'])
+    elif row['pos_group'] in [7, 10]:
+        columns = ['Defensive Output', 'Ball Retention', 'Chance Creation', 'Progression', 'Dribbling', 'Poaching', 'Finishing']
+    elif row['pos_group'] == 9:
+        columns = ['Defensive Output', 'Ball Retention', 'Chance Creation', 'Dribbling', 'Poaching', 'Finishing', 'Heading']
+    else:
+        columns = ['Ovr']
+    return columns
+
+def normalize(series):
+    min_val = series.min()
+    max_val = series.max()
+    if min_val == max_val:
+        return pd.Series(1, index=series.index)  # All values are the same
+    return (series - min_val) / (max_val - min_val)
+
+def cosine_similarity(a, b):
+    a = np.array(a).reshape(1, -1)
+    b = np.array(b).reshape(1, -1)
+    return np.dot(a, b.T) / (np.linalg.norm(a) * np.linalg.norm(b))
+
+
+
+
+if mode == 'Player Overview':
+
+    col1, col2 = st.columns(2)
+    with col1:
+        BestPlayers = df[(df['Position Group'] == position_group1) & (df['Competition'] == league1)]
+
+        BestPlayers['Season'] = BestPlayers['Season'].astype(str)
+        #filtered_seasons = BestPlayers['Season'][BestPlayers['Season'].str.len() < 8]
+        max_season_order = BestPlayers['Season Order'].max()
+        BestPlayers = BestPlayers[(BestPlayers['Season Order'] == max_season_order) & (BestPlayers['Season'].str.len() < 8)]
+        max_season = BestPlayers['Season'].values[0]
+
+
+
+        st.write(f"Best {position_group1} in {max_season} {league1}")
+                
+        med_mins = np.median(BestPlayers['Minutes'])
+        BestPlayers = BestPlayers[BestPlayers['Minutes'] > med_mins].sort_values(by = 'Ovr', ascending=False)[:10]
+        i = 1
+        for _, row in BestPlayers.iterrows():
+            st.write(f"{i}. {row['Player']}  \n({row['Team']} - {row['Age']} - {row['Detailed Position']} - {int(row['Minutes'])} mins)")
+            i += 1
+    
+    
+    with col2:
+        #print('hiii')
+        # Assuming you have position_group2 and league2 defined similarly to col1
+        AllPlayers = df[(df['Position Group'] == position_group1) & (df['Competition'] == league1)]
+        #print(len(AllPlayers))
+
+        # Filter for the most recent season
+        AllPlayers['Season'] = AllPlayers['Season'].astype(str)
+        max_season_order = AllPlayers['Season Order'].max()
+        AllPlayers = AllPlayers[(AllPlayers['Season Order'] == max_season_order) & (AllPlayers['Season'].str.len() < 8)]
+        max_season = AllPlayers['Season'].values[0]
+        # print(len(AllPlayers))
+        # print(max_season)
+
+        st.write(f"Most Similar {position_group1} to {name1} in {max_season} {league1}")
+
+        AllPlayers['columns_to_compare'] = AllPlayers.apply(get_columns_to_compare, axis=1)
+
+        def calculate_similarity(player1, player2):
+            columns = set(player1['columns_to_compare']) & set(player2['columns_to_compare'])
+            if not columns:
+                return 0
+            values1 = player1[columns].values
+            values2 = player2[columns].values
+            values1_norm = normalize(pd.Series(values1))
+            values2_norm = normalize(pd.Series(values2))
+            
+            return cosine_similarity(values1_norm, values2_norm)[0][0]
+        
+        def get_most_similar_players(player_name, n=10):
+            player = AllPlayers[AllPlayers['Player'] == player_name].iloc[0]
+            similarities = AllPlayers.apply(lambda x: calculate_similarity(player, x), axis=1)
+            similar_indices = similarities.sort_values(ascending=False).index[1:n+1]  # Exclude the player itself
+            similar_players = AllPlayers.loc[similar_indices]
+            return pd.DataFrame({
+                'Player': similar_players['Player'],
+                'Similarity': similarities[similar_indices],
+                'Team': similar_players['Team'],
+                'Age': similar_players['Age'],
+                'Detailed Position': similar_players['Detailed Position'],
+                'Minutes': similar_players['Minutes']
+            })
+        
+        similar_players = get_most_similar_players(name1)
+
+        #player_rows = AllPlayers[(AllPlayers['Player'] == name1) & (AllPlayers['Season'] == season1)]
+        
+        # Select a player (you can make this interactive with st.selectbox)
+        # selected_player = st.selectbox("Select a player:", AllPlayers['Player'])
+        #selected_player_index = player_rows.index[0]
+
+        # Get and display similar players
+        similar_players = get_most_similar_players(name1)
+        
+        for i, (_, row) in enumerate(similar_players.iterrows(), 1):
+            similarity_percentage = round(row['Similarity'] * 100, 2)
+            st.write(f"{i}. {row['Player']} (Similarity: {similarity_percentage}%)  \n"
+                    f"({row['Team']} - {row['Age']} - {row['Detailed Position']} - {int(row['Minutes'])} mins)")
+            
+        player = AllPlayers[AllPlayers['Player'] == name1].iloc[0]
+
+        # Display the features used for comparison
+        #st.write(f"Features used for comparison: {', '.join(player['columns_to_compare'])}")
+
+
+        
+
+
+
+
+        
+        
+
+    
+
+        
+
+        
+
 
 
 if mode == 'Team Style':
