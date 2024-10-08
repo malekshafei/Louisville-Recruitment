@@ -1663,20 +1663,10 @@ if mode == 'Player Overview':
             columns = list(set(player1['columns_to_compare']) & set(player2['columns_to_compare']))
             if not columns:
                 return 0
-            
-            values1 = player1[columns].astype(float)
-            values2 = player2[columns].astype(float)
-            
-            # Remove columns where either player has NaN
-            valid_columns = values1.notna() & values2.notna()
-            values1 = values1[valid_columns]
-            values2 = values2[valid_columns]
-            
-            if values1.empty or values2.empty:
-                return 0  # No valid columns for comparison
-            
-            values1_norm = normalize(values1)
-            values2_norm = normalize(values2)
+            values1 = player1[columns].values
+            values2 = player2[columns].values
+            values1_norm = normalize(pd.Series(values1))
+            values2_norm = normalize(pd.Series(values2))
             
             return cosine_sim(values1_norm, values2_norm)[0][0]
 
