@@ -1668,95 +1668,47 @@ if mode == 'Player Overview':
         #     values2_norm = normalize(pd.Series(values2))
             
         #     return cosine_sim(values1_norm, values2_norm)[0][0]
+
         def calculate_similarity(player1, player2):
+            columns = set(player1['columns_to_compare']) & set(player2['columns_to_compare'])
+            if not columns:
+                return 0
             try:
-                columns = list(set(player1['columns_to_compare']) & set(player2['columns_to_compare']))
-                if not columns:
-                    return 0
-                
-                # Debug information
-                st.write(f"Columns to compare: {columns}")
-                st.write(f"Player1 columns: {player1.columns.tolist()}")
-                st.write(f"Player2 columns: {player2.columns.tolist()}")
-                
-                # Check if all columns exist in both players
-                missing_cols1 = [col for col in columns if col not in player1.columns]
-                missing_cols2 = [col for col in columns if col not in player2.columns]
-                
-                if missing_cols1 or missing_cols2:
-                    st.write(f"Missing columns in player1: {missing_cols1}")
-                    st.write(f"Missing columns in player2: {missing_cols2}")
-                    return 0
-                
-                values1 = player1[columns].values
-                values2 = player2[columns].values
-                
-                # Debug information
-                st.write(f"Values1 shape: {values1.shape}")
-                st.write(f"Values2 shape: {values2.shape}")
-                
+                values1 = player1[list(columns)].values
+                values2 = player2[list(columns)].values
                 values1_norm = normalize(pd.Series(values1))
                 values2_norm = normalize(pd.Series(values2))
                 
                 return cosine_sim(values1_norm, values2_norm)[0][0]
             except Exception as e:
-                st.error(f"Error in calculate_similarity: {str(e)}")
+                st.error(f"Error calculating similarity: {e}")
                 return 0
         
-        # def get_most_similar_players(player_name, n=10):
-        #     player = AllPlayers[AllPlayers['Player'] == player_name].iloc[0]
-        #     similarities = AllPlayers.apply(lambda x: calculate_similarity(player, x), axis=1)
-        #     similar_indices = similarities.sort_values(ascending=False).index[1:n+1]  # Exclude the player itself
-        #     similar_players = AllPlayers.loc[similar_indices]
-        #     return pd.DataFrame({
-        #         'Player': similar_players['Player'],
-        #         'Similarity': similarities[similar_indices],
-        #         'Team': similar_players['Team'],
-        #         'Age': similar_players['Age'],
-        #         'Detailed Position': similar_players['Detailed Position'],
-        #         'Minutes': similar_players['Minutes']
-        #     })
         def get_most_similar_players(player_name, n=10):
-            try:
-                player_rows = AllPlayers[AllPlayers['Player'] == player_name]
-                if player_rows.empty:
-                    st.error(f"Player {player_name} not found in the dataset.")
-                    return pd.DataFrame()
-                
-                player = player_rows.iloc[0]
-                
-                # Debug information
-                st.write(f"Player columns: {player.index.tolist()}")
-                st.write(f"Player 'columns_to_compare': {player['columns_to_compare']}")
-                
-                similarities = AllPlayers.apply(lambda x: calculate_similarity(player, x), axis=1)
-                similar_indices = similarities.sort_values(ascending=False).index[1:n+1]  # Exclude the player itself
-                similar_players = AllPlayers.loc[similar_indices]
-                return pd.DataFrame({
-                    'Player': similar_players['Player'],
-                    'Similarity': similarities[similar_indices],
-                    'Team': similar_players['Team'],
-                    'Age': similar_players['Age'],
-                    'Detailed Position': similar_players['Detailed Position'],
-                    'Minutes': similar_players['Minutes']
-                })
-            except Exception as e:
-                st.error(f"Error in get_most_similar_players: {str(e)}")
-                return pd.DataFrame()
+            player = AllPlayers[AllPlayers['Player'] == player_name].iloc[0]
+            similarities = AllPlayers.apply(lambda x: calculate_similarity(player, x), axis=1)
+            similar_indices = similarities.sort_values(ascending=False).index[1:n+1]  # Exclude the player itself
+            similar_players = AllPlayers.loc[similar_indices]
+            return pd.DataFrame({
+                'Player': similar_players['Player'],
+                'Similarity': similarities[similar_indices],
+                'Team': similar_players['Team'],
+                'Age': similar_players['Age'],
+                'Detailed Position': similar_players['Detailed Position'],
+                'Minutes': similar_players['Minutes']
+            })
+        
 
-        try:
-            similar_players = get_most_similar_players(name1)
+       
+        similar_players = get_most_similar_players(name1)
+        
+        for i, (_, row) in enumerate(similar_players.iterrows(), 1):
+            similarity_percentage = round(row['Similarity'] * 100, 2)
+            st.write(f"{i}. {row['Player']} (Similarity: {similarity_percentage}%)  \n"
+                    f"({row['Team']} - {row['Age']} - {row['Detailed Position']} - {int(row['Minutes'])} mins)")
             
-            for i, (_, row) in enumerate(similar_players.iterrows(), 1):
-                similarity_percentage = round(row['Similarity'] * 100, 2)
-                st.write(f"{i}. {row['Player']} (Similarity: {similarity_percentage}%)  \n"
-                        f"({row['Team']} - {row['Age']} - {row['Detailed Position']} - {int(row['Minutes'])} mins)")
-                
-            player = AllPlayers[AllPlayers['Player'] == name1].iloc[0] 
-        except Exception as e:
-            st.error(f"An error occurred: {str(e)}")
-            st.error(f"Error type: {type(e).__name__}")
-            st.error(f"Error details: {e.args}")
+        player = AllPlayers[AllPlayers['Player'] == name1].iloc[0] 
+    
 
 
 
