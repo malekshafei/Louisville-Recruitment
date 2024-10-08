@@ -1658,31 +1658,19 @@ if mode == 'Player Overview':
 
         AllPlayers['columns_to_compare'] = AllPlayers.apply(get_columns_to_compare, axis=1)
 
-        # def calculate_similarity(player1, player2):
-        #     columns = set(player1['columns_to_compare']) & set(player2['columns_to_compare'])
-        #     if not columns:
-        #         return 0
-        #     values1 = player1[columns].values
-        #     values2 = player2[columns].values
-        #     values1_norm = normalize(pd.Series(values1))
-        #     values2_norm = normalize(pd.Series(values2))
-            
-        #     return cosine_sim(values1_norm, values2_norm)[0][0]
-
         def calculate_similarity(player1, player2):
             columns = set(player1['columns_to_compare']) & set(player2['columns_to_compare'])
+            st.write(f"Comparing columns: {columns}")
             if not columns:
                 return 0
-            try:
-                values1 = player1[list(columns)].values
-                values2 = player2[list(columns)].values
-                values1_norm = normalize(pd.Series(values1))
-                values2_norm = normalize(pd.Series(values2))
-                
-                return cosine_sim(values1_norm, values2_norm)[0][0]
-            except Exception as e:
-                st.error(f"Error calculating similarity: {e}")
-                return 0
+            values1 = player1[columns].values
+            values2 = player2[columns].values
+            values1_norm = normalize(pd.Series(values1))
+            values2_norm = normalize(pd.Series(values2))
+            
+            return cosine_sim(values1_norm, values2_norm)[0][0]
+
+        
         
         def get_most_similar_players(player_name, n=10):
             player = AllPlayers[AllPlayers['Player'] == player_name].iloc[0]
