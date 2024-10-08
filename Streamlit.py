@@ -1644,7 +1644,10 @@ if mode == 'Player Overview':
     with col2:
         #print('hiii')
         # Assuming you have position_group2 and league2 defined similarly to col1
+        player_row = df[(df['Position Group'] == position_group1) & (df['Competition'] == league1) & (df['Player'] == name1)]
         AllPlayers = df[(df['Position Group'] == position_group1) & (df['Competition'] == league1) & (df['Minutes'] > med_mins)]
+        AllPlayers = pd.concat([AllPlayers, player_row]).drop_duplicates(subset=['Player', 'Season'])
+
         #print(len(AllPlayers))
 
         # Filter for the most recent season
