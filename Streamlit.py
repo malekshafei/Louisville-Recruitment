@@ -1744,16 +1744,19 @@ if mode == 'Player Overview':
                 st.error(f"Error in get_most_similar_players: {str(e)}")
                 return pd.DataFrame()
 
-       
-        similar_players = get_most_similar_players(name1)
-        
-        for i, (_, row) in enumerate(similar_players.iterrows(), 1):
-            similarity_percentage = round(row['Similarity'] * 100, 2)
-            st.write(f"{i}. {row['Player']} (Similarity: {similarity_percentage}%)  \n"
-                    f"({row['Team']} - {row['Age']} - {row['Detailed Position']} - {int(row['Minutes'])} mins)")
+        try:
+            similar_players = get_most_similar_players(name1)
             
-        player = AllPlayers[AllPlayers['Player'] == name1].iloc[0] 
-    
+            for i, (_, row) in enumerate(similar_players.iterrows(), 1):
+                similarity_percentage = round(row['Similarity'] * 100, 2)
+                st.write(f"{i}. {row['Player']} (Similarity: {similarity_percentage}%)  \n"
+                        f"({row['Team']} - {row['Age']} - {row['Detailed Position']} - {int(row['Minutes'])} mins)")
+                
+            player = AllPlayers[AllPlayers['Player'] == name1].iloc[0] 
+        except Exception as e:
+            st.error(f"An error occurred: {str(e)}")
+            st.error(f"Error type: {type(e).__name__}")
+            st.error(f"Error details: {e.args}")
 
 
 
