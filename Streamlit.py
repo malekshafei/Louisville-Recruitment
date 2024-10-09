@@ -1040,11 +1040,12 @@ if  mode == 'Multi Player Dot Graph':
 
 
     position_group1 = st.selectbox("Select Position Group", options=pos_list)
-    if position_group1 in ['AMs', 'Ws']: 
-        df = df[(df['Position Group'] == 'AMs') | (df['Position Group'] == 'Ws')]
-        df = df.sort_values(by = ['Season','Minutes'], ascending=[False,False])
-        df = df.drop_duplicates(subset=['Player', 'Season'])
-    else: df = df[df['Position Group'] == position_group1]
+    # if position_group1 in ['AMs', 'Ws']: 
+    #     df = df[(df['Position Group'] == 'AMs') | (df['Position Group'] == 'Ws')]
+    #     df = df.sort_values(by = ['Season','Minutes'], ascending=[False,False])
+    #     df = df.drop_duplicates(subset=['Player', 'Season'])
+    # else: df = df[df['Position Group'] == position_group1]
+    df = df[df['Position Group'] == position_group1]
 
     # st.session_state['league2'] = ''
     # st.session_state['name2'] = ''
