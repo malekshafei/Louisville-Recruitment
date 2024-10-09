@@ -98,14 +98,15 @@ if mode == 'Player Overview':
 
     position_group1 = st.selectbox("Select Position Group", options=pos_list)
     #df = df[df['Position Group'] == position_group1]
-    if position_group1 in ['AMs', 'Ws']: 
-        df = df[(df['Position Group'] == 'AMs') | (df['Position Group'] == 'Ws')]
-        df = df.sort_values(by = ['Season','Minutes'], ascending=[False,False])
-        df = df.drop_duplicates(subset=['Player', 'Season'])
+    # if position_group1 in ['AMs', 'Ws']: 
+    #     df = df[(df['Position Group'] == 'AMs') | (df['Position Group'] == 'Ws')]
+    #     df = df.sort_values(by = ['Season','Minutes'], ascending=[False,False])
+    #     df = df.drop_duplicates(subset=['Player', 'Season'])
         
-        #df = df.drop_duplicates(subset=['Player', 'Season'])
+    #     #df = df.drop_duplicates(subset=['Player', 'Season'])
 
-    else: df = df[df['Position Group'] == position_group1]
+    # else: df = df[df['Position Group'] == position_group1]
+    df = df[df['Position Group'] == position_group1]
 
     df = df.drop_duplicates(subset=['Player', 'Season', 'Position Group', 'Competition'])
 
