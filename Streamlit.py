@@ -520,6 +520,7 @@ if mode == 'Player Overview':
             Heading = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'Heading'])
 
             data1 = [Creating, Dribbling, Poaching, Finishing, Heading, DefOutput, Progression]
+            #print(name1, Progression)
             metrics = ['Chance Creation', 'Dribbling Threat', 'Poaching', 'Finishing', 'Heading','Defensive Output','Progression']
             metric_names = ['Chance\nCreation', 'Dribbling Threat', 'Poaching', 'Finishing', 'Heading', 'Defensive Output', 'Progression']
 
