@@ -118,14 +118,14 @@ if mode == 'Player Overview':
 
     radar = True
     compare = "No"
-    # league1 = st.selectbox("Select League", options=['NWSL', 'Mexico', 'Brazil','England', 'England2', 'Spain', 'Germany', 'Sweden', 'France', 'China', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'USL', 'MLS Next Pro', 'USL League One' ])
+    # league1 = st.selectbox("Select League", options=['NWSL', 'Mexico', 'Brazil','England', 'England2', 'Spain', 'Germany', 'Sweden', 'France', 'China', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'USL', 'MLS Next Pro', 'USL League One', 'NCAA Men', 'Canada' ])
     # name1 = st.selectbox("Select Player", options=df[(df['Position Group'] == position_group1) & (df['Competition'] == league1)]['Player'].unique())
     # season1 = st.selectbox("Select Season", options=sorted(df[(df['Competition'] == league1) & (df['Position Group'] == position_group1) & (df['Player'] == name1)]['Season'].unique(), reverse=True))
     col1, col2, col3 = st.columns(3)
     with col1:
         league1 = st.selectbox(
             'Select League',
-            ['USL', 'NWSL', 'Olympics','NCAA Women','Mexico', 'Brazil','England', 'England2', 'Spain', 'Germany', 'Sweden', 'France', 'China', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'U20 World Cup', 'U19Euros', 'CONCACAF W Champions League', 'CAF W Champions League', 'MLS Next Pro', 'USL League One' ]
+            ['USL', 'NWSL', 'Olympics','NCAA Women','Mexico', 'Brazil','England', 'England2', 'Spain', 'Germany', 'Sweden', 'France', 'China', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'U20 World Cup', 'U19Euros', 'CONCACAF W Champions League', 'CAF W Champions League', 'MLS Next Pro', 'USL League One', 'NCAA Men', 'Canada' ]
         )
 
     # Place the second selectbox in the second column
@@ -172,7 +172,7 @@ if mode == 'Player Overview':
 
         if compare == 'Yes':
             col1, col2, col3 = st.columns(3)
-            with col1: league2 = st.selectbox("Select other League", options=['USL','NWSL', 'Olympics', 'NCAA Women', 'Mexico', 'Brazil','England', 'England2', 'Spain', 'Germany', 'Sweden', 'France', 'China', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'U20 World Cup', 'U19Euros', 'CONCACAF W Champions League', 'CAF W Champions League', 'MLS Next Pro','USL League One' ])
+            with col1: league2 = st.selectbox("Select other League", options=['USL','NWSL', 'Olympics', 'NCAA Women', 'Mexico', 'Brazil','England', 'England2', 'Spain', 'Germany', 'Sweden', 'France', 'China', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'U20 World Cup', 'U19Euros', 'CONCACAF W Champions League', 'CAF W Champions League', 'MLS Next Pro','USL League One', 'NCAA Men', 'Canada' ])
             with col2: 
                 #name2 = st.selectbox("Select other Player", options=df[(df['Position Group'] == position_group1) & (df['Competition'] == league2)]['Player'].unique())
                 name2 = st.selectbox("Select other Player", options=df[(df['Competition'] == league2)]['Player'].unique())
@@ -180,7 +180,7 @@ if mode == 'Player Overview':
                 #season2 = st.selectbox("Select other season", options=sorted(df[(df['Competition'] == league2) & (df['Position Group'] == position_group1) & (df['Player'] == name2)]['Season'].unique(), reverse=True))
                 season2 = st.selectbox("Select other season", options=sorted(df[(df['Competition'] == league2)  & (df['Player'] == name2)]['Season'].unique(), reverse=True))
 
-        ws_leagues = ['NCAA Women', 'U20 World Cup', 'U19Euros', 'CONCACAF W Champions League', 'CAF W Champions League','France', 'China', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'USL League One' ]
+        ws_leagues = ['NCAA Women', 'U20 World Cup', 'U19Euros', 'CONCACAF W Champions League', 'CAF W Champions League','France', 'China', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'USL League One', 'NCAA Men', 'Canada' ]
 
     # st.session_state['position_group1'] = position_group1
     # st.session_state['league1'] = league1
@@ -1085,7 +1085,7 @@ if  mode == 'Multi Player Dot Graph':
     
     
 
-    # league1 = st.selectbox("Select League", options=['NWSL', 'Mexico', 'Brazil','England', 'England2', 'Spain', 'Germany', 'Sweden', 'France', 'China', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'USL', 'MLS Next Pro', 'USL League One' ])
+    # league1 = st.selectbox("Select League", options=['NWSL', 'Mexico', 'Brazil','England', 'England2', 'Spain', 'Germany', 'Sweden', 'France', 'China', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'USL', 'MLS Next Pro', 'USL League One', 'NCAA Men', 'Canada' ])
     # name1 = st.selectbox("Select Player", options=df[(df['Position Group'] == position_group1) & (df['Competition'] == league1)]['Player'].unique())
     # season1 = st.selectbox("Select Season", options=sorted(df[(df['Competition'] == league1) & (df['Position Group'] == position_group1) & (df['Player'] == name1)]['Season'].unique(), reverse=True))
 
@@ -1093,7 +1093,7 @@ if  mode == 'Multi Player Dot Graph':
     with col1:
         league1 = st.selectbox(
             'Select League #1',
-            ['USL','NWSL',  'Olympics', 'NCAA Women','Mexico', 'Brazil','England', 'England2', 'Spain', 'Germany', 'Sweden', 'France', 'China', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'U20 World Cup', 'U19Euros', 'CONCACAF W Champions League', 'CAF W Champions League', 'MLS Next Pro', 'USL League One' ]
+            ['USL','NWSL',  'Olympics', 'NCAA Women','Mexico', 'Brazil','England', 'England2', 'Spain', 'Germany', 'Sweden', 'France', 'China', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'U20 World Cup', 'U19Euros', 'CONCACAF W Champions League', 'CAF W Champions League', 'MLS Next Pro', 'USL League One', 'NCAA Men', 'Canada' ]
         )
 
     # Place the second selectbox in the second column
@@ -1117,7 +1117,7 @@ if  mode == 'Multi Player Dot Graph':
     with col1:
         league2 = st.selectbox(
             'Select League #2',
-            ['USL','NWSL',  'Olympics','NCAA Women','Mexico', 'Brazil','England', 'England2', 'Spain', 'Germany', 'Sweden', 'France', 'China', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'U20 World Cup', 'U19Euros', 'CONCACAF W Champions League', 'CAF W Champions League', 'MLS Next Pro', 'USL League One' ]
+            ['USL','NWSL',  'Olympics','NCAA Women','Mexico', 'Brazil','England', 'England2', 'Spain', 'Germany', 'Sweden', 'France', 'China', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'U20 World Cup', 'U19Euros', 'CONCACAF W Champions League', 'CAF W Champions League', 'MLS Next Pro', 'USL League One', 'NCAA Men', 'Canada' ]
         )
 
     # Place the second selectbox in the second column
@@ -1140,7 +1140,7 @@ if  mode == 'Multi Player Dot Graph':
     with col1:
         league3 = st.selectbox(
             'Select League #3',
-            ['USL','NWSL',  'Olympics','NCAA Women','Mexico', 'Brazil','England', 'England2', 'Spain', 'Germany', 'Sweden', 'France', 'China', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'U20 World Cup', 'U19Euros', 'CONCACAF W Champions League', 'CAF W Champions League', 'MLS Next Pro', 'USL League One' ]
+            ['USL','NWSL',  'Olympics','NCAA Women','Mexico', 'Brazil','England', 'England2', 'Spain', 'Germany', 'Sweden', 'France', 'China', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'U20 World Cup', 'U19Euros', 'CONCACAF W Champions League', 'CAF W Champions League', 'MLS Next Pro', 'USL League One', 'NCAA Men', 'Canada' ]
         )
 
     # Place the second selectbox in the second column
@@ -1164,7 +1164,7 @@ if  mode == 'Multi Player Dot Graph':
     with col1:
         league4 = st.selectbox(
             'Select League #4',
-            ['USL','NWSL', 'Olympics', 'NCAA Women','Mexico', 'Brazil','England', 'England2', 'Spain', 'Germany', 'Sweden', 'France', 'China', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'U20 World Cup', 'U19Euros', 'CONCACAF W Champions League', 'CAF W Champions League', 'MLS Next Pro', 'USL League One' ]
+            ['USL','NWSL', 'Olympics', 'NCAA Women','Mexico', 'Brazil','England', 'England2', 'Spain', 'Germany', 'Sweden', 'France', 'China', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'U20 World Cup', 'U19Euros', 'CONCACAF W Champions League', 'CAF W Champions League', 'MLS Next Pro', 'USL League One', 'NCAA Men', 'Canada' ]
         )
 
     # Place the second selectbox in the second column
