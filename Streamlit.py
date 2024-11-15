@@ -1047,6 +1047,7 @@ if  mode == 'Multi Player Dot Graph':
     #     df = df.drop_duplicates(subset=['Player', 'Season'])
     # else: df = df[df['Position Group'] == position_group1]
     df = df[df['Position Group'] == position_group1]
+    df = df.drop_duplicates(subset=['Player', 'Season', 'Position Group', 'Competition'])
 
     # st.session_state['league2'] = ''
     # st.session_state['name2'] = ''
