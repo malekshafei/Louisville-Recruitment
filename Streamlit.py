@@ -72,7 +72,7 @@ html, body, [class*="css"] {{
 """
 
 st.markdown(custom_css, unsafe_allow_html=True)
-pos_list = ['CBs', 'WBs', 'CMs', 'AMs', 'Ws', 'STs']
+pos_list = ['CBs', 'WBs', 'CMs', 'AMs', 'Ws', 'STs', 'GKs']
 
 #st.title(f"Racing Recruitment")
 
@@ -88,7 +88,8 @@ if mode == 'Player Overview':
 
     # file_name = 'InternationalWomensData.xlsx'
     # df = pd.read_excel(file_name)
-    df = df[df['Detailed Position'] != 'GK'].sort_values(by = ['Season Order', 'Minutes'], ascending=[False, False])
+    #df = df[df['Detailed Position'] != 'GK'].sort_values(by = ['Season Order', 'Minutes'], ascending=[False, False])
+    df = df.sort_values(by = ['Season Order', 'Minutes'], ascending=[False, False])
 
     
     #df['Position Group'] = df['pos_group']
@@ -125,7 +126,7 @@ if mode == 'Player Overview':
     with col1:
         league1 = st.selectbox(
             'Select League',
-            ['USL', 'NWSL', 'Olympics','NCAA Women','Mexico', 'Brazil','England', 'England2', 'Spain', 'Germany', 'Sweden', 'France', 'China', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'U20 World Cup', 'U19Euros', 'CONCACAF W Champions League', 'CAF W Champions League', 'MLS Next Pro', 'USL League One', 'NCAA Men', 'Canada' ]
+            ['USL', 'NWSL', 'NCAA Women','Mexico', 'Brazil','France','England', 'England2', 'Spain', 'Germany', 'Sweden', 'China', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'Olympics', 'U20 World Cup', 'U19Euros', 'CONCACAF W Champions League', 'CAF W Champions League', 'MLS Next Pro', 'USL League One', 'NCAA Men', 'Canada' ]
         )
 
     # Place the second selectbox in the second column
@@ -151,8 +152,9 @@ if mode == 'Player Overview':
 
     col1, col2 = st.columns(2)
     with col1:
-
-        if position_group1 == 'CMs': mode1 = st.selectbox("Select Radar Type", options=["Basic", 'Defending', 'Buildup & Chance Creation', 'Box Threat'])
+        
+        if position_group1 == 'GKs': mode1 = st.selectbox("Select Radar Type", options=["Basic"])
+        elif position_group1 == 'CMs': mode1 = st.selectbox("Select Radar Type", options=["Basic", 'Defending', 'Buildup & Chance Creation', 'Box Threat'])
 
         elif position_group1 == 'CBs': mode1 = st.selectbox("Select Radar Type", options=["Basic", 'In Possession', 'Defending'])
         elif position_group1 in ['AMs', 'Ws', 'STs']: mode1 = st.selectbox("Select Radar Type", options=["Basic", 'Threat Creation', 'Shooting', 'Out of Possession'])
@@ -172,7 +174,7 @@ if mode == 'Player Overview':
 
         if compare == 'Yes':
             col1, col2, col3 = st.columns(3)
-            with col1: league2 = st.selectbox("Select other League", options=['USL','NWSL', 'Olympics', 'NCAA Women', 'Mexico', 'Brazil','England', 'England2', 'Spain', 'Germany', 'Sweden', 'France', 'China', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'U20 World Cup', 'U19Euros', 'CONCACAF W Champions League', 'CAF W Champions League', 'MLS Next Pro','USL League One', 'NCAA Men', 'Canada' ])
+            with col1: league2 = st.selectbox("Select other League", options=['USL', 'NWSL', 'NCAA Women','Mexico', 'Brazil','France','England', 'England2', 'Spain', 'Germany', 'Sweden', 'China', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'Olympics', 'U20 World Cup', 'U19Euros', 'CONCACAF W Champions League', 'CAF W Champions League', 'MLS Next Pro', 'USL League One', 'NCAA Men', 'Canada' ])
             with col2: 
                 #name2 = st.selectbox("Select other Player", options=df[(df['Position Group'] == position_group1) & (df['Competition'] == league2)]['Player'].unique())
                 name2 = st.selectbox("Select other Player", options=df[(df['Competition'] == league2)]['Player'].unique())
@@ -208,6 +210,34 @@ if mode == 'Player Overview':
     
         
         # Radar Chart Code
+        if position_group1 == 'GKs' and mode1 == 'Basic':
+            GK_Chances_Faced = df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0], 'GK_Chances Faced']
+            GK_Shot_Stopping = df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0], 'GK_Shot Stopping']
+            GK_Short_Distribution = df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0], 'GK_Short Distribution']
+            GK_Long_Distribution = df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0], 'GK_Long Distribution']
+            GK_Defending_High = df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0], 'GK_Defending High']
+            GK_Difficult_Shot_Stopping = df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0], 'GK_Difficult Shot Stopping']
+            GK_1v1_Saves = df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0], 'GK_1v1 Saves']
+
+
+            data1 = [GK_Chances_Faced, GK_Shot_Stopping, GK_Short_Distribution, GK_Long_Distribution, GK_Defending_High, GK_Difficult_Shot_Stopping, GK_1v1_Saves]
+            #if league1 in ws_leagues: data1 = [Heading, Carrying, BallRetention, ProgressivePassing, DefAccuracy, DefEngage, 0]
+            metrics = ['Chances Faced', 'Shot Stopping', 'Short Distribution', 'Long Distribution', 'Defending High', 'Difficult Shot Stopping', '1v1 Saving']
+            metric_names = ['Chances Faced', 'Shot Stopping', 'Short Distribution', 'Long\nDistribution', 'Defending High', 'Difficult Shot Stopping', '1v1 Saving']
+
+            if compare == 'Yes':
+                GK_Chances_Faced2 = df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'GK_Chances Faced']
+                GK_Shot_Stopping2 = df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'GK_Shot Stopping']
+                GK_Short_Distribution2 = df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'GK_Short Distribution']
+                GK_Long_Distribution2 = df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'GK_Long Distribution']
+                GK_Defending_High2 = df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'GK_Defending High']
+                GK_Difficult_Shot_Stopping2 = df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'GK_Difficult Shot Stopping']
+                GK_1v1_Saves2 = df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'GK_1v1 Saves']
+
+
+                data2 = [GK_Chances_Faced2, GK_Shot_Stopping2, GK_Short_Distribution2, GK_Long_Distribution2, GK_Defending_High2, GK_Difficult_Shot_Stopping2, GK_1v1_Saves2]
+                #if league2 in ws_leagues: data2 = [Heading2, Carrying2, BallRetention2, ProgressivePassing2, DefAccuracy2, DefEngage2, 0]
+
         if position_group1 == 'CBs' and mode1 == 'Basic':
                 
             Heading = df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0], 'Heading']
@@ -655,6 +685,8 @@ if mode == 'Player Overview':
         if compare == 'Yes':
             data2 += data2[:1]
 
+        
+
         fig, ax = plt.subplots(figsize=(16, 9), subplot_kw=dict(polar=True, facecolor='#400179'))
         fig.patch.set_facecolor('#400179')
         fig.set_facecolor('#400179')
@@ -772,6 +804,7 @@ if mode == 'Player Overview':
             plt.text(800,120,f"{club} - {season1} {league1} - {mins} Minutes - {detailed_pos}",ha = 'center', fontsize=30, color = 'white')#, fontname='Avenir')
             plt.text(30,880,f"Data compared to {league1} {position_group1} in {season1}",ha = 'left', fontsize=16, color = 'white')#, fontname='Avenir')
 
+            if league1 in ws_leagues and mode1 == 'Basic' and position_group1 == 'GKs': plt.text(1570,880,f"Defending High, Difficult & 1v1 Shot Stopping\ndata unavailable for {league1}",ha = 'right', fontsize=16, color = 'white')#, fontname='Avenir')
             if league1 in ws_leagues and mode1 == 'Basic' and position_group1 in ['CBs','WBs']: plt.text(1570,880,f"Defending High data unavailable for {league1}",ha = 'right', fontsize=16, color = 'white')#, fontname='Avenir')
             if league1 in ws_leagues and mode1 == 'Basic' and position_group1 == 'CMs': plt.text(1570,880,f"Pressing data unavailable for {league1}",ha = 'right', fontsize=16, color = 'white')#, fontname='Avenir')
 
@@ -797,8 +830,12 @@ if mode == 'Player Overview':
 
 
             if league1 in ws_leagues and league2 in ws_leagues and mode1 == 'Basic' and position_group1 in ['CBs','WBs']: plt.text(1570,880,f"Defending High data unavailable",ha = 'right', fontsize=16, color = 'white')#, fontname='Avenir')
+            if league1 in ws_leagues and league2 in ws_leagues and mode1 == 'Basic' and position_group1 == 'GKs': plt.text(1570,880,f"Defending High, Difficult & 1v1 Shot Stopping\ndata unavailable",ha = 'right', fontsize=16, color = 'white')#, fontname='Avenir')
+
             elif league1 in ws_leagues and mode1 == 'Basic' and position_group1 in ['CBs','WBs']: plt.text(1570,880,f"Defending High data unavailable for {league1}",ha = 'right', fontsize=16, color = 'white')#, fontname='Avenir')
             elif league2 in ws_leagues and mode1 == 'Basic' and position_group1 in ['CBs','WBs']: plt.text(1570,880,f"Defending High data unavailable for {league2}",ha = 'right', fontsize=16, color = 'white')#, fontname='Avenir')
+            elif league1 in ws_leagues and  mode1 == 'Basic' and position_group1 == 'GKs': plt.text(1570,880,f"Defending High, Difficult & 1v1 Shot Stopping\ndata unavailable for {league1}",ha = 'right', fontsize=16, color = 'white')#, fontname='Avenir')
+            elif league2 in ws_leagues and  mode1 == 'Basic' and position_group1 == 'GKs': plt.text(1570,880,f"Defending High, Difficult & 1v1 Shot Stopping\ndata unavailable for {league2}",ha = 'right', fontsize=16, color = 'white')#, fontname='Avenir')
             
             if league1 in ws_leagues and league2 in ws_leagues and mode1 == 'Basic' and position_group1 == 'CMs': plt.text(1570,880,f"Pressing data unavailable",ha = 'right', fontsize=16, color = 'white')#, fontname='Avenir')
             elif league1 in ws_leagues and mode1 == 'Basic' and position_group1 == 'CMs': plt.text(1570,880,f"Pressing data unavailable for {league1}",ha = 'right', fontsize=16, color = 'white')#, fontname='Avenir')
@@ -1034,7 +1071,8 @@ if mode == 'Team Style':
 
 
 if  mode == 'Multi Player Dot Graph':
-    pos_list = ['CBs', 'WBs', 'CMs', 'AMs', 'Ws', 'STs']
+    pos_list = pos_list = ['CBs', 'WBs', 'CMs', 'AMs', 'Ws', 'STs', 'GKs']
+
     #df['Position Group'] = df['pos_group']
 
 
@@ -1094,7 +1132,7 @@ if  mode == 'Multi Player Dot Graph':
     with col1:
         league1 = st.selectbox(
             'Select League #1',
-            ['USL','NWSL',  'Olympics', 'NCAA Women','Mexico', 'Brazil','England', 'England2', 'Spain', 'Germany', 'Sweden', 'France', 'China', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'U20 World Cup', 'U19Euros', 'CONCACAF W Champions League', 'CAF W Champions League', 'MLS Next Pro', 'USL League One', 'NCAA Men', 'Canada' ]
+            ['USL', 'NWSL', 'NCAA Women','Mexico', 'Brazil','France','England', 'England2', 'Spain', 'Germany', 'Sweden', 'China', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'Olympics', 'U20 World Cup', 'U19Euros', 'CONCACAF W Champions League', 'CAF W Champions League', 'MLS Next Pro', 'USL League One', 'NCAA Men', 'Canada' ]
         )
 
     # Place the second selectbox in the second column
@@ -1118,7 +1156,7 @@ if  mode == 'Multi Player Dot Graph':
     with col1:
         league2 = st.selectbox(
             'Select League #2',
-            ['USL','NWSL',  'Olympics','NCAA Women','Mexico', 'Brazil','England', 'England2', 'Spain', 'Germany', 'Sweden', 'France', 'China', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'U20 World Cup', 'U19Euros', 'CONCACAF W Champions League', 'CAF W Champions League', 'MLS Next Pro', 'USL League One', 'NCAA Men', 'Canada' ]
+            ['USL', 'NWSL', 'NCAA Women','Mexico', 'Brazil','France','England', 'England2', 'Spain', 'Germany', 'Sweden', 'China', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'Olympics', 'U20 World Cup', 'U19Euros', 'CONCACAF W Champions League', 'CAF W Champions League', 'MLS Next Pro', 'USL League One', 'NCAA Men', 'Canada' ]
         )
 
     # Place the second selectbox in the second column
@@ -1141,7 +1179,7 @@ if  mode == 'Multi Player Dot Graph':
     with col1:
         league3 = st.selectbox(
             'Select League #3',
-            ['USL','NWSL',  'Olympics','NCAA Women','Mexico', 'Brazil','England', 'England2', 'Spain', 'Germany', 'Sweden', 'France', 'China', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'U20 World Cup', 'U19Euros', 'CONCACAF W Champions League', 'CAF W Champions League', 'MLS Next Pro', 'USL League One', 'NCAA Men', 'Canada' ]
+            ['USL', 'NWSL', 'NCAA Women','Mexico', 'Brazil','France','England', 'England2', 'Spain', 'Germany', 'Sweden', 'China', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'Olympics', 'U20 World Cup', 'U19Euros', 'CONCACAF W Champions League', 'CAF W Champions League', 'MLS Next Pro', 'USL League One', 'NCAA Men', 'Canada' ]
         )
 
     # Place the second selectbox in the second column
@@ -1165,7 +1203,7 @@ if  mode == 'Multi Player Dot Graph':
     with col1:
         league4 = st.selectbox(
             'Select League #4',
-            ['USL','NWSL', 'Olympics', 'NCAA Women','Mexico', 'Brazil','England', 'England2', 'Spain', 'Germany', 'Sweden', 'France', 'China', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'U20 World Cup', 'U19Euros', 'CONCACAF W Champions League', 'CAF W Champions League', 'MLS Next Pro', 'USL League One', 'NCAA Men', 'Canada' ]
+            ['USL', 'NWSL', 'NCAA Women','Mexico', 'Brazil','France','England', 'England2', 'Spain', 'Germany', 'Sweden', 'China', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'Olympics', 'U20 World Cup', 'U19Euros', 'CONCACAF W Champions League', 'CAF W Champions League', 'MLS Next Pro', 'USL League One', 'NCAA Men', 'Canada' ]
         )
 
     # Place the second selectbox in the second column
@@ -1211,6 +1249,7 @@ if  mode == 'Multi Player Dot Graph':
     # Plotting
     df['unique_label'] = df.apply(lambda row: f"{row['Player']}\n{row['Competition']} - {row['Season']}", axis=1)
 
+    if position_group1 == 'GKs': metrics = ['GK_Chances Faced', 'GK_Shot Stopping','GK_Short Distribution', 'GK_Long Distribution','GK_Difficult Shot Stopping']
     if position_group1 == 'CBs': metrics = ['Ball Retention', 'Progressive Passing', 'Heading', 'Defensive Output', 'Tackle Accuracy']
     if position_group1 == 'WBs': metrics = ['Ball Retention', 'Chance Creation', 'Receiving Forward', 'Defensive Output', 'Tackle Accuracy']
     if position_group1 == 'CMs': metrics = ['Heading','Defensive Output', 'Tackle Accuracy','Pressing','Chance Creation','Progression' ]
@@ -1410,6 +1449,7 @@ if mode == 'Player Match by Match Performance':
     df = pd.read_parquet("InternationalWomensMatchLevelData.parquet")
 
     pos_map_2 = {
+    1: 'GKs',
     4: 'CBs',
     3: 'WBs',
     6: 'CMs',
@@ -1811,7 +1851,18 @@ if mode == 'Team Style':
     st.write("Progression: How often they advance the ball to the Final Third")
     st.write("Chance Creation: How often they generate goals, shots, xG")
     st.write("Counter Attacking: Goal and shot creation from counter attacks")
-    
+   
+   
+
+if position_group1 == 'GKs' and mode1 == 'Basic':
+    st.write("Metric Definitions:")
+    st.write("Chances Faced: Measure of how often the goalkeeper is tested (and how high quality the chances are)")
+    st.write("Shot Stopping: Measure of shot stopping quality (xG Faced - Goals Conceded, Save %, etc)")
+    st.write("Short Distribution: How accurate the goalkeeper is in short passing and how often he is trusted to play out the back")
+    st.write("Long Distribution: How accurate and (how frequently) the goalkeeper is in long/progressive passing")
+    st.write("Defending High: How high up the field the goalkeeper makes defensive actions like rushes, pressures, saves on average")
+    st.write("Difficult Shot Stopping: How well the goalkeeper does with facing high xG shots")
+    st.write("1v1 Saving: RHow well the goalkeeper does with facing 1v1 opportounities")
 
 if position_group1 == 'CBs' and mode1 == 'Basic':
     st.write("Metric Definitions:")
