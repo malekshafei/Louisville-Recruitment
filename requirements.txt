@@ -1,6 +1,6 @@
 matplotlib
 Pillow
 openpyxl
-distutils
+setuptools
 pandas==1.5.3
 numpy==1.24.3
