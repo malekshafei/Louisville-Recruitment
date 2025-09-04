@@ -28,7 +28,47 @@ from datetime import datetime, timedelta
 #     st.session_state.season1 = '2024'
 
 
-
+def get_original_team_name(short_name):
+        team_replacements_reverse = {
+            "El Paso": "El Paso Locomotive",
+            "San Diego": "San Diego Wave",  # Note: this will be the last one due to duplicate
+            'Tampa Bay': 'Tampa Bay Rowdies',
+            'Sporting KC II': 'Sporting Kansas City II',
+            'Loudoun': 'Loudoun United',
+            'Memphis': 'Memphis 901',
+            'Tacoma': 'Tacoma Defiance',
+            'Hartford': 'Hartford Athletic',
+            'Birmingham': 'Birmingham Legion',
+            'Pittsburgh': 'Pittsburgh Riverhounds',
+            'Atlanta II': 'Atlanta United II',
+            'Orange County': 'Orange County SC',
+            'LouCity': 'Louisville City',
+            'NYRB II': 'New York RB II',
+            'Union II': 'Philadelphia Union II',
+            'Phoenix': 'Phoenix Rising',
+            'RGV': 'Rio Grande Valley',
+            'LV Lights': 'Las Vegas Lights',
+            'New Mexico': 'New Mexico United',
+            'Portland II': 'Portland Timbers II',
+            'Charlotte Ind.': 'Charlotte Independence',
+            'Sacramento': 'Sacramento Republic',
+            'Charleston': 'Charleston Battery',
+            'Wolfsburg': 'VfL Wolfsburg WFC',
+            'Hoffenheim': 'TSG 1899 Hoffenheim',
+            'Frankfurt': 'Eintracht Frankfurt',
+            'Bayer 04': 'TSV Bayer 04 Leverkusen',
+            'Gotham': 'NJ NY Gotham FC',
+            'NC Courage': 'North Carolina Courage',
+            'Seattle': 'Seattle Reign',
+            'Orlando': 'Orlando Pride',
+            'Washington': 'Washington Spirit',
+            'Chicago': 'Chicago Red Stars',
+            'Portland': 'Portland Thorns',  # Note: this will overwrite Portland II
+            'Racing': 'Racing Louisville FC',
+            'Utah': 'Utah Royals'
+        }
+        
+        return team_replacements_reverse.get(short_name, short_name)
 
 
 file_name = 'InternationalWomensData.parquet'
@@ -887,7 +927,7 @@ if mode == 'Player Overview':
         #st.pyplot(plt)
 
             
-        st.image(buf, use_column_width=True)
+        st.image(buf, use_container_width=True)
 
 
     
@@ -1089,7 +1129,7 @@ if mode == 'Team Style':
     #st.pyplot(plt)
 
         
-    st.image(buf, use_column_width=True)
+    st.image(buf, use_container_width=True)
 
 
 
@@ -1403,69 +1443,407 @@ if  mode == 'Multi Player Dot Graph':
     #st.pyplot(plt)
 
         
-    st.image(buf, use_column_width=True)
+    st.image(buf, use_container_width=True)
     radar = True
     position_group1 = 'NA'
 
 if mode == 'Player Rankings':
-    position_group1 = 'CBs'
-    mode1 = ''
+    import matplotlib.font_manager as font_manager
+    from matplotlib import font_manager, rcParams
 
-    # URL of your Tableau dashboard (can be from Tableau Public or Server)
-    import streamlit.components.v1 as components
+    font_manager.fontManager.addfont(regular_font_path)
+    font_manager.fontManager.addfont(bold_font_path)
+    rcParams['font.family'] = 'Montserrat'
+    mode1 = 'Basic'
 
-    # Replace this with your Tableau Public embed link (copied from the "Embed Code" section)
-    tableau_embed_code = """
-    <div class='tableauPlaceholder' id='viz1733282530187' style='position: relative'>
-        <noscript>
-            <a href='#'>
-                <img alt='Dashboard 1' src='https://public.tableau.com/static/images/Lo/LouisvillePlayerData/Dashboard1/1_rss.png' style='border: none' />
-            </a>
-        </noscript>
-        <object class='tableauViz' style='display:none;'>
-            <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' />
-            <param name='embed_code_version' value='3' />
-            <param name='site_root' value='' />
-            <param name='name' value='LouisvillePlayerData/Dashboard1' />
-            <param name='tabs' value='no' />
-            <param name='toolbar' value='yes' />
-            <param name='static_image' value='https://public.tableau.com/static/images/Lo/LouisvillePlayerData/Dashboard1/1.png' />
-            <param name='animate_transition' value='yes' />
-            <param name='display_static_image' value='yes' />
-            <param name='display_spinner' value='yes' />
-            <param name='display_overlay' value='yes' />
-            <param name='display_count' value='yes' />
-            <param name='language' value='en-US' />
-        </object>
-    </div>
+    file_name = 'InternationalWomensData.parquet'
+    df = pd.read_parquet(file_name)
+    
+    
+    df = df[df['Competition'].isin(['USL', 'NWSL'])].sort_values(by = 'Ovr', ascending=False)
 
-    <script type='text/javascript'>
-        var divElement = document.getElementById('viz1733282530187');
-        var vizElement = divElement.getElementsByTagName('object')[0];
-        if ( divElement.offsetWidth > 800 ) {
-            vizElement.style.width='1220px';
-            vizElement.style.minHeight='587px';
-            vizElement.style.maxHeight='887px';
-            vizElement.style.height=(divElement.offsetWidth*0.75)+'px';
-        } else if ( divElement.offsetWidth > 500 ) {
-            vizElement.style.width='1220px';
-            vizElement.style.minHeight='587px';
-            vizElement.style.maxHeight='887px';
-            vizElement.style.height=(divElement.offsetWidth*0.75)+'px';
-        } else {
-            vizElement.style.width='100%';
-            vizElement.style.height='727px';
+    df['Top Speed'] = df['pctTop Speed']
+    df['HI Distance'] = (0.3 * df['pctHI Count']) + (0.4 * df['pctDistance']) + (0.3 * df['pctHI Distance'])
+
+    df = df.rename(columns={'GK_Chances Faced': 'Chances Faced',
+                            'GK_Shot Stopping':'Shot Stopping',
+                            'GK_Short Distribution':'Short Distribution',
+                            'GK_Long Distribution':'Long Distribution',
+                            'GK_Defending High':'Coming Off Line',
+                            'GK_Difficult Shot Stopping':'Difficult Shot Stopping',
+                            'GK_1v1 Saves':'1v1 Saves',
+                            'Detailed Position': 'Position'
+                        })
+
+
+    value_cols = ['Ovr', 'Tackle Accuracy', 'Defensive Output', 'Defending High',
+       'Heading', 'Receiving Forward', 'Crossing', 'Progressive Passing',
+       'Carrying', 'Ball Retention', 'Chance Creation', 'Progression',
+       'Pressing', 'Dribbling', 'Poaching', 'Finishing', 'Top Speed', 'HI Distance',
+       'Chances Faced','Shot Stopping', 'Short Distribution', 'Long Distribution',
+       'Coming Off Line', 'Difficult Shot Stopping', '1v1 Saves']
+    
+    all_cols = ['Player', 'Team', 'Competition', 'Age', 'Minutes', 'Position Group', 'Position', 'Season', 'Season Order'] + value_cols
+
+    df = df[all_cols]
+
+    for col in df.columns: print(col)
+
+    for col in value_cols:
+        
+        if col == 'Ovr': df[col] = round(df[col],1)
+        else:
+            df=df.fillna(0) 
+            df[col] = df[col].astype(int)
+
+
+
+
+    df = df[pd.notna(df['Team']) & (df['Team'] != 0) & (df['Team'] != '0') ]
+    col1, col2, col3 = st.columns(3)
+
+    with col1: 
+        leagues = st.segmented_control("League", ['NWSL', 'USL'], default='USL')
+        df = df[(df['Competition'] == leagues)]
+
+        age_range = st.slider("Age Range", 15, 40, (15,30))
+        df = df[((df['Age'] >= age_range[0]) & (df['Age'] <= age_range[1])) | (pd.isna(df['Age']))]
+
+        create_ratings = st.segmented_control("Customize Rating Weights?", ["Yes", "No"], default = "No")
+
+
+    with col2: 
+        position_group1 = st.selectbox("Select Position Group", options=pos_list)
+        df = df[(df['Position Group'] == position_group1)]
+        df = df[~df['Season'].str.contains('-', na=False)]
+        df = df[df['Season Order'] == df.groupby('Competition')['Season Order'].transform('max')]
+
+        
+        minutes_range = st.slider("Minutes Played Range", 0, max(df['Minutes']), (800, max(df['Minutes'])))
+        df = df[(df['Minutes'] >= minutes_range[0]) & (df['Minutes'] <= minutes_range[1])]
+    
+    with col3: 
+        
+        spec_position = st.pills("Select Primary Positions",sorted(df['Position'].unique()), selection_mode='multi',default = df['Position'].unique())
+
+        num_shown = st.segmented_control("# Players to Show", ["10", "15", "25", "All"],default = "15" )
+    
+        
+    
+    if create_ratings == 'Yes':
+        if position_group1 == 'GKs':
+            ratings = ['Chances Faced','Shot Stopping', 'Short Distribution', 'Long Distribution',
+                        'Coming Off Line', 'Difficult Shot Stopping', '1v1 Saves']
+        if position_group1 == 'CBs':
+            ratings = ['Tackle Accuracy', 'Defensive Output', 'Defending High',
+                         'Progressive Passing', 'Carrying', 'Ball Retention', 'Heading',
+                          'Top Speed', 'HI Distance']
+            
+        if position_group1 == 'WBs':
+            ratings = ['Tackle Accuracy', 'Defensive Output', 'Defending High',
+                       'Pressing', 'Heading', 
+                       'Ball Retention', 'Progression', 'Carrying'
+                       'Receiving Forward', 'Crossing', 'Chance Creation',
+                        'Top Speed', 'HI Distance']
+            
+        if position_group1 == 'CMs':
+            ratings = ['Tackle Accuracy', 'Defensive Output', 'Defending High',
+                       'Pressing', 'Heading', 
+                       'Ball Retention', 'Progression', 'Carrying'
+                       'Receiving Forward', 'Chance Creation',
+                        'Top Speed', 'HI Distance']
+            
+        if position_group1 in ['AMs', 'Ws']:
+            ratings = ['Chance Creation', 'Dribbling', 'Progression',
+                       'Poaching', 'Finishing', 'Ball Retention',
+                       'Crossing','Heading',  'Defensive Output',
+                        'Top Speed', 'HI Distance'
+                      ]
+        if position_group1 == 'STs':
+            ratings = ['Poaching', 'Finishing', 'Heading',
+                       'Chance Creation', 'Dribbling', 'Progression'
+                       'Ball Retention', 'Defensive Output',
+                       'Top Speed', 'HI Distance'
+                       
+                      ]
+
+                         
+            
+                
+            
+        weights = {}
+        col1, col2, col3 = st.columns(3)
+        ind = 0
+        with col1:
+            for x in ratings[::3]:
+                #xx = st.slider(x,0,100,value = 50, key=x)
+                weights[x] = st.slider(x,0,100,value = 50)
+                ind+=1
+        with col2:
+            for x in ratings[1::3]:
+                #xx = st.slider(x,0,100,value = 50, key=x)
+                weights[x] = st.slider(x,0,100,value = 50)
+                ind+=1
+        with col3:
+            for x in ratings[2::3]:
+                #xx = st.slider(x,0,100,value = 50, key=x)
+                weights[x] = st.slider(x,0,100,value = 50)
+                ind+=1
+
+
+        print(weights)
+        total = sum(weights.values())
+        normalized = {k: v / total * 100 for k, v in weights.items()}
+        df['Ovr'] = round(sum(df[col] * (normalized[col]*.01) for col in normalized),1)
+        df = df.sort_values(by = 'Ovr', ascending=False)
+
+    df.insert(0, "Rank", range(1, len(df) + 1))
+
+
+            
+            
+            
+        
+    
+
+    
+
+    
+
+    if num_shown == "5": df = df.head(5)
+    elif num_shown == "10": df = df.head(10)
+    elif num_shown == "15": df = df.head(15)
+    elif num_shown == "25": df = df.head(25)
+    elif num_shown == "All": df = df.copy(deep=True)
+    
+    #st.write(df)
+
+
+    columns = ["Rank","Player", "Position","Minutes", "Age", "Ovr"]
+
+    
+
+    def create_football_table(data, columns):
+        # ---- Figure & layout (fixes: subtitle whitespace) ----
+        fig, ax = plt.subplots(figsize=(14, 12))
+        # We'll control margins explicitly; avoid tight_layout which can add unpredictable gaps with tables.
+        fig.set_constrained_layout(False)
+        fig.subplots_adjust(left=0.02, right=0.98, bottom=0.06, top=0.90)
+
+        # Titles sit in the top figure margin; table lives entirely inside the axes.
+        title = f'Top {position_group1} - Data Ranking'
+        subtitle = f'Age: {age_range[0]}-{age_range[1]}'
+        fig.suptitle(title, fontsize=24, fontweight='bold', y=0.965)
+        fig.text(0.5, 0.92, subtitle, ha='center', va='center', fontsize=12, color='gray')
+
+        ax.axis('off')
+
+        data_df = pd.DataFrame(data, columns=columns)
+
+        # ---- Table ----
+        table = ax.table(
+            cellText=data_df.values,
+            colLabels=data_df.columns,
+            cellLoc='center',
+            loc='center',
+            bbox=[0.00, 0.00, 1.00, 1.00]  # Fill the axes; margins come from subplots_adjust above
+        )
+
+        # Basic styling
+        table.auto_set_font_size(False)
+        table.set_fontsize(14)
+        table.scale(1, 2)
+
+        # Remove borders
+        for _, cell in table.get_celld().items():
+            cell.set_linewidth(0)
+            cell.set_edgecolor('none')
+
+
+        
+
+        # Header styling
+        ncols = len(data_df.columns)
+        for j in range(ncols):
+            cell = table[(0, j)]
+            cell.set_facecolor('#E8E8E8')
+            cell.set_text_props(weight='bold', color='black')
+            cell.set_height(0.08)
+
+        # Data rows
+        nrows = len(data_df)
+        for i in range(1, nrows + 1):
+            for j in range(ncols):
+                c = table[(i, j)]
+                c.set_facecolor('white')
+                if j == ncols - 1:
+                    c.set_facecolor('#E6E1F0')  # last column
+                if j == 1:
+                    c.set_text_props(ha='left')
+                    #c.get_text().set_x(0.15)  # space for logo
+
+                    if nrows < 4:
+                        table[(i, 1)].PAD = 0.45
+                    elif nrows < 8:
+                        table[(i, 1)].PAD = 0.35
+                    elif nrows < 12:
+                        table[(i, 1)].PAD = 0.3
+                    else: table[(i, 1)].PAD = 0.25
+
+                c.set_height(0.06)
+                c.set_text_props(color='black')
+
+        col_widths = {
+            "Rank": 0.05,
+            "Player": 0.25,
+            "Position": 0.2,
+            "Minutes": 0.10,
+            "Age": 0.10,
+            "Ovr": 0.12
         }
-        var scriptElement = document.createElement('script');
-        scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
-        vizElement.parentNode.insertBefore(scriptElement, vizElement);
-    </script>
-    """ 
-    tableau_embed_code = """
-    <div class='tableauPlaceholder' id='viz1733283562119' style='position: relative'><noscript><a href='#'><img alt='Dashboard 1 ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Lo&#47;LouisvillePlayerData&#47;Dashboard1&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='LouisvillePlayerData&#47;Dashboard1' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Lo&#47;LouisvillePlayerData&#47;Dashboard1&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-US' /><param name='filter' value='publish=yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1733283562119');                    var vizElement = divElement.getElementsByTagName('object')[0];                    if ( divElement.offsetWidth > 800 ) { vizElement.style.minWidth='504px';vizElement.style.maxWidth='774px';vizElement.style.width='100%';vizElement.style.minHeight='587px';vizElement.style.maxHeight='887px';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';} else if ( divElement.offsetWidth > 500 ) { vizElement.style.minWidth='504px';vizElement.style.maxWidth='774px';vizElement.style.width='100%';vizElement.style.minHeight='587px';vizElement.style.maxHeight='887px';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';} else { vizElement.style.width='100%';vizElement.style.height='727px';}                     var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>
-    """
-    # Embed the Tableau dashboard using st.components.v1.html
-    components.html(tableau_embed_code, height=600)
+
+        # Apply widths to all cells in that column
+        for j, col in enumerate(data_df.columns):
+            for i in range(nrows + 1):  # +1 to include header row
+                cell = table[(i, j)]
+                cell.set_width(col_widths.get(col, 0.1))
+
+        # Force draw to get real positions
+        fig.canvas.draw()
+        renderer = fig.canvas.get_renderer()
+
+        # ---- Logos (fixes: y positioning) ----
+        # Place logos using the *figure* coordinate system, derived from each first-column cell bbox.
+        for i in range(1, nrows + 1):
+            player_name = data_df.iloc[i - 1, 1]
+            try:
+                team_name = df.loc[df['Player'] == player_name, 'Team'].iloc[0]
+                logo_path = f"/Users/malekshafei/Desktop/Louisville/player-profiles/Club Logos/{get_original_team_name(team_name)}.webp"
+                img = plt.imread(logo_path)
+
+                # Bbox of the (i, 0) cell in *figure* coordinates
+                cell_disp = table[(i, 1)].get_window_extent(renderer)
+                cell_fig = cell_disp.transformed(fig.transFigure.inverted())
+
+                # Make a square logo that fits the cell height; small left padding
+                
+                pad = cell_fig.height * 0.10
+                if nrows < 2: size = cell_fig.height * 0.2
+                if nrows < 5: size = cell_fig.height * 0.40
+                else: 
+                    size = cell_fig.height * 0.80
+                logo_left = cell_fig.x0 + pad
+                logo_bottom = cell_fig.y0 + (cell_fig.height - size) / 2
+
+                # Create an overlay axes exactly where we want the logo
+                logo_ax = fig.add_axes([logo_left, logo_bottom, size, size])
+                logo_ax.imshow(img)
+                logo_ax.axis('off')
+            except FileNotFoundError:
+                print(f"Logo not found for {player_name}: {logo_path}")
+            except Exception as e:
+                print(f"Error loading logo for {player_name}: {e}")
+
+        # ---- Row separators (fixes: incorrect placement/omissions) ----
+        # Draw a thin line under every data row except the last, using each row's true bottom y.
+        # We'll align lines to the full table width (from first to last column).
+        first_left_disp = table[(1, 0)].get_window_extent(renderer).x0
+        last_right_disp = table[(1, ncols - 1)].get_window_extent(renderer).x1
+        left_fig = fig.transFigure.inverted().transform((first_left_disp, 0))[0]
+        right_fig = fig.transFigure.inverted().transform((last_right_disp, 0))[0]
+
+        for i in range(1, nrows):  # separators between data rows
+            row_bottom_fig_y = table[(i, 0)].get_window_extent(renderer)
+            row_bottom_fig_y = row_bottom_fig_y.transformed(fig.transFigure.inverted()).y0
+            line = plt.Line2D([left_fig, right_fig],
+                            [row_bottom_fig_y, row_bottom_fig_y],
+                            color='#DDDDDD', linewidth=0.9, alpha=0.9,
+                            transform=fig.transFigure, zorder=2)
+            fig.add_artist(line)
+
+        # ---- Footer ----
+        # ax.text(0.98, 0.01, "Test", transform=ax.transAxes,
+        #         ha='right', va='bottom', fontsize=10, color='gray')
+
+        return fig, ax, table
+
+
+    
+
+    # Create the table
+    fig, ax, table = create_football_table(df, columns)
+    #plt.show()
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png', bbox_inches='tight', pad_inches=0.2)
+    #fig.savefig("PIctestjuly3", format='png', bbox_inches='tight', pad_inches=0)
+
+    buf.seek(0)
+        
+    st.image(buf, use_container_width=True)
+
+    # Example with custom data and columns
+    
+
+    # position_group1 = 'CBs'
+    # mode1 = ''
+
+    # # URL of your Tableau dashboard (can be from Tableau Public or Server)
+    # import streamlit.components.v1 as components
+
+    # # Replace this with your Tableau Public embed link (copied from the "Embed Code" section)
+    # tableau_embed_code = """
+    # <div class='tableauPlaceholder' id='viz1733282530187' style='position: relative'>
+    #     <noscript>
+    #         <a href='#'>
+    #             <img alt='Dashboard 1' src='https://public.tableau.com/static/images/Lo/LouisvillePlayerData/Dashboard1/1_rss.png' style='border: none' />
+    #         </a>
+    #     </noscript>
+    #     <object class='tableauViz' style='display:none;'>
+    #         <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' />
+    #         <param name='embed_code_version' value='3' />
+    #         <param name='site_root' value='' />
+    #         <param name='name' value='LouisvillePlayerData/Dashboard1' />
+    #         <param name='tabs' value='no' />
+    #         <param name='toolbar' value='yes' />
+    #         <param name='static_image' value='https://public.tableau.com/static/images/Lo/LouisvillePlayerData/Dashboard1/1.png' />
+    #         <param name='animate_transition' value='yes' />
+    #         <param name='display_static_image' value='yes' />
+    #         <param name='display_spinner' value='yes' />
+    #         <param name='display_overlay' value='yes' />
+    #         <param name='display_count' value='yes' />
+    #         <param name='language' value='en-US' />
+    #     </object>
+    # </div>
+
+    # <script type='text/javascript'>
+    #     var divElement = document.getElementById('viz1733282530187');
+    #     var vizElement = divElement.getElementsByTagName('object')[0];
+    #     if ( divElement.offsetWidth > 800 ) {
+    #         vizElement.style.width='1220px';
+    #         vizElement.style.minHeight='587px';
+    #         vizElement.style.maxHeight='887px';
+    #         vizElement.style.height=(divElement.offsetWidth*0.75)+'px';
+    #     } else if ( divElement.offsetWidth > 500 ) {
+    #         vizElement.style.width='1220px';
+    #         vizElement.style.minHeight='587px';
+    #         vizElement.style.maxHeight='887px';
+    #         vizElement.style.height=(divElement.offsetWidth*0.75)+'px';
+    #     } else {
+    #         vizElement.style.width='100%';
+    #         vizElement.style.height='727px';
+    #     }
+    #     var scriptElement = document.createElement('script');
+    #     scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
+    #     vizElement.parentNode.insertBefore(scriptElement, vizElement);
+    # </script>
+    # """ 
+    # tableau_embed_code = """
+    # <div class='tableauPlaceholder' id='viz1733283562119' style='position: relative'><noscript><a href='#'><img alt='Dashboard 1 ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Lo&#47;LouisvillePlayerData&#47;Dashboard1&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='LouisvillePlayerData&#47;Dashboard1' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Lo&#47;LouisvillePlayerData&#47;Dashboard1&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-US' /><param name='filter' value='publish=yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1733283562119');                    var vizElement = divElement.getElementsByTagName('object')[0];                    if ( divElement.offsetWidth > 800 ) { vizElement.style.minWidth='504px';vizElement.style.maxWidth='774px';vizElement.style.width='100%';vizElement.style.minHeight='587px';vizElement.style.maxHeight='887px';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';} else if ( divElement.offsetWidth > 500 ) { vizElement.style.minWidth='504px';vizElement.style.maxWidth='774px';vizElement.style.width='100%';vizElement.style.minHeight='587px';vizElement.style.maxHeight='887px';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';} else { vizElement.style.width='100%';vizElement.style.height='727px';}                     var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>
+    # """
+    # # Embed the Tableau dashboard using st.components.v1.html
+    # components.html(tableau_embed_code, height=600)
+
+    
 
 
 if mode == 'Player Match by Match Performance':
@@ -1715,7 +2093,7 @@ if mode == 'Player Match by Match Performance':
     #st.pyplot(plt)
 
         
-    st.image(buf, use_column_width=True)
+    st.image(buf, use_container_width=True)
 
 def get_columns_to_compare(row):
     if row['pos_group'] == 4:
