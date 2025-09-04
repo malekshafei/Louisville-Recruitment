@@ -1600,6 +1600,9 @@ if mode == 'Player Rankings':
     df.insert(0, "Rank", range(1, len(df) + 1))
 
 
+    data_copy = df.copy(deep=True)
+
+
             
             
             
@@ -1780,7 +1783,49 @@ if mode == 'Player Rankings':
     buf.seek(0)
         
     st.image(buf, use_container_width=True)
-
+    
+    
+    
+    if position_group1 == 'GKs':
+        ratings = ['Chances Faced','Shot Stopping', 'Short Distribution', 'Long Distribution',
+                        'Coming Off Line', 'Difficult Shot Stopping', '1v1 Saves']
+    if position_group1 == 'CBs':
+        ratings = ['Tackle Accuracy', 'Defensive Output', 'Defending High',
+                        'Progressive Passing', 'Carrying', 'Ball Retention', 'Heading',
+                        'Top Speed', 'HI Distance']
+        
+    if position_group1 == 'WBs':
+        ratings = ['Tackle Accuracy', 'Defensive Output', 'Defending High',
+                    'Pressing', 'Heading', 
+                    'Ball Retention', 'Progression', 'Carrying'
+                    'Receiving Forward', 'Crossing', 'Chance Creation',
+                    'Top Speed', 'HI Distance']
+        
+    if position_group1 == 'CMs':
+        ratings = ['Tackle Accuracy', 'Defensive Output', 'Defending High',
+                    'Pressing', 'Heading', 
+                    'Ball Retention', 'Progression', 'Carrying'
+                    'Receiving Forward', 'Chance Creation',
+                    'Top Speed', 'HI Distance']
+        
+    if position_group1 in ['AMs', 'Ws']:
+        ratings = ['Chance Creation', 'Dribbling', 'Progression',
+                    'Poaching', 'Finishing', 'Ball Retention',
+                    'Crossing','Heading',  'Defensive Output',
+                    'Top Speed', 'HI Distance'
+                    ]
+    if position_group1 == 'STs':
+        ratings = ['Poaching', 'Finishing', 'Heading',
+                    'Chance Creation', 'Dribbling', 'Progression'
+                    'Ball Retention', 'Defensive Output',
+                    'Top Speed', 'HI Distance'
+                    
+                    ]
+        
+    selected_cols =  ["Rank","Player", "Team", "Position","Minutes", "Age", "Ovr"] + ratings
+    data_copy = data_copy[selected_cols]
+   # st.write(data_copy, ind)
+    st.dataframe(data_copy, hide_index=True)
     # Example with custom data and columns
     
 
