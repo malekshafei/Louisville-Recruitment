@@ -1825,6 +1825,8 @@ if mode == 'Player Rankings':
     selected_cols =  ["Rank","Player", "Team", "Position","Minutes", "Age", "Ovr"] + ratings
     data_copy = data_copy[selected_cols]
    # st.write(data_copy, ind)
+    st.write("")
+    st.write("")
     st.dataframe(data_copy, hide_index=True)
     # Example with custom data and columns
     
