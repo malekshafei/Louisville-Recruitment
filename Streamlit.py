@@ -1635,9 +1635,9 @@ if mode == 'Player Rankings':
 
         # Titles sit in the top figure margin; table lives entirely inside the axes.
         title = f'Top {position_group1} - Data Ranking'
-        subtitle = f'Age: {age_range[0]}-{age_range[1]}'
+        subtitle = f'{leagues} | Age: {age_range[0]}-{age_range[1]} | Minutes: {minutes_range[0]}-{minutes_range[1]}'
         fig.suptitle(title, fontsize=24, fontweight='bold', y=0.965)
-        fig.text(0.5, 0.92, subtitle, ha='center', va='center', fontsize=12, color='gray')
+        fig.text(0.5, 0.92, subtitle, ha='center', va='center', fontsize=14, color='black')
 
         ax.axis('off')
 
