@@ -1718,7 +1718,7 @@ if mode == 'Player Rankings':
             player_name = data_df.iloc[i - 1, 1]
             try:
                 team_name = df.loc[df['Player'] == player_name, 'Team'].iloc[0]
-                logo_path = f"/Users/malekshafei/Desktop/Louisville/player-profiles/Club Logos/{get_original_team_name(team_name)}.webp"
+                logo_path = f"Club Logos/{get_original_team_name(team_name)}.webp"
                 img = plt.imread(logo_path)
 
                 # Bbox of the (i, 0) cell in *figure* coordinates
