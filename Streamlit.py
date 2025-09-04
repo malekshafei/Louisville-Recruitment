@@ -1542,14 +1542,14 @@ if mode == 'Player Rankings':
         if position_group1 == 'WBs':
             ratings = ['Tackle Accuracy', 'Defensive Output', 'Defending High',
                        'Pressing', 'Heading', 
-                       'Ball Retention', 'Progression', 'Carrying'
+                       'Ball Retention', 'Progression', 'Carrying',
                        'Receiving Forward', 'Crossing', 'Chance Creation',
                         'Top Speed', 'HI Distance']
             
         if position_group1 == 'CMs':
             ratings = ['Tackle Accuracy', 'Defensive Output', 'Defending High',
                        'Pressing', 'Heading', 
-                       'Ball Retention', 'Progression', 'Carrying'
+                       'Ball Retention', 'Progression', 'Carrying',
                        'Receiving Forward', 'Chance Creation',
                         'Top Speed', 'HI Distance']
             
@@ -1797,14 +1797,14 @@ if mode == 'Player Rankings':
     if position_group1 == 'WBs':
         ratings = ['Tackle Accuracy', 'Defensive Output', 'Defending High',
                     'Pressing', 'Heading', 
-                    'Ball Retention', 'Progression', 'Carrying'
+                    'Ball Retention', 'Progression', 'Carrying',
                     'Receiving Forward', 'Crossing', 'Chance Creation',
                     'Top Speed', 'HI Distance']
         
     if position_group1 == 'CMs':
         ratings = ['Tackle Accuracy', 'Defensive Output', 'Defending High',
                     'Pressing', 'Heading', 
-                    'Ball Retention', 'Progression', 'Carrying'
+                    'Ball Retention', 'Progression', 'Carrying',
                     'Receiving Forward', 'Chance Creation',
                     'Top Speed', 'HI Distance']
         
