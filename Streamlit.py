@@ -1460,7 +1460,7 @@ if mode == 'Player Rankings':
     df = pd.read_parquet(file_name)
     
     
-    df = df[df['Competition'].isin(['USL', 'NWSL'])].sort_values(by = 'Ovr', ascending=False)
+    df = df[df['Competition'].isin(['USL', 'NWSL', 'MLS Next Pro'])].sort_values(by = 'Ovr', ascending=False)
 
     df['Top Speed'] = df['pctTop Speed']
     df['HI Distance'] = (0.3 * df['pctHI Count']) + (0.4 * df['pctDistance']) + (0.3 * df['pctHI Distance'])
@@ -1503,7 +1503,7 @@ if mode == 'Player Rankings':
     col1, col2, col3 = st.columns(3)
 
     with col1: 
-        leagues = st.segmented_control("League", ['NWSL', 'USL'], default='USL')
+        leagues = st.segmented_control("League", ['NWSL', 'USL', 'MLS Next Pro'], default='USL')
         df = df[(df['Competition'] == leagues)]
 
         age_range = st.slider("Age Range", 15, 40, (15,30))
@@ -1561,7 +1561,7 @@ if mode == 'Player Rankings':
                       ]
         if position_group1 == 'STs':
             ratings = ['Poaching', 'Finishing', 'Heading',
-                       'Chance Creation', 'Dribbling', 'Progression'
+                       'Chance Creation', 'Dribbling', 'Progression',
                        'Ball Retention', 'Defensive Output',
                        'Top Speed', 'HI Distance'
                        
