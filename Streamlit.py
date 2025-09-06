@@ -1816,7 +1816,7 @@ if mode == 'Player Rankings':
                     ]
     if position_group1 == 'STs':
         ratings = ['Poaching', 'Finishing', 'Heading',
-                    'Chance Creation', 'Dribbling', 'Progression'
+                    'Chance Creation', 'Dribbling', 'Progression',
                     'Ball Retention', 'Defensive Output',
                     'Top Speed', 'HI Distance'
                     
