@@ -1509,6 +1509,7 @@ if mode == 'Player Rankings':
             #salaries = pd.read_excel("/Users/malekshafei/Desktop/Louisville/NWSLSalaries-August2025.xlsx")
             #salaries.to_parquet("/Users/malekshafei/Desktop/Louisville/NWSLSalaries-August2025.parquet")
             salaries = pd.read_parquet("NWSLSalaries-August2025.parquet")
+            salaries = salaries[['player_id', 'Salary', 'Free Agent?']]
             #print(df.columns)
             #print(salaries.columns)
             df = pd.merge(df, salaries, on = 'player_id', how = 'left')
@@ -1542,6 +1543,9 @@ if mode == 'Player Rankings':
         if leagues == "NWSL": 
             salary_range = st.slider("Salary Range", min(df['Salary']), max(df['Salary']), (min(df['Salary']), max(df['Salary'])))
             df = df[(df['Salary'] >= salary_range[0]) & (df['Salary'] <= salary_range[1])]
+
+            free_agent_check = st.segmented_control("Free Agents Only?", ["Yes", "No"], default = "No",key=3)
+            if free_agent_check == 'Yes': df = df[df['Free Agent?'] == 'Yes']
     
         
     
