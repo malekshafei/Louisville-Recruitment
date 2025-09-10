@@ -1483,7 +1483,7 @@ if mode == 'Player Rankings':
        'Chances Faced','Shot Stopping', 'Short Distribution', 'Long Distribution',
        'Coming Off Line', 'Difficult Shot Stopping', '1v1 Saves']
     
-    all_cols = ['Player', 'Team', 'Competition', 'Age', 'Minutes', 'Position Group', 'Position', 'Season', 'Season Order'] + value_cols
+    all_cols = ['Player', 'Team', 'Competition', 'Age', 'Minutes', 'Position Group', 'Position', 'Season', 'Season Order', 'player_id'] + value_cols
 
     df = df[all_cols]
 
@@ -1503,8 +1503,19 @@ if mode == 'Player Rankings':
     col1, col2, col3 = st.columns(3)
 
     with col1: 
-        leagues = st.segmented_control("League", ['NWSL', 'USL', 'MLS Next Pro'], default='USL')
+        leagues = st.segmented_control("League", ['NWSL', 'USL', 'MLS Next Pro'], default='NWSL')
         df = df[(df['Competition'] == leagues)]
+        if leagues == 'NWSL':
+            #salaries = pd.read_excel("/Users/malekshafei/Desktop/Louisville/NWSLSalaries-August2025.xlsx")
+            #salaries.to_parquet("/Users/malekshafei/Desktop/Louisville/NWSLSalaries-August2025.parquet")
+            salaries = pd.read_parquet("/Users/malekshafei/Desktop/Louisville/NWSLSalaries-August2025.parquet")
+            #print(df.columns)
+            #print(salaries.columns)
+            df = pd.merge(df, salaries, on = 'player_id', how = 'left')
+            df['Salary'] = df['Salary'].fillna(0)
+            df['Salary'] = df['Salary'].astype(int)
+            df['Salary ($)'] = df['Salary'].apply(lambda x: f"${x}k")
+
 
         age_range = st.slider("Age Range", 15, 40, (15,30))
         df = df[((df['Age'] >= age_range[0]) & (df['Age'] <= age_range[1])) | (pd.isna(df['Age']))]
@@ -1527,6 +1538,10 @@ if mode == 'Player Rankings':
         spec_position = st.pills("Select Primary Positions",sorted(df['Position'].unique()), selection_mode='multi',default = df['Position'].unique())
 
         num_shown = st.segmented_control("# Players to Show", ["10", "15", "25", "All"],default = "15" )
+
+        if leagues == "NWSL": 
+            salary_range = st.slider("Salary Range", min(df['Salary']), max(df['Salary']), (min(df['Salary']), max(df['Salary'])))
+            df = df[(df['Salary'] >= salary_range[0]) & (df['Salary'] <= salary_range[1])]
     
         
     
@@ -1621,8 +1636,8 @@ if mode == 'Player Rankings':
     
     #st.write(df)
 
-
-    columns = ["Rank","Player", "Position","Minutes", "Age", "Ovr"]
+    if leagues == 'NWSL': columns = ["Rank","Player", "Position","Minutes", "Age", "Salary ($)", "Ovr"]
+    else: columns = ["Rank","Player", "Position","Minutes", "Age", "Ovr"]
 
     
 
@@ -1696,14 +1711,25 @@ if mode == 'Player Rankings':
                 c.set_height(0.06)
                 c.set_text_props(color='black')
 
-        col_widths = {
-            "Rank": 0.05,
-            "Player": 0.25,
-            "Position": 0.2,
-            "Minutes": 0.10,
-            "Age": 0.10,
-            "Ovr": 0.12
-        }
+        if leagues == 'NWSL': 
+            col_widths = {
+                "Rank": 0.05,
+                "Player": 0.25,
+                "Position": 0.2,
+                "Minutes": 0.10,
+                "Age": 0.10,
+                "Salary ($)": 0.10,
+                "Ovr": 0.12
+            }
+        else:
+            col_widths = {
+                "Rank": 0.05,
+                "Player": 0.25,
+                "Position": 0.2,
+                "Minutes": 0.10,
+                "Age": 0.10,
+                "Ovr": 0.12
+            }
 
         # Apply widths to all cells in that column
         for j, col in enumerate(data_df.columns):
@@ -1822,7 +1848,8 @@ if mode == 'Player Rankings':
                     
                     ]
         
-    selected_cols =  ["Rank","Player", "Team", "Position","Minutes", "Age", "Ovr"] + ratings
+    if leagues == 'NWSL': selected_cols =  ["Rank","Player", "Team", "Position","Minutes", "Age", "Salary", "Ovr"] + ratings
+    else: selected_cols =  ["Rank","Player", "Team", "Position","Minutes", "Age", "Ovr"] + ratings
     data_copy = data_copy[selected_cols]
    # st.write(data_copy, ind)
     st.write("")
