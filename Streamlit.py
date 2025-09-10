@@ -1508,7 +1508,7 @@ if mode == 'Player Rankings':
         if leagues == 'NWSL':
             #salaries = pd.read_excel("/Users/malekshafei/Desktop/Louisville/NWSLSalaries-August2025.xlsx")
             #salaries.to_parquet("/Users/malekshafei/Desktop/Louisville/NWSLSalaries-August2025.parquet")
-            salaries = pd.read_parquet("/Users/malekshafei/Desktop/Louisville/NWSLSalaries-August2025.parquet")
+            salaries = pd.read_parquet("NWSLSalaries-August2025.parquet")
             #print(df.columns)
             #print(salaries.columns)
             df = pd.merge(df, salaries, on = 'player_id', how = 'left')
