@@ -7,7 +7,12 @@ import io
 import warnings
 warnings.filterwarnings('ignore')
 from datetime import datetime, timedelta
+import matplotlib.font_manager as fm
+regular_font_path = 'Montserrat-Regular.ttf'
+bold_font_path = 'Montserrat-Bold.ttf'
 
+bold = fm.FontProperties(fname=bold_font_path)
+regular = fm.FontProperties(fname=regular_font_path)
 # if 'last_change_time' not in st.session_state:
 #     st.session_state.last_change_time = datetime.min
 # if 'last_league' not in st.session_state:
@@ -932,156 +937,248 @@ if mode == 'Player Overview':
 
     
 if mode == 'Team Style':
-    file_name = 'InternationalWomensTeamLevelData.xlsx'
-    df = pd.read_excel(file_name)
+    file_name = 'InternationalWomensTeamLevelData.parquet'
+    df = pd.read_parquet(file_name)
     position_group1 = 'NA'
 
 
     radar = True
     compare = "No"
-    league1 = st.selectbox("Select League", options=['USL', 'NWSL', 'Mexico', 'Brazil','England', 'England2', 'Germany2', 'Spain2', 'Spain', 'Germany', 'Sweden',  'MLS', 'MLS Next Pro', 'ScotlandMen'])
-    name1 = st.selectbox("Select Team", options=df[(df['Competition'] == league1)]['Team'].unique())
-    season1 = st.selectbox("Select Season", options=sorted(df[(df['Competition'] == league1) & (df['Team'] == name1)]['Season'].unique(), reverse=True))
+    col1, col2, col3 = st.columns(3)
+    with col1: league1 = st.selectbox("Select League", options=['USL', 'MLS', 'MLS Next Pro', 'NWSL'])
+    with col2: name1 = st.selectbox("Select Team", options=df[(df['Competition'] == league1)]['Team'].unique())
+    with col3: season1 = st.selectbox("Select Season", options=sorted(df[(df['Competition'] == league1) & (df['Team'] == name1)]['Season'].unique(), reverse=True))
 
     if radar == True:
         compare = st.selectbox("Compare with another Team?", options=["No", 'Yes'])
 
         if compare == 'Yes':
-            league2 = st.selectbox("Select other League", options=['USL', 'NWSL', 'Mexico', 'Brazil','England', 'England2', 'Germany2', 'Spain2', 'Spain', 'Germany', 'Sweden', 'ScotlandMen'])
-            name2 = st.selectbox("Select other Team", options=df[(df['Competition'] == league2)]['Team'].unique())
-            season2 = st.selectbox("Select other season", options=sorted(df[(df['Competition'] == league2) & (df['Team'] == name2)]['Season'].unique(), reverse=True))
-            
-    Possession = df.loc[df.index[(df['Team'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0], 'Possession']
-    Progression = df.loc[df.index[(df['Team'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0], 'Progression']
-    ChanceCreation = df.loc[df.index[(df['Team'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0], 'Chance Creation']
-    CounterAttacking = df.loc[df.index[(df['Team'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0], 'Counter Attacking']
-    DefSolidity = df.loc[df.index[(df['Team'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0], 'Defensive Solidity']
-    DefIntensity = df.loc[df.index[(df['Team'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0], 'Defensive Intensity']
-    DefHigh = df.loc[df.index[(df['Team'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0], 'Defending High']
-
-
-    data1 = [Possession, Progression, ChanceCreation, CounterAttacking, DefSolidity, DefIntensity, DefHigh]
+            col1, col2, col3 = st.columns(3)
+            with col1: league2 = st.selectbox("Select other League", options=['USL', 'MLS', 'MLS Next Pro', 'NWSL'])
+            with col2: name2 = st.selectbox("Select other Team", options=df[(df['Competition'] == league2)]['Team'].unique())
+            with col3: season2 = st.selectbox("Select other season", options=sorted(df[(df['Competition'] == league2) & (df['Team'] == name2)]['Season'].unique(), reverse=True))
     
-    metrics = ['Possession', 'Progression', 'Chance Creation', 'Counter Attacking', 'Defensive Solidity', 'Defensive Intensity', 'High Pressing']
-    metric_names = ['Possession', 'Progression', 'Chance Creation', 'Counter\nAttacking', 'Defensive Solidity', 'Defensive Intensity', 'High Pressing']
+    
+    all_options = [col for col in df.columns if col not in ['Team', 'Games Played'] and col[:3] != 'pct']
+    important_metrics = ['Possession', 'Progression', 'Chance Creation', 'Crossing', 'Counter Attacking', 'Defensive Solidity', 
+                         'Defensive Intensity', 'Defending High']
 
-    if compare == 'Yes':
-        Possession2 = df.loc[df.index[(df['Team'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'Possession']
-        Progression2 = df.loc[df.index[(df['Team'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'Progression']
-        ChanceCreation2 = df.loc[df.index[(df['Team'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'Chance Creation']
-        CounterAttacking2 = df.loc[df.index[(df['Team'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'Counter Attacking']
-        DefSolidity2 = df.loc[df.index[(df['Team'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'Defensive Solidity']
-        DefIntensity2 = df.loc[df.index[(df['Team'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'Defensive Intensity']
-        DefHigh2 = df.loc[df.index[(df['Team'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'Defending High']
+    selected_radars = important_metrics
+    selected_radars = st.multiselect("Customize Radar",
+                                   all_options, default = important_metrics)
+    
+    metrics = selected_radars
+    metrics = [f"pct{metric}" if metric not in important_metrics else metric for metric in metrics]
 
-
-        data2 = [Possession2, Progression2, ChanceCreation2, CounterAttacking2, DefSolidity2, DefIntensity2, DefHigh2]
+    data1 = [df.loc[(df['Team'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1),metric].values[0] for metric in metrics]
+            
         
     angles = np.linspace(0, 2 * np.pi, len(metrics), endpoint=False).tolist()
-    data1 += data1[:1]  # Repeat the first value to close the polygon
-    angles += angles[:1]  # Repeat the first angle to close the polygon
+    data1 += data1[:1]
+    angles += angles[:1]
+
+    fig2, ax2 = plt.subplots(figsize=(16, 9), subplot_kw=dict(polar=True, facecolor='#200020'))
+
+    label_radius = 110
+    ax2.set_rorigin(-2)
+    max_metric_length = 0
+
+    # Store display labels separately from metric names
+    display_labels = []
+    for metric in metrics:
+        display_metric = metric[3:] if metric[:3] == 'pct' else metric
+        if ' ' in display_metric: 
+            display_metric = display_metric.replace(' ', '\n')
+        display_labels.append(display_metric)
+
+    # Add labels
+    for angle, display_label in zip(angles[:-1], display_labels):
+        rotation = np.degrees(angle)
+        if rotation > 90 and rotation < 270:
+            rotation -= 180
+            ha = 'right'
+        else:
+            ha = 'left'
+        
+        if angle == 1.5707963267948966 or angle == 4.71238898038469:
+            ax2.text(angle, label_radius, display_label,
+                ha='center', va='center', fontsize=22, color='white', weight='bold')
+        else:
+            ax2.text(angle, label_radius, display_label,
+                ha=ha, va='center', fontsize=22, color='white', weight='bold')
+
+    fig2.patch.set_facecolor('#200020')
+    ax2.set_facecolor('#200020')
+    ax2.spines['polar'].set_visible(False)
+
+    # Draw grid circles
+    ax2.plot(angles, [100] * len(angles), color='white', linewidth=2.25, linestyle='-')
+    ax2.plot(angles, [75] * len(angles), color='white', linewidth=0.7, linestyle='-')
+    ax2.plot(angles, [50] * len(angles), color='white', linewidth=0.7, linestyle='-')
+    ax2.plot(angles, [25] * len(angles), color='white', linewidth=0.7, linestyle='-')
+
+    if compare == 'No': 
+        ax2.plot(angles, data1, color='green', linewidth=0.4, linestyle='-', marker='o', markersize=3)
+        ax2.fill(angles, data1, color='green', alpha=0.95)
+
+        # Add team name in top left corner
+        fig2.text(0.12, 0.98, name1, fontsize=24, weight='bold', color='green', 
+                ha='left', va='top', transform=fig2.transFigure)
+        fig2.text(0.12, 0.94, f'{league1} - {season1}', fontsize=18, color='green', 
+                ha='left', va='top', transform=fig2.transFigure)
 
     if compare == 'Yes':
+        data2 = [df.loc[(df['Team'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2),metric].values[0] for metric in metrics]
         data2 += data2[:1]
+        ax2.plot(angles, data1, color='white', linewidth=2.5, linestyle='-', marker='o', markersize=3)
+        ax2.fill(angles, data1, color='white', alpha=0.7)
 
-    fig, ax = plt.subplots(figsize=(16, 9), subplot_kw=dict(polar=True, facecolor='#400179'))
-    fig.patch.set_facecolor('#400179')
-    fig.set_facecolor('#400179')
+        ax2.plot(angles, data2, color='red', linewidth=2.5, linestyle='-', marker='o', markersize=3)
+        ax2.fill(angles, data2, color='red', alpha=0.55)
 
-    ax.set_facecolor('#400179')
+            # Add team 1 name in top left corner
+        fig2.text(0.12, 0.98, name1, fontsize=24, weight='bold', color='white', 
+                ha='left', va='top', transform=fig2.transFigure)
+        fig2.text(0.12, 0.94, f'{league1} - {season1}', fontsize=18, color='white', 
+                ha='left', va='top', transform=fig2.transFigure)
+        
+        # Add team 2 name in top right corner
+        fig2.text(0.88, 0.98, name2, fontsize=24, weight='bold', color='red', 
+                ha='right', va='top', transform=fig2.transFigure)
+        fig2.text(0.88, 0.94, f'{league2} - {season2}', fontsize=18, color='red', 
+                ha='right', va='top', transform=fig2.transFigure)
 
+    ax2.set_xticks(angles[:-1])
+    ax2.set_xticklabels([])
+    ax2.set_yticks([])
+    ax2.set_ylim(0, 100)
+    ax2.plot(0, 0, 'ko', markersize=4, color='#200020')
 
-    ax.spines['polar'].set_visible(False)
+    fig2.subplots_adjust(left=0.1, right=0.9, top=0.85, bottom=0.15)
 
-    ax.plot(angles, [100] * len(angles), color='white', linewidth=2.25, linestyle='-')
-    ax.plot(angles, [75] * len(angles), color='white', linewidth=0.7, linestyle='-')
-    ax.plot(angles, [50] * len(angles), color='white', linewidth=0.7, linestyle='-')
-    ax.plot(angles, [25] * len(angles), color='white', linewidth=0.7, linestyle='-')
+    # Display in Streamlit
+    st.pyplot(fig2)
 
-    if compare == 'No':
-        ax.plot(angles, data1, color='green', linewidth=0.4, linestyle='-', marker='o', markersize=3)
-        ax.fill(angles, data1, color='green', alpha=0.95)
+    # metrics = ['Possession', 'Progression', 'Chance Creation', 'Counter Attacking', 'Defensive Solidity', 'Defensive Intensity', 'High Pressing']
+    # metric_names = ['Possession', 'Progression', 'Chance Creation', 'Counter\nAttacking', 'Defensive Solidity', 'Defensive Intensity', 'High Pressing']
 
-    if compare == 'Yes':
-        ax.plot(angles, data1, color='green', linewidth=2.5, linestyle='-', marker='o', markersize=3)
-        ax.fill(angles, data1, color='green', alpha=0.7)
-
-        ax.plot(angles, data2, color='red', linewidth=2.5, linestyle='-', marker='o', markersize=3)
-        ax.fill(angles, data2, color='red', alpha=0.55)
-
-
-
-    ax.set_xticks(angles[:-1])
-    metrics = ["" for i in range(len(metrics))]
-    ax.set_xticklabels(metrics)
-
-    ax.set_yticks([])
-    ax.set_ylim(0, 100)
-
-    ax.plot(0, 0, 'ko', markersize=4, color='#400179')
-    #fig.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1)
-    #fig.subplots_adjust(left=0.25, right=0.75, top=0.75, bottom=0.25)
-    fig.subplots_adjust(left=0.1, right=0.9, top=0.85, bottom=0.15)
-
-
-
-    #ax.set_xticklabels(metrics, color='white', size=12)
+    # if compare == 'Yes':
+    #     Possession2 = df.loc[df.index[(df['Team'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'Possession']
+    #     Progression2 = df.loc[df.index[(df['Team'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'Progression']
+    #     ChanceCreation2 = df.loc[df.index[(df['Team'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'Chance Creation']
+    #     CounterAttacking2 = df.loc[df.index[(df['Team'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'Counter Attacking']
+    #     DefSolidity2 = df.loc[df.index[(df['Team'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'Defensive Solidity']
+    #     DefIntensity2 = df.loc[df.index[(df['Team'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'Defensive Intensity']
+    #     DefHigh2 = df.loc[df.index[(df['Team'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'Defending High']
 
 
-    #plt.savefig(save_path + file_name + '.png')
-    buf = io.BytesIO()
-    fig.savefig(buf, format='png', bbox_inches='tight', pad_inches=0,facecolor=fig.get_facecolor())
-    #fig.savefig("PIctestjuly3", format='png', bbox_inches='tight', pad_inches=0)
+    #     data2 = [Possession2, Progression2, ChanceCreation2, CounterAttacking2, DefSolidity2, DefIntensity2, DefHigh2]
+        
+    # angles = np.linspace(0, 2 * np.pi, len(metrics), endpoint=False).tolist()
+    # data1 += data1[:1]  # Repeat the first value to close the polygon
+    # angles += angles[:1]  # Repeat the first angle to close the polygon
 
-    buf.seek(0)
+    # if compare == 'Yes':
+    #     data2 += data2[:1]
 
-    # # Open the image using PIL
-    # image = Image.open(buf)
+    # fig, ax = plt.subplots(figsize=(16, 9), subplot_kw=dict(polar=True, facecolor='#400179'))
+    # fig.patch.set_facecolor('#400179')
+    # fig.set_facecolor('#400179')
+
+    # ax.set_facecolor('#400179')
+
+
+    # ax.spines['polar'].set_visible(False)
+
+    # ax.plot(angles, [100] * len(angles), color='white', linewidth=2.25, linestyle='-')
+    # ax.plot(angles, [75] * len(angles), color='white', linewidth=0.7, linestyle='-')
+    # ax.plot(angles, [50] * len(angles), color='white', linewidth=0.7, linestyle='-')
+    # ax.plot(angles, [25] * len(angles), color='white', linewidth=0.7, linestyle='-')
+
+    # if compare == 'No':
+    #     ax.plot(angles, data1, color='green', linewidth=0.4, linestyle='-', marker='o', markersize=3)
+    #     ax.fill(angles, data1, color='green', alpha=0.95)
+
+    # if compare == 'Yes':
+    #     ax.plot(angles, data1, color='green', linewidth=2.5, linestyle='-', marker='o', markersize=3)
+    #     ax.fill(angles, data1, color='green', alpha=0.7)
+
+    #     ax.plot(angles, data2, color='red', linewidth=2.5, linestyle='-', marker='o', markersize=3)
+    #     ax.fill(angles, data2, color='red', alpha=0.55)
+
+
+
+    # ax.set_xticks(angles[:-1])
+    # metrics = ["" for i in range(len(metrics))]
+    # ax.set_xticklabels(metrics)
+
+    # ax.set_yticks([])
+    # ax.set_ylim(0, 100)
+
+    # ax.plot(0, 0, 'ko', markersize=4, color='#400179')
+    # #fig.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1)
+    # #fig.subplots_adjust(left=0.25, right=0.75, top=0.75, bottom=0.25)
+    # fig.subplots_adjust(left=0.1, right=0.9, top=0.85, bottom=0.15)
+
+
+
+    # #ax.set_xticklabels(metrics, color='white', size=12)
+
+
+    # #plt.savefig(save_path + file_name + '.png')
+    # buf = io.BytesIO()
+    # fig.savefig(buf, format='png', bbox_inches='tight', pad_inches=0,facecolor=fig.get_facecolor())
+    # #fig.savefig("PIctestjuly3", format='png', bbox_inches='tight', pad_inches=0)
+
+    # buf.seek(0)
+
+    # # # Open the image using PIL
+    # # image = Image.open(buf)
+
+    # # # Create a new canvas with desired dimensions and background color
+    # # final_canvas = Image.new('RGB', (1600, 900), (64, 1, 121))
+
+    # image = Image.open(buf).convert("RGBA")
 
     # # Create a new canvas with desired dimensions and background color
-    # final_canvas = Image.new('RGB', (1600, 900), (64, 1, 121))
-
-    image = Image.open(buf).convert("RGBA")
-
-    # Create a new canvas with desired dimensions and background color
-    final_canvas = Image.new('RGBA', (1600, 900), (64, 1, 121, 255))
+    # final_canvas = Image.new('RGBA', (1600, 900), (64, 1, 121, 255))
 
 
-    resize_factor = 1.07
-    new_size = (int(image.size[0] * resize_factor), int(image.size[1] * resize_factor))
-    image = image.resize(new_size)
-    image = image.rotate(13, expand=True)
-    #image = image.rotate(13)
+    # resize_factor = 1.07
+    # new_size = (int(image.size[0] * resize_factor), int(image.size[1] * resize_factor))
+    # image = image.resize(new_size)
+    # image = image.rotate(13, expand=True)
+    # #image = image.rotate(13)
 
 
-    # Calculate the position to paste, centering the image
-    x = (final_canvas.width - image.width) // 2
-    y = (final_canvas.height - image.height) // 2
+    # # Calculate the position to paste, centering the image
+    # x = (final_canvas.width - image.width) // 2
+    # y = (final_canvas.height - image.height) // 2
 
-    # Paste the matplotlib generated image onto the canvas
-    final_canvas.paste(image, (x, y+65), image)
+    # # Paste the matplotlib generated image onto the canvas
+    # final_canvas.paste(image, (x, y+65), image)
 
-    final_canvas = final_canvas.convert("RGB")
+    # final_canvas = final_canvas.convert("RGB")
 
-    # plt.figure(figsize=(16, 9))  # Adjust figure size as needed
-    # plt.imshow(final_canvas)
-    # plt.axis('off')  # Turns off axes.
+    # # plt.figure(figsize=(16, 9))  # Adjust figure size as needed
+    # # plt.imshow(final_canvas)
+    # # plt.axis('off')  # Turns off axes.
 
 
-    fig_canvas, ax_canvas = plt.subplots(figsize=(16, 9))
-    ax_canvas.imshow(final_canvas)
+    # fig_canvas, ax_canvas = plt.subplots(figsize=(16, 9))
+    # ax_canvas.imshow(final_canvas)
 
-    ax_canvas.axis('off')
-    plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
-    plt.tight_layout(pad=0)
-    plt.margins(0, 0)
+    # ax_canvas.axis('off')
+    # plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
+    # plt.tight_layout(pad=0)
+    # plt.margins(0, 0)
 
-    x_list = [1150,830,730,450,515,800,1090]
-    y_list = [460,190,190,460,770,885,770]
-    orient_list = ['left', 'left', 'right', 'right', 'right','center', 'left']
+    # x_list = [1150,830,730,450,515,800,1090]
+    # y_list = [460,190,190,460,770,885,770]
+    # orient_list = ['left', 'left', 'right', 'right', 'right','center', 'left']
 
-    for i in range(7):
-        plt.text(x_list[i], y_list[i], metric_names[i], ha = orient_list[i], fontsize=30, color = 'white')#,fontname='Avenir')
+    # for i in range(7):
+    #     plt.text(x_list[i], y_list[i], metric_names[i], ha = orient_list[i], fontsize=30, color = 'white')#,fontname='Avenir')
 
 
 
@@ -1091,45 +1188,45 @@ if mode == 'Team Style':
 
 
 
-    if compare == 'No':
-        plt.text(800,70,f"{name1}",ha = 'center', fontsize=45, color = 'white', fontweight = 'bold')
-        plt.text(800,120,f"{season1} {league1}",ha = 'center', fontsize=30, color = 'white')#, fontname='Avenir')
-        plt.text(30,880,f"Data compared to {league1} teams in {season1}",ha = 'left', fontsize=16, color = 'white')#, fontname='Avenir')
+    # if compare == 'No':
+    #     plt.text(800,70,f"{name1}",ha = 'center', fontsize=45, color = 'white', fontweight = 'bold')
+    #     plt.text(800,120,f"{season1} {league1}",ha = 'center', fontsize=30, color = 'white')#, fontname='Avenir')
+    #     plt.text(30,880,f"Data compared to {league1} teams in {season1}",ha = 'left', fontsize=16, color = 'white')#, fontname='Avenir')
 
-    if compare == 'Yes':
+    # if compare == 'Yes':
 
-        plt.text(40,65,f"{name1}",ha = 'left', fontsize=35, color = 'green', fontweight = 'bold')
-        #plt.text(40,110,f"{club} - {season1} {league1}",ha = 'left', fontsize=30, color = 'green', fontname='Avenir')
-        #plt.text(40,150,f"{mins} Minutes - {detailed_pos}",ha = 'left', fontsize=30, color = 'green', fontname='Avenir')
-        plt.text(40,110,f"{season1} {league1}",ha = 'left', fontsize=30, color = 'green')#, fontname='Avenir')
+    #     plt.text(40,65,f"{name1}",ha = 'left', fontsize=35, color = 'green', fontweight = 'bold')
+    #     #plt.text(40,110,f"{club} - {season1} {league1}",ha = 'left', fontsize=30, color = 'green', fontname='Avenir')
+    #     #plt.text(40,150,f"{mins} Minutes - {detailed_pos}",ha = 'left', fontsize=30, color = 'green', fontname='Avenir')
+    #     plt.text(40,110,f"{season1} {league1}",ha = 'left', fontsize=30, color = 'green')#, fontname='Avenir')
     
-        plt.text(1560,65,f"{name2}",ha = 'right', fontsize=35, color = 'red', fontweight = 'bold')
-        #plt.text(1560,110,f"{club2} - {season2} {league2}",ha = 'right', fontsize=30, color = 'red', fontname='Avenir')
-        #plt.text(1560,150,f"{mins2} Minutes - {detailed_pos2}",ha = 'right', fontsize=30, color = 'red', fontname='Avenir')
-        plt.text(1560,110,f"{season2} {league2}",ha = 'right', fontsize=30, color = 'red')#, fontname='Avenir')
-        plt.text(30,880,f"Data compared to teams in their league",ha = 'left', fontsize=15, color = 'white')#, fontname='Avenir')
+    #     plt.text(1560,65,f"{name2}",ha = 'right', fontsize=35, color = 'red', fontweight = 'bold')
+    #     #plt.text(1560,110,f"{club2} - {season2} {league2}",ha = 'right', fontsize=30, color = 'red', fontname='Avenir')
+    #     #plt.text(1560,150,f"{mins2} Minutes - {detailed_pos2}",ha = 'right', fontsize=30, color = 'red', fontname='Avenir')
+    #     plt.text(1560,110,f"{season2} {league2}",ha = 'right', fontsize=30, color = 'red')#, fontname='Avenir')
+    #     plt.text(30,880,f"Data compared to teams in their league",ha = 'left', fontsize=15, color = 'white')#, fontname='Avenir')
 
 
-    #streamlit run streamlit.py
+    # #streamlit run streamlit.py
 
 
-    # plt.subplots_adjust(left=0, right=1, top=1, bottom=0) 
-    # plt.margins(0,0) 
+    # # plt.subplots_adjust(left=0, right=1, top=1, bottom=0) 
+    # # plt.margins(0,0) 
 
-    # plt.tight_layout(pad=0)
-    buf = io.BytesIO()
-    plt.savefig(buf, format='png', bbox_inches='tight', pad_inches=0)
-    #fig.savefig("PIctestjuly3", format='png', bbox_inches='tight', pad_inches=0)
+    # # plt.tight_layout(pad=0)
+    # buf = io.BytesIO()
+    # plt.savefig(buf, format='png', bbox_inches='tight', pad_inches=0)
+    # #fig.savefig("PIctestjuly3", format='png', bbox_inches='tight', pad_inches=0)
 
-    buf.seek(0)
+    # buf.seek(0)
 
 
-    # plt.savefig("PIctestjuly3.png")
+    # # plt.savefig("PIctestjuly3.png")
 
-    #st.pyplot(plt)
+    # #st.pyplot(plt)
 
         
-    st.image(buf, use_container_width=True)
+    # st.image(buf, use_container_width=True)
 
 
 
