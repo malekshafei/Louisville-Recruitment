@@ -1557,7 +1557,7 @@ if mode == 'Player Rankings':
     df = pd.read_parquet(file_name)
     
     
-    df = df[df['Competition'].isin(['USL', 'NWSL', 'MLS Next Pro'])].sort_values(by = 'Ovr', ascending=False)
+    df = df[df['Competition'].isin(['USL', 'NWSL', 'MLS Next Pro', 'ACC', 'Big 10', 'Big 12', 'SEC', 'NCAA Men'])].sort_values(by = 'Ovr', ascending=False)
 
     df['Top Speed'] = df['pctTop Speed']
     df['HI Distance'] = (0.3 * df['pctHI Count']) + (0.4 * df['pctDistance']) + (0.3 * df['pctHI Distance'])
@@ -1580,7 +1580,7 @@ if mode == 'Player Rankings':
        'Chances Faced','Shot Stopping', 'Short Distribution', 'Long Distribution',
        'Coming Off Line', 'Difficult Shot Stopping', '1v1 Saves']
     
-    all_cols = ['Player', 'Team', 'Competition', 'Age', 'Minutes', 'Position Group', 'Position', 'Season', 'Season Order', 'player_id'] + value_cols
+    all_cols = ['Player', 'Team', 'Competition', 'Age', 'Minutes', 'Position Group', 'Position', 'Season', 'Season Order', 'player_id', 'Year', 'Conference', 'Height'] + value_cols
 
     df = df[all_cols]
 
@@ -1600,8 +1600,13 @@ if mode == 'Player Rankings':
     col1, col2, col3 = st.columns(3)
 
     with col1: 
-        leagues = st.segmented_control("League", ['NWSL', 'USL', 'MLS Next Pro'], default='NWSL')
-        df = df[(df['Competition'] == leagues)]
+        leagues = st.segmented_control("League", ['NWSL', 'USL', 'MLS Next Pro', 'NCAA Women', 'NCAA Men'], default='NWSL')
+        if leagues != 'NCAA Women':
+            df = df[(df['Competition'] == leagues)]
+
+        else: df = df[df['Competition'].isin(['ACC', 'Big 10', 'Big 12', 'SEC'])]
+        
+
         if leagues == 'NWSL':
             #salaries = pd.read_excel("/Users/malekshafei/Desktop/Louisville/NWSLSalaries-August2025.xlsx")
             #salaries.to_parquet("/Users/malekshafei/Desktop/Louisville/NWSLSalaries-August2025.parquet")
@@ -1615,8 +1620,38 @@ if mode == 'Player Rankings':
             df['Salary ($)'] = df['Salary'].apply(lambda x: f"${x}k")
 
 
-        age_range = st.slider("Age Range", 15, 40, (15,30))
-        df = df[((df['Age'] >= age_range[0]) & (df['Age'] <= age_range[1])) | (pd.isna(df['Age']))]
+        if leagues not in ['NCAA Women', 'NCAA Men']:
+            age_range = st.slider("Age Range", 15, 40, (15,30))
+            df = df[((df['Age'] >= age_range[0]) & (df['Age'] <= age_range[1])) | (pd.isna(df['Age']))]
+        elif leagues == 'NCAA Women':
+            all_classes = df['Year'].unique()
+            options = ['1', '2', '3','4+']
+
+            # Slider selection
+            age_range = st.select_slider("Class Range", options=options, value=('1', '4+'))
+
+            # --- Build selected_classes based on range ---
+            def get_selected_classes(age_range, all_classes):
+                start, end = age_range
+                ordered_levels = ['1', '2', '3', '4', '5', '6', '8']  # define logical order
+                # Handle "4+" properly — include all >= start
+                if end == '4+':
+                    start_idx = ordered_levels.index(start)
+                    selected_levels = ordered_levels[start_idx:]  # everything from start upward
+                else:
+                    start_idx = ordered_levels.index(start)
+                    end_idx = ordered_levels.index(end)
+                    selected_levels = ordered_levels[start_idx:end_idx + 1]
+                # Include both normal and (RS) variants
+                selected_classes = [c for c in all_classes if any(c.startswith(x) for x in selected_levels)]
+                return selected_classes
+
+
+            selected_classes = get_selected_classes(age_range, all_classes)
+
+            df = df[df['Year'].isin(selected_classes)]
+            
+
 
         create_ratings = st.segmented_control("Customize Rating Weights?", ["Yes", "No"], default = "No")
 
@@ -1628,9 +1663,13 @@ if mode == 'Player Rankings':
         df = df[df['Season Order'] == df.groupby('Competition')['Season Order'].transform('max')]
 
         
-        minutes_range = st.slider("Minutes Played Range", 0, max(df['Minutes']), (800, max(df['Minutes'])))
+        minutes_range = st.slider("Minutes Played Range", 0, max(df['Minutes']), (300, max(df['Minutes'])))
         df = df[(df['Minutes'] >= minutes_range[0]) & (df['Minutes'] <= minutes_range[1])]
-    
+
+        if leagues == 'NCAA Women':
+            conferences = st.pills('Select Conferences', ['ACC', 'Big 10', 'Big 12', 'SEC'], selection_mode = 'multi',default = ['ACC', 'Big 10', 'Big 12', 'SEC'])
+            df = df[df['Conference'].isin(conferences)]
+
     with col3: 
         
         spec_position = st.pills("Select Primary Positions",sorted(df['Position'].unique()), selection_mode='multi',default = df['Position'].unique())
@@ -1647,41 +1686,71 @@ if mode == 'Player Rankings':
         
     
     if create_ratings == 'Yes':
-        if position_group1 == 'GKs':
-            ratings = ['Chances Faced','Shot Stopping', 'Short Distribution', 'Long Distribution',
-                        'Coming Off Line', 'Difficult Shot Stopping', '1v1 Saves']
-        if position_group1 == 'CBs':
-            ratings = ['Tackle Accuracy', 'Defensive Output', 'Defending High',
-                         'Progressive Passing', 'Carrying', 'Ball Retention', 'Heading',
-                          'Top Speed', 'HI Distance']
-            
-        if position_group1 == 'WBs':
-            ratings = ['Tackle Accuracy', 'Defensive Output', 'Defending High',
-                       'Pressing', 'Heading', 
-                       'Ball Retention', 'Progression', 'Carrying',
-                       'Receiving Forward', 'Crossing', 'Chance Creation',
-                        'Top Speed', 'HI Distance']
-            
-        if position_group1 == 'CMs':
-            ratings = ['Tackle Accuracy', 'Defensive Output', 'Defending High',
-                       'Pressing', 'Heading', 
-                       'Ball Retention', 'Progression', 'Carrying',
-                       'Receiving Forward', 'Chance Creation',
-                        'Top Speed', 'HI Distance']
-            
-        if position_group1 in ['AMs', 'Ws']:
-            ratings = ['Chance Creation', 'Dribbling', 'Progression',
-                       'Poaching', 'Finishing', 'Ball Retention',
-                       'Crossing','Heading',  'Defensive Output',
+        if leagues not in ['NCAA Men', 'NCAA Women']: 
+            if position_group1 == 'GKs':
+                ratings = ['Chances Faced','Shot Stopping', 'Short Distribution', 'Long Distribution',
+                            'Coming Off Line', 'Difficult Shot Stopping', '1v1 Saves']
+            if position_group1 == 'CBs':
+                ratings = ['Tackle Accuracy', 'Defensive Output', 'Defending High',
+                            'Progressive Passing', 'Carrying', 'Ball Retention', 'Heading',
+                            'Top Speed', 'HI Distance']
+                
+            if position_group1 == 'WBs':
+                ratings = ['Tackle Accuracy', 'Defensive Output', 'Defending High',
+                        'Pressing', 'Heading', 
+                        'Ball Retention', 'Progression', 'Carrying',
+                        'Receiving Forward', 'Crossing', 'Chance Creation',
+                            'Top Speed', 'HI Distance']
+                
+            if position_group1 == 'CMs':
+                ratings = ['Tackle Accuracy', 'Defensive Output', 'Defending High',
+                        'Pressing', 'Heading', 
+                        'Ball Retention', 'Progression', 'Carrying',
+                        'Receiving Forward', 'Chance Creation',
+                            'Top Speed', 'HI Distance']
+                
+            if position_group1 in ['AMs', 'Ws']:
+                ratings = ['Chance Creation', 'Dribbling', 'Progression',
+                        'Poaching', 'Finishing', 'Ball Retention',
+                        'Crossing','Heading',  'Defensive Output',
+                            'Top Speed', 'HI Distance'
+                        ]
+            if position_group1 == 'STs':
+                ratings = ['Poaching', 'Finishing', 'Heading',
+                        'Chance Creation', 'Dribbling', 'Progression',
+                        'Ball Retention', 'Defensive Output',
                         'Top Speed', 'HI Distance'
-                      ]
-        if position_group1 == 'STs':
-            ratings = ['Poaching', 'Finishing', 'Heading',
-                       'Chance Creation', 'Dribbling', 'Progression',
-                       'Ball Retention', 'Defensive Output',
-                       'Top Speed', 'HI Distance'
-                       
-                      ]
+                        
+                        ]
+        
+        else:
+            if position_group1 == 'GKs':
+                ratings = ['Chances Faced','Shot Stopping', 'Short Distribution', 'Long Distribution',]
+            if position_group1 == 'CBs':
+                ratings = ['Tackle Accuracy', 'Defensive Output',
+                            'Progressive Passing', 'Carrying', 'Ball Retention', 'Heading']
+                
+            if position_group1 == 'WBs':
+                ratings = ['Tackle Accuracy', 'Defensive Output', 'Heading', 
+                        'Ball Retention', 'Progression', 'Carrying',
+                        'Receiving Forward', 'Crossing', 'Chance Creation']
+                
+            if position_group1 == 'CMs':
+                ratings = ['Tackle Accuracy', 'Defensive Output', 'Heading',
+                        'Ball Retention', 'Progression', 'Carrying',
+                        'Receiving Forward', 'Chance Creation']
+                
+            if position_group1 in ['AMs', 'Ws']:
+                ratings = ['Chance Creation', 'Dribbling', 'Progression',
+                        'Poaching', 'Finishing', 'Ball Retention',
+                        'Crossing','Heading',  'Defensive Output'                            
+                        ]
+            if position_group1 == 'STs':
+                ratings = ['Poaching', 'Finishing', 'Heading',
+                        'Chance Creation', 'Dribbling', 'Progression',
+                        'Ball Retention', 'Defensive Output',
+                        
+                        ]
 
                          
             
@@ -1738,6 +1807,8 @@ if mode == 'Player Rankings':
     #st.write(df)
 
     if leagues == 'NWSL': columns = ["Rank","Player", "Position","Minutes", "Age", "Salary ($)", "Ovr"]
+    if leagues == 'NCAA Men': columns = ["Rank","Player", "Team", "Position","Minutes", "Age",  "Ovr"]
+    if leagues == 'NCAA Women': columns = ["Rank","Player", "Team", "Position","Minutes", "Year", "Height", "Ovr"]
     else: columns = ["Rank","Player", "Position","Minutes", "Age", "Ovr"]
 
     
@@ -1751,7 +1822,8 @@ if mode == 'Player Rankings':
 
         # Titles sit in the top figure margin; table lives entirely inside the axes.
         title = f'Top {position_group1} - Data Ranking'
-        subtitle = f'{leagues} | Age: {age_range[0]}-{age_range[1]} | Minutes: {minutes_range[0]}-{minutes_range[1]}'
+        if leagues not in ['NCAA Women', 'NCAA Men']: subtitle = f'{leagues} | Age: {age_range[0]}-{age_range[1]} | Minutes: {minutes_range[0]}-{minutes_range[1]}'
+        else: subtitle = f'{leagues} | Minutes: {minutes_range[0]}-{minutes_range[1]}'
         fig.suptitle(title, fontsize=24, fontweight='bold', y=0.965)
         fig.text(0.5, 0.92, subtitle, ha='center', va='center', fontsize=14, color='black')
 
@@ -1820,6 +1892,27 @@ if mode == 'Player Rankings':
                 "Minutes": 0.10,
                 "Age": 0.10,
                 "Salary ($)": 0.10,
+                "Ovr": 0.12
+            }
+        elif leagues == 'NCAA Men': 
+            col_widths = {
+                "Rank": 0.05,
+                "Player": 0.25,
+                "Team": 0.25,
+                "Position": 0.2,
+                "Minutes": 0.10,
+                "Age": 0.10,
+                "Ovr": 0.12
+            }
+        elif leagues == 'NCAA Women': 
+            col_widths = {
+                "Rank": 0.05,
+                "Player": 0.25,
+                "Team": 0.25,
+                "Position": 0.2,
+                "Minutes": 0.10,
+                "Year": 0.10,
+                "Height": 0.10,
                 "Ovr": 0.12
             }
         else:
@@ -1956,6 +2049,10 @@ if mode == 'Player Rankings':
     st.write("")
     st.write("")
     st.dataframe(data_copy, hide_index=True)
+
+
+    
+
     # Example with custom data and columns
     
 
