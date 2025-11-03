@@ -1673,7 +1673,7 @@ if mode == 'Player Rankings':
     with col3: 
         
         spec_position = st.pills("Select Primary Positions",sorted(df['Position'].unique()), selection_mode='multi',default = df['Position'].unique())
-
+        df = df[df['Position'].isin(spec_position)]
         num_shown = st.segmented_control("# Players to Show", ["10", "15", "25", "All"],default = "15" )
 
         if leagues == "NWSL": 
@@ -1807,8 +1807,8 @@ if mode == 'Player Rankings':
     #st.write(df)
 
     if leagues == 'NWSL': columns = ["Rank","Player", "Position","Minutes", "Age", "Salary ($)", "Ovr"]
-    if leagues == 'NCAA Men': columns = ["Rank","Player", "Team", "Position","Minutes", "Age",  "Ovr"]
-    if leagues == 'NCAA Women': columns = ["Rank","Player", "Team", "Position","Minutes", "Year", "Height", "Ovr"]
+    elif leagues == 'NCAA Men': columns = ["Rank","Player", "Team", "Position","Minutes",  "Ovr"]
+    elif leagues == 'NCAA Women': columns = ["Rank","Player", "Team", "Position","Minutes", "Year", "Height", "Ovr"]
     else: columns = ["Rank","Player", "Position","Minutes", "Age", "Ovr"]
 
     
