@@ -126,7 +126,369 @@ pos_list = ['CBs', 'WBs', 'CMs', 'AMs', 'Ws', 'STs', 'GKs']
 
 
 
-mode = st.selectbox("Select Mode", options=['Player Overview', 'Multi Player Dot Graph', 'Player Rankings',  'Team Style'])
+mode = st.selectbox("Select Mode", options=['Player Overview', 'Multi Player Dot Graph', 'Player Rankings',  'Team Style', 
+                                            'New Radar'])
+
+ws_leagues = ['NCAA Women', 'U20 World Cup', 'U19Euros', 'CONCACAF W Champions League', 'CAF W Champions League','France', 'China', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'USL Super League', 'USL League One', 'NCAA Men', 'Canada' ]
+if mode == 'New Radar':
+    df = df.sort_values(by = ['Season Order', 'Minutes'], ascending=[False, False])
+    position_group1 = st.selectbox("Select Position Group", options=pos_list)
+    df = df[df['Position Group'] == position_group1]
+
+    df = df.drop_duplicates(subset=['Player', 'Season', 'Position Group', 'Competition'])
+
+    
+
+    compare = "No"
+    # league1 = st.selectbox("Select League", options=['NWSL', 'Mexico', 'Brazil','England', 'England2', 'Germany2', 'Spain2', 'Spain', 'Germany', 'Sweden', 'France', 'China', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'USL Super League', 'USL', 'MLS', 'MLS Next Pro', 'USL League One', 'NCAA Men', 'Canada' ])
+    # name1 = st.selectbox("Select Player", options=df[(df['Position Group'] == position_group1) & (df['Competition'] == league1)]['Player'].unique())
+    # season1 = st.selectbox("Select Season", options=sorted(df[(df['Competition'] == league1) & (df['Position Group'] == position_group1) & (df['Player'] == name1)]['Season'].unique(), reverse=True))
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        league1 = st.selectbox(
+            'Select League',
+            ['USL', 'NWSL', 'NCAA Women','Mexico', 'Brazil','France','England', 'England2', 'Germany2', 'Spain2', 'Spain', 'Germany', 'Sweden', 'China', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'USL Super League', 'Olympics', 'U20 World Cup', 'U19Euros', 'CONCACAF W Champions League', 'CAF W Champions League', 'MLS', 'MLS Next Pro', 'USL League One', 'NCAA Men', 'Canada', 'ScotlandMen' ]
+        )
+
+    # Place the second selectbox in the second column
+    with col2:
+        #player_options = df[df['Competition'] == st.session_state.league1]['Player'].unique()
+        name1 = st.selectbox(
+            'Select Player',
+            #df[(df['Position Group'] == position_group1) & (df['Competition'] == league1)]['Player'].unique(),
+            df[(df['Competition'] == league1)]['Player'].unique(),
+            #player_options
+            
+        )
+
+    # Place the third selectbox in the third column
+    with col3:
+        #season_options = sorted(df[(df['Competition'] == st.session_state.league1) & (df['Player'] == st.session_state.name1)]['Season'].unique(), reverse=True)
+        season1 = st.selectbox(
+            'Select Season',
+            #sorted(df[(df['Competition'] == league1) & (df['Position Group'] == position_group1) & (df['Player'] == name1)]['Season'].unique(), reverse=True),
+            sorted(df[(df['Competition'] == league1)  & (df['Player'] == name1)]['Season'].unique(), reverse=True),
+            #season_options
+        )
+
+    player_row = df[(df['Position Group'] == position_group1) & (df['Competition'] == league1) & (df['Player'] == name1) & (df['Season'] == season1)]
+
+    col1, col2 = st.columns(2)
+    with col1:
+        
+        if position_group1 == 'GKs': mode1 = st.selectbox("Select Radar Type", options=["Basic", "IP", "OOP"])
+
+        else: mode1 = st.selectbox("Select Radar Type", options=["Basic", 'IP', 'OOP', 'Physical'])
+
+    
+ 
+    
+
+    
+    with col2:
+        compare = st.selectbox("Compare with another player?", options=["No", 'Yes'])
+
+
+    if compare == 'Yes':
+        col1, col2, col3 = st.columns(3)
+        with col1: league2 = st.selectbox("Select other League", options=['USL', 'NWSL', 'NCAA Women','Mexico', 'Brazil','France','England', 'England2', 'Germany2', 'Spain2', 'Spain', 'Germany', 'Sweden', 'China', 'Colombia', 'Portugal', 'Japan','Australia', 'Italy', 'Norway', 'Denmark', 'Belgium', 'Switzerland','Russia','Ukraine', 'Scotland', 'Iceland', 'USL Super League', 'Olympics', 'U20 World Cup', 'U19Euros', 'CONCACAF W Champions League', 'CAF W Champions League', 'MLS', 'MLS Next Pro', 'USL League One', 'NCAA Men', 'Canada', 'ScotlandMen' ])
+        with col2: 
+            #name2 = st.selectbox("Select other Player", options=df[(df['Position Group'] == position_group1) & (df['Competition'] == league2)]['Player'].unique())
+            name2 = st.selectbox("Select other Player", options=df[(df['Competition'] == league2)]['Player'].unique())
+        with col3: 
+            #season2 = st.selectbox("Select other season", options=sorted(df[(df['Competition'] == league2) & (df['Position Group'] == position_group1) & (df['Player'] == name2)]['Season'].unique(), reverse=True))
+            season2 = st.selectbox("Select other season", options=sorted(df[(df['Competition'] == league2)  & (df['Player'] == name2)]['Season'].unique(), reverse=True))
+
+        player2_row = df[(df['Position Group'] == position_group1) & (df['Competition'] == league2) & (df['Player'] == name2) & (df['Season'] == season2)]
+
+
+
+    important_metrics = []
+
+            
+
+    if position_group1 == 'GK':
+        important_metrics = ['Shot Stopping', 'Short Distribution', 'Long Distribution', 'Stepping Out', 'Saving Big Chances', '1v1 Saving']
+        oop_metrics = ['pctGoals Prevented', 'pctGK Save %', 'pctGK Shots on Target Faced','pctBig Chances Save %', 'pctGK 1v1s Save Rate']
+        ip_metrics = ['pctShort Pass %', 'pctForward Pass %', 'pctLong Pass %', 'pctPressured Pass %','pctProgressive Passes', 'pctPasses into Final Third']                            
+
+
+    if position_group1 == 'CBs':
+        important_metrics = ['Speed','Tackle Accuracy', 'Defensive Output','Defending High', 'Heading', 'Ball Retention', 'Progression', 'Verticality']
+        oop_metrics = ['pctAverage Defensive Action Distance', 'pctTackle %', 'pctTackles Won', 'pctInterceptions', 'pctBlocks', 'pctAttacking Half Pressures', 'pctAerial Wins', 'pctAerial %',]
+        ip_metrics = ['pctPasses Completed', 'pctShort Pass %', 'pctLong Passes', 'pctLong Pass %','Progressive Passes', 'pctProgressive Pass %',  'Passes into Final Third', 'pctProgressive Carries', 'pct% of Passes Forward']
+        phys_metrics = ['pctWeighted Speed', 'pct%_games_29+', 'pctDistance', 'pctHI Count', 'pctHI Distance', 'pct% of Distance HI', 'pctSprinting Distance', 'pctTime to HSR', 'pctTime to Sprint' ]                                
+    
+    if position_group1 == 'WBs':
+        important_metrics = ['Speed', 'Running', 'Ball Retention', 'Carrying', 'Chance Creation','Receiving Forward', 'Tackle Accuracy', 'Defensive Output', 'Pressing',  'Heading']
+        oop_metrics = ['pctAverage Defensive Action Distance', 'pctTackle %', 'pctTackles Won', 'pctInterceptions', 'pctBlocks', 'pctAttacking Half Pressures', 'pctAttacking Third Pressures', 'pctAerial Wins', 'pctAerial %',]
+        ip_metrics = ['pctShort Pass %', 'pctProgressive Passes', 'pctProgressive Pass %', 'pctProgressive Carries', 'pct% of Passes Forward', 'pctAssists', 'pctxA', 'pctCrosses Completed', 'pctCross %', 'pctFinal Third Receptions' ]
+        phys_metrics = ['pctWeighted Speed', 'pct%_games_29+', 'pctDistance', 'pctHI Count', 'pctHI Distance', 'pct% of Distance HI', 'pctSprinting Distance', 'pctTime to HSR', 'pctTime to Sprint' ]                                
+        
+    if position_group1 == 'CMs':
+        important_metrics = ['Speed', 'Running', 'Ball Retention', 'Carrying', 'Progression', 'Chance Creation','Receiving Forward', 'Tackle Accuracy', 'Defensive Output', 'Pressing', 'Heading']
+        oop_metrics = ['pctAverage Defensive Action Distance', 'pctTackle %', 'pctTackles Won', 'pctInterceptions', 'pctBlocks', 'pctAttacking Half Pressures', 'pctAttacking Third Pressures', 'pctAerial Wins', 'pctAerial %',]
+        ip_metrics = ['pctShort Pass %', 'pctProgressive Passes', 'pctProgressive Pass %', 'pctProgressive Carries', 'pctDribble %', 'pct% of Passes Forward', 'pctxG', 'pctxA', 'pctFinal Third Receptions' ]
+        phys_metrics = ['pctWeighted Speed', 'pct%_games_29+', 'pctDistance', 'pctHI Count', 'pctHI Distance', 'pct% of Distance HI', 'pctSprinting Distance', 'pctTime to HSR', 'pctTime to Sprint' ]                                
+        
+    if position_group1 in ['Ws', 'AMs']:
+            
+        important_metrics = ['Speed', 'Running', 'Carrying', 'Progression', 'Chance Creation', 'Poaching', 'Finishing', 'Defensive Output']
+        oop_metrics = ['pctAverage Defensive Action Distance', 'pctTackle %', 'pctTackles Won', 'pctInterceptions', 'pctBlocks', 'pctAttacking Third Pressures', 'pctAerial %',]
+        ip_metrics = ['pctProgressive Passes', 'pctProgressive Carries',  'Take Ons', 'pctDribble %', 'pctFinal Third Receptions', 'pctAssists', 'pctxA', 'pctBox Receptions', 'pctGoals', 'pctxG', 'pctxG/Shot', 'pctGoal Conversion %', ]
+        phys_metrics = ['pctWeighted Speed', 'pct%_games_29+', 'pctDistance', 'pctHI Count', 'pctHI Distance', 'pct% of Distance HI', 'pctSprinting Distance', 'pctTime to HSR', 'pctTime to Sprint' ]                                
+        
+    if position_group1 == 'STs':
+            
+        important_metrics = ['Speed', 'Running',  'Ball Retention', 'Chance Creation', 'Poaching', 'Finishing', 'Heading', 'Defensive Output']
+        oop_metrics = ['pctAverage Defensive Action Distance', 'pctTackle %', 'pctTackles Won', 'pctInterceptions', 'pctBlocks', 'pctAttacking Third Pressures', 'pctAerials Won', 'pctAerial %',]
+        ip_metrics = ['pctProgressive Passes', 'pctProgressive Carries',  'Take Ons', 'pctDribble %', 'pctFinal Third Receptions', 'pctAssists', 'pctxA', 'pctBox Receptions', 'pctGoals', 'pctxG', 'pctxG/Shot', 'pctGoal Conversion %', ]
+        phys_metrics = ['pctWeighted Speed', 'pct%_games_29+', 'pctDistance', 'pctHI Count', 'pctHI Distance', 'pct% of Distance HI', 'pctSprinting Distance', 'pctTime to HSR', 'pctTime to Sprint' ]                                
+            
+    rename_metrics = {
+        'GK Save %': 'Save %', 
+        'GK Shots on Target Faced': 'Shots on Target Faced',
+        'GK 1v1s Save Rate': '1v1 Save Rate',
+        'Progressive Passes': 'Prog. Passes',
+        'Progressive Pass %': 'Prog. Pass %',
+        'Progressive Carries': 'Prog. Carries',
+        'Passes into Final Third': 'Passes into F3',
+
+        'Average Defensive Action Distance': 'Avg. Def. Dist',
+        'Attacking Half Pressures': 'Att. Half Pressures',
+        'Attacking Third Pressures': 'Att. Third Pressures',
+        'Weighted Speed': 'Top Speed',
+        '%_games_29+': '% of Games 29+ km/h',
+        'Final Third Receptions': 'Att. Third Touches',
+        'Box Receptions': 'Box Touches',
+        'Crosses Completed into Box': 'Crosses Completed'
+
+    }
+
+    if mode1 == 'Basic': metrics = important_metrics
+    elif mode1 == 'OOP': metrics = oop_metrics
+    elif mode1 == 'IP': metrics = ip_metrics
+    elif mode1 == 'Physical': metrics = phys_metrics
+    
+    #col_names = ['pct' + name for name in metrics if name not in important_metrics else name]
+    col_names = metrics
+    #print(player_row)
+
+    values = player_row[col_names].values.flatten().tolist()
+
+    if name1 == 'Miguel Berry':
+        values[0] = 35
+        values[1] = 69
+
+    print(name1)
+    for i in range(len(metrics)):
+        print(metrics[i], values[i])
+
+
+    if compare == 'Yes': values2 = player2_row[col_names].values.flatten().tolist()
+
+
+
+
+    angles = np.linspace(0, 2 * np.pi, len(metrics), endpoint=False).tolist()
+    values += values[:1]  # Repeat the first value to close the polygon
+    angles += angles[:1]  # Repeat the first angle to close the polygon
+    if compare == 'Yes':
+        values2 += values2[:1]
+
+    
+
+    fig, ax = plt.subplots(figsize=(16, 9), subplot_kw=dict(polar=True, facecolor='#400179'))
+    fig.patch.set_facecolor('#400179')
+    fig.set_facecolor('#400179')
+
+    ax.set_facecolor('#400179')
+
+
+    ax.spines['polar'].set_visible(False)
+
+    ax.plot(angles, [100] * len(angles), color='white', linewidth=2.25, linestyle='-')
+    ax.plot(angles, [75] * len(angles), color='white', linewidth=0.7, linestyle='-')
+    ax.plot(angles, [50] * len(angles), color='white', linewidth=0.7, linestyle='-')
+    ax.plot(angles, [25] * len(angles), color='white', linewidth=0.7, linestyle='-')
+
+    if compare == 'No':
+        ax.plot(angles, values, color='green', linewidth=0.4, linestyle='-', marker='o', markersize=3)
+        ax.fill(angles, values, color='green', alpha=0.95)
+
+    if compare == 'Yes':
+        ax.plot(angles, values, color='green', linewidth=2.5, linestyle='-', marker='o', markersize=3)
+        ax.fill(angles, values, color='green', alpha=0.7)
+
+        ax.plot(angles, values2, color='red', linewidth=2.5, linestyle='-', marker='o', markersize=3)
+        ax.fill(angles, values2, color='red', alpha=0.55)
+
+
+
+    ax.set_xticks(angles[:-1])
+    #ax.set_xticklabels(["" for i in range(len(metrics))])  # Don't overwrite metrics variable
+    # Map metrics to their display names using rename_metrics
+    # Map metrics to their display names using rename_metrics
+    # Map metrics to their display names using rename_metrics
+    # Map metrics to their display names using rename_metrics
+    # Map metrics to their display names using rename_metrics
+    display_metrics = [rename_metrics.get(metric, metric) for metric in metrics]
+
+    ax.set_xticklabels(display_metrics, fontsize=30, color='white')
+
+    # Manually adjust each label's alignment and rotation
+    for angle, label, text_obj in zip(angles[:-1], display_metrics, ax.get_xticklabels()):
+        angle_deg = np.degrees(angle) % 360
+        text_obj.set_rotation(0)  # No rotation
+
+        #print(label, angle_deg)
+        
+        # Determine alignment based on position
+        if 90 < angle_deg < 270:  # Left side
+            
+            text_obj.set_ha('right')
+        elif angle_deg < 90 or angle_deg > 270:  # Right side
+            text_obj.set_ha('left')
+        else:  # Top or bottom
+            text_obj.set_ha('center')
+
+    ax.set_yticks([])
+    ax.set_ylim(0, 100)
+
+
+    ax.plot(0, 0, 'ko', markersize=4, color='#400179')
+    #fig.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1)
+    #fig.subplots_adjust(left=0.25, right=0.75, top=0.75, bottom=0.25)
+    fig.subplots_adjust(left=0.1, right=0.9, top=0.85, bottom=0.15)
+
+    # club = player_row.iloc[0]['Team']
+    # mins = int(player_row.iloc[0]['Minutes'])
+    # detailed_pos = player_row.iloc[0]['Detailed Position']
+
+   
+    # if compare == 'No':
+    #     plt.text(800,70,f"{name1}",ha = 'center', fontsize=45, color = 'white', fontweight = 'bold')
+    #     plt.text(800,120,f"{club} - {season1} {league1} - {mins} Minutes - {detailed_pos}",ha = 'center', fontsize=30, color = 'white')#, fontname='Avenir')
+    #     plt.text(30,880,f"Data compared to {league1} {position_group1} in {season1}",ha = 'left', fontsize=16, color = 'white')#, fontname='Avenir')
+
+    #     if league1 in ws_leagues and mode1 == 'Basic' and position_group1 == 'GKs': plt.text(1570,880,f"Defending High, Difficult & 1v1 Shot Stopping\ndata unavailable for {league1}",ha = 'right', fontsize=16, color = 'white')#, fontname='Avenir')
+    #     if league1 in ws_leagues and mode1 == 'Basic' and position_group1 in ['CBs','WBs']: plt.text(1570,880,f"Defending High data unavailable for {league1}",ha = 'right', fontsize=16, color = 'white')#, fontname='Avenir')
+    #     if league1 in ws_leagues and mode1 == 'Basic' and position_group1 == 'CMs': plt.text(1570,880,f"Pressing data unavailable for {league1}",ha = 'right', fontsize=16, color = 'white')#, fontname='Avenir')
+
+    # if compare == 'Yes':
+    #     club2 = df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'Team']
+    #     mins2 = int(df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'Minutes'])
+    #     detailed_pos2 = df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'Detailed Position']
+
+    #     plt.text(40,65,f"{name1}",ha = 'left', fontsize=35, color = 'green', fontweight = 'bold')
+    #     plt.text(40,110,f"{club}",ha = 'left', fontsize=30, color = 'green')#, fontname='Avenir')
+    #     plt.text(40,150,f"{season1} {league1}",ha = 'left', fontsize=30, color = 'green')#, fontname='Avenir')
+    #     plt.text(40,190,f"{mins} Minutes - {detailed_pos}",ha = 'left', fontsize=30, color = 'green')#, fontname='Avenir')
+    
+    #     plt.text(1560,65,f"{name2}",ha = 'right', fontsize=35, color = 'red', fontweight = 'bold')
+    #     plt.text(1560,110,f"{club2}",ha = 'right', fontsize=30, color = 'red')#, fontname='Avenir')
+    #     plt.text(1560,150,f"{season2} {league2}",ha = 'right', fontsize=30, color = 'red')#, fontname='Avenir')
+    #     plt.text(1560,190,f"{mins2} Minutes - {detailed_pos2}",ha = 'right', fontsize=30, color = 'red')#, fontname='Avenir')
+    #     plt.text(30,880,f"Data compared to {position_group1} in player's league",ha = 'left', fontsize=15, color = 'white')#, fontname='Avenir')
+
+
+    #     if league1 and league2 in ws_leagues: 
+    #         plt.text(1560, 780, f"Some advanced metrics unavailable for {league1} and {league2}", ha='right', fontsize=16, color='white')
+    #     elif league1 in ws_leagues: 
+    #         ax.text(1560, 780, f"Some advanced metrics unavailable for {league1}", ha='right', fontsize=16, color='white')
+    #     elif league2 in ws_leagues: 
+    #         ax.text(1560, 780, f"Some advanced metrics unavailable for {league2}", ha='right', fontsize=16, color='white')
+
+    buf = io.BytesIO()
+
+    fig.savefig(buf, format='png', bbox_inches='tight', pad_inches=0,facecolor=fig.get_facecolor())
+
+    buf.seek(0)
+
+        
+
+    image = Image.open(buf).convert("RGBA")
+
+    final_canvas = Image.new('RGBA', (1600, 900), (64, 1, 121, 255))
+
+    resize_factor = 1.07
+    new_size = (int(image.size[0] * resize_factor), int(image.size[1] * resize_factor))
+    image = image.resize(new_size)
+    
+    x = (final_canvas.width - image.width) // 2
+    y = (final_canvas.height - image.height) // 2
+
+    final_canvas.paste(image, (x, y+65), image)
+
+    final_canvas = final_canvas.convert("RGB")
+
+    # Create a regular figure to display the image
+    fig_canvas, ax_canvas = plt.subplots(figsize=(16, 9))
+    ax_canvas.imshow(final_canvas)
+    ax_canvas.axis('off')
+
+    # Get player data
+    club = player_row.iloc[0]['Team']
+    mins = int(player_row.iloc[0]['Minutes'])
+    detailed_pos = player_row.iloc[0]['Detailed Position']
+
+    # Add text to the regular figure
+    if compare == 'No':
+        plt.text(800, 70, f"{name1}", ha='center', fontsize=45, color='white', fontweight='bold')
+        plt.text(800, 120, f"{club} - {season1} {league1} - {mins} Minutes - {detailed_pos}", ha='center', fontsize=30, color='white')
+        plt.text(30, 880, f"Data compared to {league1} {position_group1} in {season1}", ha='left', fontsize=16, color='white')
+
+        if league1 in ws_leagues and mode1 == 'Basic' and position_group1 == 'GKs': 
+            plt.text(1570, 880, f"Defending High, Difficult & 1v1 Shot Stopping\ndata unavailable for {league1}", ha='right', fontsize=16, color='white')
+        if league1 in ws_leagues and mode1 == 'Basic' and position_group1 in ['CBs', 'WBs']: 
+            plt.text(1570, 880, f"Defending High data unavailable for {league1}", ha='right', fontsize=16, color='white')
+        if league1 in ws_leagues and mode1 == 'Basic' and position_group1 == 'CMs': 
+            plt.text(1570, 880, f"Pressing data unavailable for {league1}", ha='right', fontsize=16, color='white')
+
+    if compare == 'Yes':
+        club2 = player2_row.iloc[0]['Team']
+        mins2 = int(player2_row.iloc[0]['Minutes'])
+        detailed_pos2 = player2_row.iloc[0]['Detailed Position']
+
+        plt.text(40, 65, f"{name1}", ha='left', fontsize=35, color='green', fontweight='bold')
+        plt.text(40, 110, f"{club}", ha='left', fontsize=30, color='green')
+        plt.text(40, 150, f"{season1} {league1}", ha='left', fontsize=30, color='green')
+        plt.text(40, 190, f"{mins} Minutes - {detailed_pos}", ha='left', fontsize=30, color='green')
+
+        plt.text(1560, 65, f"{name2}", ha='right', fontsize=35, color='red', fontweight='bold')
+        plt.text(1560, 110, f"{club2}", ha='right', fontsize=30, color='red')
+        plt.text(1560, 150, f"{season2} {league2}", ha='right', fontsize=30, color='red')
+        plt.text(1560, 190, f"{mins2} Minutes - {detailed_pos2}", ha='right', fontsize=30, color='red')
+        plt.text(30, 880, f"Data compared to {position_group1} in player's league", ha='left', fontsize=15, color='white')
+
+        if league1 in ws_leagues and league2 in ws_leagues and mode1 == 'Basic' and position_group1 in ['CBs', 'WBs']: 
+            plt.text(1570, 880, f"Defending High data unavailable", ha='right', fontsize=16, color='white')
+        elif league1 in ws_leagues and league2 in ws_leagues and mode1 == 'Basic' and position_group1 == 'GKs': 
+            plt.text(1570, 880, f"Defending High, Difficult & 1v1 Shot Stopping\ndata unavailable", ha='right', fontsize=16, color='white')
+        elif league1 in ws_leagues and mode1 == 'Basic' and position_group1 in ['CBs', 'WBs']: 
+            plt.text(1570, 880, f"Defending High data unavailable for {league1}", ha='right', fontsize=16, color='white')
+        elif league2 in ws_leagues and mode1 == 'Basic' and position_group1 in ['CBs', 'WBs']: 
+            plt.text(1570, 880, f"Defending High data unavailable for {league2}", ha='right', fontsize=16, color='white')
+        elif league1 in ws_leagues and mode1 == 'Basic' and position_group1 == 'GKs': 
+            plt.text(1570, 880, f"Defending High, Difficult & 1v1 Shot Stopping\ndata unavailable for {league1}", ha='right', fontsize=16, color='white')
+        elif league2 in ws_leagues and mode1 == 'Basic' and position_group1 == 'GKs': 
+            plt.text(1570, 880, f"Defending High, Difficult & 1v1 Shot Stopping\ndata unavailable for {league2}", ha='right', fontsize=16, color='white')
+
+        if league1 in ws_leagues and league2 in ws_leagues and mode1 == 'Basic' and position_group1 == 'CMs': 
+            plt.text(1570, 880, f"Pressing data unavailable", ha='right', fontsize=16, color='white')
+        elif league1 in ws_leagues and mode1 == 'Basic' and position_group1 == 'CMs': 
+            plt.text(1570, 880, f"Pressing data unavailable for {league1}", ha='right', fontsize=16, color='white')
+        elif league2 in ws_leagues and mode1 == 'Basic' and position_group1 == 'CMs': 
+            plt.text(1570, 880, f"Pressing data unavailable for {league2}", ha='right', fontsize=16, color='white')
+
+    plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
+    plt.tight_layout(pad=0)
+    plt.margins(0, 0)
+
+    st.pyplot(fig_canvas)
+
+
+
 
 if mode == 'Player Overview':
 
@@ -288,7 +650,7 @@ if mode == 'Player Overview':
             Heading = df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0], 'Heading']
             Carrying = df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0], 'Carrying']
             BallRetention = df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0], 'Ball Retention']
-            ProgressivePassing = df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0], 'Progressive Passing']
+            ProgressivePassing = df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0], 'Progression']
             DefAccuracy = df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0], 'Tackle Accuracy']
             DefEngage = df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0], 'Defensive Output']
             DefHigh = df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0], 'Defending High']
@@ -296,14 +658,14 @@ if mode == 'Player Overview':
 
             data1 = [Heading, Carrying, BallRetention, ProgressivePassing, DefAccuracy, DefEngage, DefHigh]
             #if league1 in ws_leagues: data1 = [Heading, Carrying, BallRetention, ProgressivePassing, DefAccuracy, DefEngage, 0]
-            metrics = ['Heading', 'Carrying', 'Ball Retention', 'Progressive Passing', 'Tackle Accuracy', 'Defensive Output', 'Defending High']
+            metrics = ['Heading', 'Carrying', 'Ball Retention', 'Progression', 'Tackle Accuracy', 'Defensive Output', 'Defending High']
             metric_names = ['Heading', 'Carrying', 'Ball Retention', 'Progressive\nPassing', 'Tackle\nAccuracy', 'Defensive Output', 'Defending\nHigh']
 
             if compare == 'Yes':
                 Heading2 = df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'Heading']
                 Carrying2 = df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'Carrying']
                 BallRetention2 = df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'Ball Retention']
-                ProgressivePassing2 = df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'Progressive Passing']
+                ProgressivePassing2 = df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'Progression']
                 DefAccuracy2 = df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'Tackle Accuracy']
                 DefEngage2 = df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'Defensive Output']
                 DefHigh2 = df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0], 'Defending High']
@@ -589,15 +951,15 @@ if mode == 'Player Overview':
             Poaching = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'Poaching'])
             Finishing = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'Finishing'])
             Technical = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'Ball Retention'])
-            Dribbling = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'Dribbling'])
+            Dribbling = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'Carrying'])
             DefOutput = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'Defensive Output'])
             Progression = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'Progression'])
-            Heading = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'Heading'])
+            Speed = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'Speed'])
 
-            data1 = [Creating, Dribbling, Poaching, Finishing, Heading, DefOutput, Progression]
+            data1 = [Creating, Dribbling, Poaching, Finishing, Speed, DefOutput, Progression]
             #print(name1, Progression)
-            metrics = ['Chance Creation', 'Dribbling Threat', 'Poaching', 'Finishing', 'Heading','Defensive Output','Progression']
-            metric_names = ['Chance\nCreation', 'Dribbling Threat', 'Poaching', 'Finishing', 'Heading', 'Defensive Output', 'Progression']
+            metrics = ['Chance Creation', 'Dribbling Threat', 'Poaching', 'Finishing', 'Speed','Defensive Output','Progression']
+            metric_names = ['Chance\nCreation', 'Dribbling Threat', 'Poaching', 'Finishing', 'Speed', 'Defensive Output', 'Progression']
 
             if compare == 'Yes':
 
@@ -605,12 +967,12 @@ if mode == 'Player Overview':
                 Poaching2 = (df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0],'Poaching'])
                 Finishing2 = (df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0],'Finishing'])
                 Technical2 = (df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0],'Ball Retention'])
-                Dribbling2 = (df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0],'Dribbling'])
+                Dribbling2 = (df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0],'Carrying'])
                 DefOutput2 = (df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0],'Defensive Output'])
                 Progression2 = (df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0],'Progression'])
-                Heading2 = (df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0],'Heading'])
+                Speed2 = (df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0],'Speed'])
 
-                data2 = [Creating2, Dribbling2, Poaching2, Finishing2, Heading2, DefOutput2, Progression2]
+                data2 = [Creating2, Dribbling2, Poaching2, Finishing2, Speed2, DefOutput2, Progression2]
 
 
 
@@ -728,7 +1090,7 @@ if mode == 'Player Overview':
             Poaching = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'Poaching'])
             Finishing = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'Finishing'])
             Technical = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'Ball Retention'])
-            Dribbling = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'Dribbling'])
+            Dribbling = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'Carrying'])
             DefOutput = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'Defensive Output'])
             Heading = (df.loc[df.index[(df['Player'] == name1) & (df['Competition'] == league1) & (df['Season'] == season1)][0],'Heading'])
 
@@ -741,7 +1103,7 @@ if mode == 'Player Overview':
                 Poaching2 = (df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0],'Poaching'])
                 Finishing2 = (df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0],'Finishing'])
                 Technical2 = (df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0],'Ball Retention'])
-                Dribbling2 = (df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0],'Dribbling'])
+                Dribbling2 = (df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0],'Carrying'])
                 DefOutput2 = (df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0],'Defensive Output'])
                 Heading2 = (df.loc[df.index[(df['Player'] == name2) & (df['Competition'] == league2) & (df['Season'] == season2)][0],'Heading'])
 
@@ -1412,10 +1774,10 @@ if  mode == 'Multi Player Dot Graph':
     df['unique_label'] = df.apply(lambda row: f"{row['Player']}\n{row['Competition']} - {row['Season']}", axis=1)
 
     if position_group1 == 'GKs': metrics = ['GK_Chances Faced', 'GK_Shot Stopping','GK_Short Distribution', 'GK_Long Distribution','GK_Difficult Shot Stopping']
-    if position_group1 == 'CBs': metrics = ['Ball Retention', 'Progressive Passing', 'Heading', 'Defensive Output', 'Tackle Accuracy']
+    if position_group1 == 'CBs': metrics = ['Ball Retention', 'Progression', 'Heading', 'Defensive Output', 'Tackle Accuracy']
     if position_group1 == 'WBs': metrics = ['Ball Retention', 'Chance Creation', 'Receiving Forward', 'Defensive Output', 'Tackle Accuracy']
     if position_group1 == 'CMs': metrics = ['Heading','Defensive Output', 'Tackle Accuracy','Pressing','Chance Creation','Progression' ]
-    if position_group1 in ['Ws', 'AMs']: metrics = ['Defensive Output', 'Finishing', 'Poaching', 'Dribbling', 'Chance Creation']
+    if position_group1 in ['Ws', 'AMs']: metrics = ['Defensive Output', 'Finishing', 'Poaching', 'Carrying', 'Chance Creation']
     if position_group1 == 'STs': metrics = ['Chance Creation', 'Heading','Defensive Output', 'Finishing', 'Poaching']
 
 
@@ -1557,9 +1919,9 @@ if mode == 'Player Rankings':
     df = pd.read_parquet(file_name)
     
     
-    df = df[df['Competition'].isin(['USL', 'NWSL', 'MLS Next Pro', 'ACC', 'Big 10', 'Big 12', 'SEC', 'NCAA Men'])].sort_values(by = 'Ovr', ascending=False)
+    df = df[df['Competition'].isin(['USL', 'NWSL', 'MLS Next Pro', 'ACC', 'Big10', 'Big12', 'SEC', 'NCAA Men'])].sort_values(by = 'Ovr', ascending=False)
 
-    df['Top Speed'] = df['pctTop Speed']
+    df['Top Speed'] = df['Speed']
     df['HI Distance'] = (0.3 * df['pctHI Count']) + (0.4 * df['pctDistance']) + (0.3 * df['pctHI Distance'])
 
     df = df.rename(columns={'GK_Chances Faced': 'Chances Faced',
@@ -1574,9 +1936,9 @@ if mode == 'Player Rankings':
 
 
     value_cols = ['Ovr', 'Tackle Accuracy', 'Defensive Output', 'Defending High',
-       'Heading', 'Receiving Forward', 'Crossing', 'Progressive Passing',
-       'Carrying', 'Ball Retention', 'Chance Creation', 'Progression',
-       'Pressing', 'Dribbling', 'Poaching', 'Finishing', 'Top Speed', 'HI Distance',
+       'Heading', 'Receiving Forward', 'Crossing', 'Progression',
+       'Carrying', 'Ball Retention', 'Chance Creation',
+       'Pressing', 'Poaching', 'Finishing', 'Top Speed', 'HI Distance',
        'Chances Faced','Shot Stopping', 'Short Distribution', 'Long Distribution',
        'Coming Off Line', 'Difficult Shot Stopping', '1v1 Saves']
     
@@ -1604,7 +1966,7 @@ if mode == 'Player Rankings':
         if leagues != 'NCAA Women':
             df = df[(df['Competition'] == leagues)]
 
-        else: df = df[df['Competition'].isin(['ACC', 'Big 10', 'Big 12', 'SEC'])]
+        else: df = df[df['Competition'].isin(['ACC', 'Big10', 'Big12', 'SEC'])]
         
 
         if leagues == 'NWSL':
@@ -1667,7 +2029,7 @@ if mode == 'Player Rankings':
         df = df[(df['Minutes'] >= minutes_range[0]) & (df['Minutes'] <= minutes_range[1])]
 
         if leagues == 'NCAA Women':
-            conferences = st.pills('Select Conferences', ['ACC', 'Big 10', 'Big 12', 'SEC'], selection_mode = 'multi',default = ['ACC', 'Big 10', 'Big 12', 'SEC'])
+            conferences = st.pills('Select Conferences', ['ACC', 'Big10', 'Big12', 'SEC'], selection_mode = 'multi',default = ['ACC', 'Big10', 'Big12', 'SEC'])
             df = df[df['Conference'].isin(conferences)]
 
     with col3: 
@@ -1692,7 +2054,7 @@ if mode == 'Player Rankings':
                             'Coming Off Line', 'Difficult Shot Stopping', '1v1 Saves']
             if position_group1 == 'CBs':
                 ratings = ['Tackle Accuracy', 'Defensive Output', 'Defending High',
-                            'Progressive Passing', 'Carrying', 'Ball Retention', 'Heading',
+                            'Progression', 'Carrying', 'Ball Retention', 'Heading',
                             'Top Speed', 'HI Distance']
                 
             if position_group1 == 'WBs':
@@ -1710,14 +2072,14 @@ if mode == 'Player Rankings':
                             'Top Speed', 'HI Distance']
                 
             if position_group1 in ['AMs', 'Ws']:
-                ratings = ['Chance Creation', 'Dribbling', 'Progression',
+                ratings = ['Chance Creation', 'Carrying', 'Progression',
                         'Poaching', 'Finishing', 'Ball Retention',
                         'Crossing','Heading',  'Defensive Output',
                             'Top Speed', 'HI Distance'
                         ]
             if position_group1 == 'STs':
                 ratings = ['Poaching', 'Finishing', 'Heading',
-                        'Chance Creation', 'Dribbling', 'Progression',
+                        'Chance Creation', 'Carrying', 'Progression',
                         'Ball Retention', 'Defensive Output',
                         'Top Speed', 'HI Distance'
                         
@@ -1728,7 +2090,7 @@ if mode == 'Player Rankings':
                 ratings = ['Chances Faced','Shot Stopping', 'Short Distribution', 'Long Distribution',]
             if position_group1 == 'CBs':
                 ratings = ['Tackle Accuracy', 'Defensive Output',
-                            'Progressive Passing', 'Carrying', 'Ball Retention', 'Heading']
+                            'Progression', 'Carrying', 'Ball Retention', 'Heading']
                 
             if position_group1 == 'WBs':
                 ratings = ['Tackle Accuracy', 'Defensive Output', 'Heading', 
@@ -1741,13 +2103,13 @@ if mode == 'Player Rankings':
                         'Receiving Forward', 'Chance Creation']
                 
             if position_group1 in ['AMs', 'Ws']:
-                ratings = ['Chance Creation', 'Dribbling', 'Progression',
+                ratings = ['Chance Creation', 'Carrying', 'Progression',
                         'Poaching', 'Finishing', 'Ball Retention',
                         'Crossing','Heading',  'Defensive Output'                            
                         ]
             if position_group1 == 'STs':
                 ratings = ['Poaching', 'Finishing', 'Heading',
-                        'Chance Creation', 'Dribbling', 'Progression',
+                        'Chance Creation', 'Carrying', 'Progression',
                         'Ball Retention', 'Defensive Output',
                         
                         ]
@@ -1828,6 +2190,8 @@ if mode == 'Player Rankings':
         fig.text(0.5, 0.92, subtitle, ha='center', va='center', fontsize=14, color='black')
 
         ax.axis('off')
+        print(columns)
+
 
         data_df = pd.DataFrame(data, columns=columns)
 
@@ -1991,7 +2355,8 @@ if mode == 'Player Rankings':
         return fig, ax, table
 
 
-    
+    print(len(df))
+    print(df['Conference'].unique())
 
     # Create the table
     fig, ax, table = create_football_table(df, columns)
@@ -2011,7 +2376,7 @@ if mode == 'Player Rankings':
                         'Coming Off Line', 'Difficult Shot Stopping', '1v1 Saves']
     if position_group1 == 'CBs':
         ratings = ['Tackle Accuracy', 'Defensive Output', 'Defending High',
-                        'Progressive Passing', 'Carrying', 'Ball Retention', 'Heading',
+                        'Progression', 'Carrying', 'Ball Retention', 'Heading',
                         'Top Speed', 'HI Distance']
         
     if position_group1 == 'WBs':
@@ -2029,14 +2394,14 @@ if mode == 'Player Rankings':
                     'Top Speed', 'HI Distance']
         
     if position_group1 in ['AMs', 'Ws']:
-        ratings = ['Chance Creation', 'Dribbling', 'Progression',
+        ratings = ['Chance Creation', 'Carrying', 'Progression',
                     'Poaching', 'Finishing', 'Ball Retention',
                     'Crossing','Heading',  'Defensive Output',
                     'Top Speed', 'HI Distance'
                     ]
     if position_group1 == 'STs':
         ratings = ['Poaching', 'Finishing', 'Heading',
-                    'Chance Creation', 'Dribbling', 'Progression',
+                    'Chance Creation', 'Carrying', 'Progression',
                     'Ball Retention', 'Defensive Output',
                     'Top Speed', 'HI Distance'
                     
@@ -2216,7 +2581,7 @@ if mode == 'Player Match by Match Performance':
     selected_player = name1
     df = df[(df['Player']==selected_player) & (df['Position Group'] == position_group1) & (df['Minutes'] >= 30)]
     # fig, axes = plt.subplots(nrows=1, ncols=5, figsize=(18, 10))  # Adjust size as needed
-    # metrics = ['Poaching', 'Finishing', 'Chance Creation', 'Dribbling', 'Defensive Output']
+    # metrics = ['Poaching', 'Finishing', 'Chance Creation', 'Carrying', 'Defensive Output']
     # colors = ['orange', 'green', 'blue', 'cyan', 'red']
     # positions = df['Position'].unique()
 
@@ -2233,10 +2598,10 @@ if mode == 'Player Match by Match Performance':
     from datetime import datetime
 
 
-    if position_group1 == 'CBs': metrics = ['Tackle Accuracy', 'Defensive Output', 'Heading','Ball Retention', 'Progressive Passing']
+    if position_group1 == 'CBs': metrics = ['Tackle Accuracy', 'Defensive Output', 'Heading','Ball Retention', 'Progression']
     elif position_group1 == 'WBs': metrics = ['Receiving Forward', 'Chance Creation', 'Ball Retention', 'Tackle Accuracy', 'Defensive Output']
     elif position_group1 == 'CMs':metrics = ['Defensive Output', 'Tackle Accuracy','Pressing','Chance Creation','Progression' ]#metrics = ['Box Threat', 'Chance Creation', 'Tackle Accuracy', 'Defensive Output','Pressing']
-    else: metrics = ['Poaching', 'Finishing', 'Chance Creation', 'Dribbling', 'Defensive Output']
+    else: metrics = ['Poaching', 'Finishing', 'Chance Creation', 'Carrying', 'Defensive Output']
 
     # print(metrics)
 
@@ -2369,7 +2734,7 @@ if mode == 'Player Match by Match Performance':
 
 def get_columns_to_compare(row):
     if row['pos_group'] == 4:
-        columns = ['Tackle Accuracy', 'Defensive Output', 'Heading', 'Progressive Passing', 'Ball Retention']
+        columns = ['Tackle Accuracy', 'Defensive Output', 'Heading', 'Progression', 'Ball Retention']
         if pd.notna(row['Defending High']):
             columns.append('Defending High')
     elif row['pos_group'] == 3:
@@ -2381,9 +2746,9 @@ def get_columns_to_compare(row):
         if pd.notna(row['Defending High']):
             columns.extend(['Defending High', 'Pressing'])
     elif row['pos_group'] in [7, 10]:
-        columns = ['Defensive Output', 'Ball Retention', 'Chance Creation', 'Progression', 'Dribbling', 'Poaching', 'Finishing']
+        columns = ['Defensive Output', 'Ball Retention', 'Chance Creation', 'Progression', 'Carrying', 'Poaching', 'Finishing']
     elif row['pos_group'] == 9:
-        columns = ['Defensive Output', 'Ball Retention', 'Chance Creation', 'Dribbling', 'Poaching', 'Finishing', 'Heading']
+        columns = ['Defensive Output', 'Ball Retention', 'Chance Creation', 'Carrying', 'Poaching', 'Finishing', 'Heading']
     else:
         columns = ['Ovr']
     return columns
@@ -2534,14 +2899,14 @@ if position_group1 == 'GKs' and mode1 == 'Basic':
     st.write("Chances Faced: Measure of how often the goalkeeper is tested (and how high quality the chances are)")
     st.write("Shot Stopping: Measure of shot stopping quality (xG Faced - Goals Conceded, Save %, etc)")
     st.write("Short Distribution: How accurate the goalkeeper is in short passing and how often he is trusted to play out the back")
-    st.write("Long Distribution: How accurate and (how frequently) the goalkeeper is in long/progressive passing")
+    st.write("Long Distribution: How accurate and (how frequently) the goalkeeper is in long/Progression")
     st.write("Defending High: How high up the field the goalkeeper makes defensive actions like rushes, pressures, saves on average")
     st.write("Difficult Shot Stopping: How well the goalkeeper does with facing high xG shots")
     st.write("1v1 Saving: RHow well the goalkeeper does with facing 1v1 opportounities")
 
 if position_group1 == 'CBs' and mode1 == 'Basic':
     st.write("Metric Definitions:")
-    st.write("Progressive Passing: How often and how accurate the player is at making progressive, long, and final third entry passes")
+    st.write("Progression: How often and how accurate the player is at making progressive, long, and final third entry passes")
     st.write("Ball Retention: A measure of how good they are at keeping the ball and not turning it over (passing and dribbling accuracies)")
     st.write("Carrying: Threat added from ball carries")
     st.write("Heading: How often the player wins aerial duels and how accurate they are in them")
